@@ -10,7 +10,7 @@ Created on Wed Sep 29 14:23:48 2021
 
 import argparse, pickle
 from sklearn.dummy import DummyClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, top_k_accuracy_score,confusion_matrix
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Classifier")
@@ -20,6 +20,9 @@ parser.add_argument("-e", "--export_file", help = "export the trained classifier
 parser.add_argument("-i", "--import_file", help = "import a trained classifier from the given location", default = None)
 parser.add_argument("-m", "--majority", action = "store_true", help = "majority class classifier")
 parser.add_argument("-a", "--accuracy", action = "store_true", help = "evaluate using accuracy")
+parser.add_argument("-k", "--topkaccuracy", action = "store_true", help = "evaluate using top k accuracy")
+parser.add_argument("-c", "--confusionmatrix", action = "store_true", help = "print the confusion-matrix")
+
 args = parser.parse_args()
 
 # load data
@@ -46,10 +49,14 @@ prediction = classifier.predict(data["features"])
 evaluation_metrics = []
 if args.accuracy:
     evaluation_metrics.append(("accuracy", accuracy_score))
+if args.topkaccuracy:
+    evaluation_metrics.append(("top k accuracy", top_k_accuracy_score))
+if args.confusionmatrix:
+    evaluation_metrics.append(("Confusion-Matrix", confusion_matrix))
 
 # compute and print them
 for metric_name, metric in evaluation_metrics:
-    print("    {0}: {1}".format(metric_name, metric(data["labels"], prediction)))
+    print("    {0}:\n {1}".format(metric_name, metric(data["labels"], prediction)))
     
 # export the trained classifier if the user wants us to do so
 if args.export_file is not None:
