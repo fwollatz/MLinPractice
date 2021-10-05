@@ -9,9 +9,10 @@ Created on Wed Sep 29 14:49:25 2021
 """
 
 import argparse, pickle
+from code.util import COLUMN_TWEET
 import pandas as pd
 from sklearn.pipeline import make_pipeline
-from code.util import COLUMN_TWEET
+
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Application")
