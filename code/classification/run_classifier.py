@@ -77,7 +77,6 @@ if args.roc:
 
 # compute and print them
 for metric_name, metric in evaluation_metrics:
-    print(args.roc)
     if metric_name == "ROC Curve" and args.roc:
         fpr,tpr,threshold = metric(data["labels"],prediction)
         plt.title('Receiver Operating Characterics Curve')
