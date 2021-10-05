@@ -20,7 +20,7 @@ parser.add_argument("-e", "--export_file", help = "export the trained classifier
 parser.add_argument("-i", "--import_file", help = "import a trained classifier from the given location", default = None)
 parser.add_argument("-m", "--majority", action = "store_true", help = "majority class classifier")
 parser.add_argument("-a", "--accuracy", action = "store_true", help = "evaluate using accuracy")
-parser.add_argument("-k", "--topkaccuracy", action = "store_true", help = "evaluate using top k accuracy")
+parser.add_argument("-t", "--topkaccuracy", action = "store_true", help = "evaluate using top k accuracy")
 parser.add_argument("-c", "--confusionmatrix", action = "store_true", help = "print the confusion-matrix")
 
 args = parser.parse_args()
