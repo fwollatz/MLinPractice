@@ -52,11 +52,12 @@ if args.accuracy:
 if args.topkaccuracy:
     evaluation_metrics.append(("top k accuracy", top_k_accuracy_score))
 if args.confusionmatrix:
-    evaluation_metrics.append(("Confusion-Matrix", confusion_matrix))
+   print("Confusion-Matrix:")
+   print(confusion_matrix(data["labels"], prediction))
 
 # compute and print them
 for metric_name, metric in evaluation_metrics:
-    print("    {0}:\n {1}".format(metric_name, metric(data["labels"], prediction)))
+    print("    {0}: {1}".format(metric_name, metric(data["labels"], prediction)))
     
 # export the trained classifier if the user wants us to do so
 if args.export_file is not None:
