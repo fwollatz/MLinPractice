@@ -9,8 +9,11 @@ Created on Wed Sep 29 14:23:48 2021
 """
 
 import argparse, pickle
+import matplotlib.pyplot as plt
 from sklearn.dummy import DummyClassifier
-from sklearn.metrics import accuracy_score, cohen_kappa_score
+
+from sklearn.metrics import accuracy_score, top_k_accuracy_score, confusion_matrix, cohen_kappa_score, roc_auc_score, roc_curve
+
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Classifier")
@@ -21,7 +24,11 @@ parser.add_argument("-i", "--import_file", help = "import a trained classifier f
 parser.add_argument("-m", "--majority", action = "store_true", help = "majority class classifier")
 parser.add_argument("-f", "--frequency", action = "store_true", help = "label frequency classifier")
 parser.add_argument("-a", "--accuracy", action = "store_true", help = "evaluate using accuracy")
+parser.add_argument("-tka", "--topkaccuracy", action = "store_true", help = "evaluate using top k accuracy")
+parser.add_argument("-c", "--confusionmatrix", action = "store_true", help = "print the confusion-matrix")
 parser.add_argument("-k", "--kappa", action = "store_true", help = "evaluate using Cohen's kappa")
+parser.add_argument("-auc","--auc",action = "store_true",help = "evaluate using Area Under ROC curve")
+parser.add_argument("-roc","--roc",action = "store_true",help = "show the corresponding ROC curve")
 args = parser.parse_args()
 
 # load data
@@ -53,12 +60,33 @@ prediction = classifier.predict(data["features"])
 evaluation_metrics = []
 if args.accuracy:
     evaluation_metrics.append(("accuracy", accuracy_score))
+if args.topkaccuracy:
+    evaluation_metrics.append(("top k accuracy", top_k_accuracy_score))
 if args.kappa:
     evaluation_metrics.append(("Cohen's kappa", cohen_kappa_score))
+if args.confusionmatrix:
+   print("Confusion-Matrix:")
+   print(confusion_matrix(data["labels"], prediction))
+
+if args.auc:
+    evaluation_metrics.append(("AUC", roc_auc_score))
+if args.roc:
+    evaluation_metrics.append(("ROC Curve", roc_curve))
+
+    
 
 # compute and print them
 for metric_name, metric in evaluation_metrics:
-    print("    {0}: {1}".format(metric_name, metric(data["labels"], prediction)))
+    if metric_name == "ROC Curve" and args.roc:
+        fpr,tpr,threshold = metric(data["labels"],prediction)
+        plt.title('Receiver Operating Characterics Curve')
+        plt.plot(fpr, tpr)
+        plt.xlabel('True Positive Rate')
+        plt.ylabel('False Positive Rate')
+        plt.show()
+    else:
+        print("    {0}: {1}".format(metric_name, metric(data["labels"], prediction)))
+        
     
 # export the trained classifier if the user wants us to do so
 if args.export_file is not None:
