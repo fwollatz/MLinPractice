@@ -43,7 +43,11 @@ else: # need to set things up manually
         dim_red.fit(features, labels.ravel())
         
         # resulting feature names based on support given by SelectKBest
-        def get_feature_names(kbest, names):
+        def get_feature_names(kbest : SelectKBest, names : list) -> list:
+            """
+            Select k best features and returns a list of the feature names
+
+            """
             support = kbest.get_support()
             result = []
             for name, selected in zip(names, support):
@@ -66,6 +70,7 @@ output_data = {"features": reduced_features,
                "labels": labels}
 with open(args.output_file, 'wb') as f_out:
     pickle.dump(output_data, f_out)
+      
 
 # export the dimensionality reduction technique as pickle file if desired by user
 if args.export_file is not None:
