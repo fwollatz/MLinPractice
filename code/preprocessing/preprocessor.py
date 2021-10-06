@@ -30,7 +30,6 @@ class Preprocessor(BaseEstimator,TransformerMixin):
         set internal variables based on input columns
         to be implemented by subclass!
         """
-        print("Type inputs: " + str(type(inputs)))
         pass
     
     def fit(self, df : DataFrame):
@@ -51,7 +50,6 @@ class Preprocessor(BaseEstimator,TransformerMixin):
         get preprocessed column based on the inputs from the DataFrame and internal variables
         to be implemented by subclass!
         """
-        print("Type inputs: " + str(type(inputs)))
         pass
         
     def transform(self, df : DataFrame) -> DataFrame:
