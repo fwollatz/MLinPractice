@@ -9,7 +9,7 @@ Created on Wed Sep 29 12:36:01 2021
 """
 from code.feature_extraction.feature_extractor import FeatureExtractor
 import numpy as np
-import pandas.core.frame.DataFrame
+
 
 
 # extend FeatureExtractor for the sake of simplicity
@@ -45,7 +45,7 @@ class FeatureCollector(FeatureExtractor):
         super().__init__(input_columns, "FeatureCollector")
 
     
-         def fit(self, df: pandas.core.frame.DataFrame):
+    def fit(self, df):
         """
         overwrite fit: instead of calling _set_variables(), we forward the call to the features
 
@@ -63,7 +63,7 @@ class FeatureCollector(FeatureExtractor):
         for feature in self._features:
             feature.fit(df)
 
-        def transform(self, df: pandas.core.frame.DataFrame) -> np.ndarray:
+    def transform(self, df) -> np.ndarray:
         """
         overwrite transform: instead of calling _get_values(), we forward the call to the features
 

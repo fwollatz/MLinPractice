@@ -9,35 +9,97 @@ Created on Wed Sep 29 12:22:13 2021
 """
 
 from sklearn.base import BaseEstimator, TransformerMixin
+import numpy as np
 
 # base class for all feature extractors
 #   inherits from BaseEstimator (as pretty much everything in sklearn)
 #       and TransformerMixin (allowing for fit, transform, and fit_transform methods)
 class FeatureExtractor(BaseEstimator,TransformerMixin):
     
-    # constructor
-    def __init__(self, input_columns, feature_name):
+    
+    def __init__(self, input_columns: list, feature_name: str):
+        """
+        constructor
+
+        Parameters
+        ----------
+        input_columns : list
+            DESCRIPTION.
+        feature_name : str
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         super(BaseEstimator, self).__init__()
         super(TransformerMixin, self).__init__()
         self._input_columns = input_columns
         self._feature_name = feature_name
         
-    # access to feature name
-    def get_feature_name(self):
+    
+    def get_feature_name(self)->str:
+        """
+        access to feature name
+
+        Returns
+        -------
+        str
+            DESCRIPTION.
+
+        """
         return self._feature_name
     
-    # access to input colums
-    def get_input_columns(self):
+
+    def get_input_columns(self) -> list:
+        """
+        access to input colums
+
+        Returns
+        -------
+        list
+            DESCRIPTION.
+
+        """
         return self._input_columns
+        
 
     
-    # set internal variables based on input columns
-    # to be implemented by subclass!
-    def _set_variables(self, inputs):
+    
+    def _set_variables(self, inputs: list):
+        """
+        # set internal variables based on input columns
+        # to be implemented by subclass!
+
+        Parameters
+        ----------
+        inputs : list
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         pass
     
-    # fit function: takes pandas DataFrame to set any internal variables
+    
     def fit(self, df):
+        """
+        # fit function: takes pandas DataFrame to set any internal variables
+
+        Parameters
+        ----------
+        df : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
         
         inputs = []
         # collect all input columns from df
@@ -50,18 +112,47 @@ class FeatureExtractor(BaseEstimator,TransformerMixin):
         return self
     
          
-    # get feature values based on input column and internal variables
-    # should return a numpy array
-    # to be implemented by subclass!
-    def _get_values(self, inputs):
+    
+    def _get_values(self, inputs): 
+        """
+        # get feature values based on input column and internal variables
+        # should return a numpy array
+        # to be implemented by subclass!
+
+        Parameters
+        ----------
+        inputs : ???
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        print("e", type(inputs), "If you see this in your code please complete the method header of _get_values in the feature_extractor.py !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         pass
         
-    # transform function: transforms pandas DataFrame to numpy array of feature values
-    def transform(self, df):
+    def transform(self, df) -> np.ndarray:
+        """
+        # transform function: transforms pandas DataFrame to numpy array of feature values
+
+
+        Parameters
+        ----------
+        df : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        result : TYPE
+            DESCRIPTION.
+
+        """
 
         inputs = []
         # collect all input columns from df
         for input_col in self._input_columns:
             inputs.append(df[input_col])
             
-        return self._get_values(inputs)
+        result=self._get_values(inputs)
+        return result
