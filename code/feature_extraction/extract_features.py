@@ -12,8 +12,9 @@ import argparse, csv, pickle
 import pandas as pd
 import numpy as np
 from code.feature_extraction.character_length import CharacterLength
+from code.feature_extraction.number_of_hashtags import NumberOfHashtags
 from code.feature_extraction.feature_collector import FeatureCollector
-from code.util import COLUMN_TWEET, COLUMN_LABEL
+from code.util import COLUMN_TWEET, COLUMN_LABEL, COLUMN_HASHTAG
 
 
 # setting up CLI
@@ -23,6 +24,7 @@ parser.add_argument("output_file", help = "path to the output pickle file")
 parser.add_argument("-e", "--export_file", help = "create a pipeline and export to the given location", default = None)
 parser.add_argument("-i", "--import_file", help = "import an existing pipeline from the given location", default = None)
 parser.add_argument("-c", "--char_length", action = "store_true", help = "compute the number of characters in the tweet")
+parser.add_argument("-ht", "--number_of_hashtags", action = "store_true", help = "compute the number of hashtags")
 args = parser.parse_args()
 
 # load data
@@ -40,7 +42,10 @@ else:    # need to create FeatureCollector manually
     if args.char_length:
         # character length of original tweet (without any changes)
         features.append(CharacterLength(COLUMN_TWEET))
-    
+    if args.number_of_hashtags:
+        # amount of hashtags found in the tweet
+        features.append(NumberOfHashtags(COLUMN_HASHTAG))
+        
     # create overall FeatureCollector
     feature_collector = FeatureCollector(features)
     
@@ -52,6 +57,7 @@ else:    # need to create FeatureCollector manually
 # maps the pandas DataFrame to an numpy array
 feature_array = feature_collector.transform(df)
 
+
 # get label array
 label_array = np.array(df[COLUMN_LABEL])
 label_array = label_array.reshape(-1, 1)
@@ -59,6 +65,9 @@ label_array = label_array.reshape(-1, 1)
 # store the results
 results = {"features": feature_array, "labels": label_array, 
            "feature_names": feature_collector.get_feature_names()}
+
+#print(feature_array)
+
 with open(args.output_file, 'wb') as f_out:
     pickle.dump(results, f_out)
 
