@@ -36,7 +36,7 @@ for preprocessor in preprocessors:
 # store the results
 df.to_csv(args.output_file, index = False, quoting = csv.QUOTE_NONNUMERIC, line_terminator = "\n")
 
-# create a pipeline if necessary and store it as pickle file
+# create a pipeline if necessary and store it as pickle file (i.e. byte stream)
 if args.export_file is not None:
     pipeline = make_pipeline(*preprocessors)
     with open(args.export_file, 'wb') as f_out:

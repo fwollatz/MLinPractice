@@ -4,6 +4,7 @@
 mkdir -p data/preprocessing/split/
 
 # add labels
+# -m: argument is a module name, no file extension should be given: <pkg>.__main__ will be executed by interpreter as main module
 echo "  creating labels"
 python -m code.preprocessing.create_labels data/raw/ data/preprocessing/labeled.csv
 

@@ -23,6 +23,7 @@ class Preprocessor(BaseEstimator,TransformerMixin):
     
     # set internal variables based on input columns
     # to be implemented by subclass!
+    # in case needing to compute statistics and to store for later
     def _set_variables(self, inputs):
         pass
     
