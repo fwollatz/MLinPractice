@@ -41,6 +41,7 @@ class FeatureCollector(FeatureExtractor):
     # overwrite transform: instead of calling _get_values(), we forward the call to the features
     def transform(self, df):
         
+        # aggregate all features into one matrix of feature values, instead of multiple small feature arrays
         all_feature_values = []
         
         for feature in self._features:
