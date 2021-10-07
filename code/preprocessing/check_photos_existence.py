@@ -24,9 +24,6 @@ class PhotoChecker(Preprocessor):
 
     # get preprocessed column based on data frame and internal variables
     def _get_values(self, inputs):
-        # indicate if there is/are photo(s) included
-        #column = inputs[0].str.replace(self._punctuation, "")
-        print(inputs[0])
+        # indicate if a tweet contains any photos
         column = inputs[0].str.contains('https://pbs.twimg.com/', regex=False).astype(int)
-        print(column[:20])
         return column
