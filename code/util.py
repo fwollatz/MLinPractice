@@ -23,6 +23,7 @@ COLUMN_LANGUAGE = "language"
 # column names of novel columns for preprocessing
 COLUMN_LABEL = "label"
 COLUMN_PUNCTUATION = "tweet_no_punctuation"
+COLUMN_STEMMED = "tweet_no_punctuation_tokenized_stemmed" 
 
 SUFFIX_TOKENIZED = "_tokenized"
 ENGLISCH_TAG = "en"

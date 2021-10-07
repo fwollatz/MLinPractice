@@ -19,12 +19,12 @@ import string
 class PunctuationRemover(Preprocessor):
     
 
-    def __init__(self):
+    def __init__(self, input_column, output_column):
         """
         Constructor
         """
         # input column "tweet", new output column
-        super().__init__([COLUMN_TWEET], COLUMN_PUNCTUATION)
+        super().__init__([input_column], output_column)
     
     def _set_variables(self, inputs : list):
         """
