@@ -11,10 +11,18 @@ Created on Tue Sep 28 16:43:18 2021
 import argparse, csv, pickle
 import pandas as pd
 from sklearn.pipeline import make_pipeline
-from code.preprocessing.tokenizer import Tokenizer
-from code.preprocessing.punctuation_remover import PunctuationRemover
-from code.preprocessing.check_photos_existence import PhotoChecker
+
 from code.util import COLUMN_TWEET, SUFFIX_TOKENIZED
+
+from code.preprocessing.lower_caser import LowerCaser
+from code.preprocessing.punctuation_remover import PunctuationRemover
+from code.preprocessing.stemmer import Stemmer
+from code.preprocessing.tokenizer import Tokenizer
+from code.preprocessing.stop_word_remover import StopWordRemover
+from code.preprocessing.check_photos_existence import PhotoChecker
+from code.util import COLUMN_TWEET, COLUMN_LANGUAGE
+from code.util import COLUMN_LOWERED, COLUMN_STEMMED, COLUMN_TOKENIZED, COLUMN_PUNCTUATION, COLUMN_STOP_WORD_REMOVED
+from code.util import ENGLISCH_TAG
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Various preprocessing steps")
@@ -25,19 +33,38 @@ parser.add_argument("-t", "--tokenize", action = "store_true", help = "tokenize 
 parser.add_argument("--tokenize_input", help = "input column to tokenize", default = COLUMN_TWEET)
 parser.add_argument("-e", "--export_file", help = "create a pipeline and export to the given location", default = None)
 parser.add_argument("-photo", action = "store_true", help = "check if a tweet contains photo(s)")
+parser.add_argument("-l", "--filter_englisch", action = "store_false", help = "use only english tagged tweets")
+parser.add_argument("-s","--stem", action="store_false", help= "stem the tweets using englisch stemmer")
+parser.add_argument("-lc", "--lower_case", action = "store_false", help = "lower cases all tweets")
+parser.add_argument("-swr", "--stop_word_removal", action = "store_false", help = "removes all english stop words from the tweets")
+
 args = parser.parse_args()
 
 # load data
 df = pd.read_csv(args.input_file, quoting = csv.QUOTE_NONNUMERIC, lineterminator = "\n")
 
+# filter out non-englisch tagged tweets
+if args.filter_englisch:
+    count_before_filtering = len(df.index)
+    df = df.loc[df[COLUMN_LANGUAGE] == ENGLISCH_TAG]
+    print("{0} tweets were removed when filtering out not-englisch tweets".format((count_before_filtering - len(df.index))))
+
 # collect all preprocessors
 preprocessors = []
+if args.lower_case:
+    preprocessors.append(LowerCaser(COLUMN_TWEET, COLUMN_LOWERED))
 if args.punctuation:
-    preprocessors.append(PunctuationRemover())
+    preprocessors.append(PunctuationRemover(COLUMN_LOWERED, COLUMN_PUNCTUATION))
 if args.tokenize:
     preprocessors.append(Tokenizer(args.tokenize_input, args.tokenize_input + SUFFIX_TOKENIZED))
 if args.photo:
     preprocessors.append(PhotoChecker())
+    preprocessors.append(Tokenizer(COLUMN_PUNCTUATION, COLUMN_TOKENIZED))
+if args.stem:
+    preprocessors.append(Stemmer(COLUMN_TOKENIZED, COLUMN_STEMMED))
+if args.stop_word_removal:
+    preprocessors.append(StopWordRemover(COLUMN_STEMMED, COLUMN_STOP_WORD_REMOVED))
+
 
 # call all preprocessing steps
 for preprocessor in preprocessors:
