@@ -9,10 +9,11 @@ Created on Tue Sep 28 16:43:18 2021
 """
 
 import argparse, csv, pickle
-from code.preprocessing.punctuation_remover import PunctuationRemover
 import pandas as pd
 from sklearn.pipeline import make_pipeline
 from code.preprocessing.tokenizer import Tokenizer
+from code.preprocessing.punctuation_remover import PunctuationRemover
+from code.preprocessing.check_photos_existence import PhotoChecker
 from code.util import COLUMN_TWEET, SUFFIX_TOKENIZED
 
 # setting up CLI
@@ -23,6 +24,7 @@ parser.add_argument("-p", "--punctuation", action = "store_true", help = "remove
 parser.add_argument("-t", "--tokenize", action = "store_true", help = "tokenize given column into individual words")
 parser.add_argument("--tokenize_input", help = "input column to tokenize", default = COLUMN_TWEET)
 parser.add_argument("-e", "--export_file", help = "create a pipeline and export to the given location", default = None)
+parser.add_argument("-photo", action = "store_true", help = "check if a tweet contains photo(s)")
 args = parser.parse_args()
 
 # load data
@@ -34,6 +36,8 @@ if args.punctuation:
     preprocessors.append(PunctuationRemover())
 if args.tokenize:
     preprocessors.append(Tokenizer(args.tokenize_input, args.tokenize_input + SUFFIX_TOKENIZED))
+if args.photo:
+    preprocessors.append(PhotoChecker())
 
 # call all preprocessing steps
 for preprocessor in preprocessors:
@@ -42,7 +46,7 @@ for preprocessor in preprocessors:
 # store the results
 df.to_csv(args.output_file, index = False, quoting = csv.QUOTE_NONNUMERIC, line_terminator = "\n")
 
-# create a pipeline if necessary and store it as pickle file
+# create a pipeline if necessary and store it as pickle file (i.e. byte stream)
 if args.export_file is not None:
     pipeline = make_pipeline(*preprocessors)
     with open(args.export_file, 'wb') as f_out:

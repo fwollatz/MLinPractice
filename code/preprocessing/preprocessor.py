@@ -23,8 +23,10 @@ class Preprocessor(BaseEstimator,TransformerMixin):
         super(TransformerMixin, self).__init__()
         self._output_column = output_column
         self._input_columns = input_columns
-    
-    
+
+    # set internal variables based on input columns
+    # to be implemented by subclass!
+    # in case needing to compute statistics and to store for later
     def _set_variables(self, inputs):
         """
         set internal variables based on input columns

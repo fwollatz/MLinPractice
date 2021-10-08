@@ -19,9 +19,8 @@ COLUMN_URLS = "urls"
 COLUMN_PHOTOS = "photos"
 COLUMN_VIDEOS = "video"
 COLUMN_LANGUAGE = "language"
-
 # column names of novel columns for preprocessing
 COLUMN_LABEL = "label"
 COLUMN_PUNCTUATION = "tweet_no_punctuation"
-
 SUFFIX_TOKENIZED = "_tokenized"
+COLUMN_PHOTO_EXISTENCE = "contain_photos"
