@@ -8,15 +8,15 @@ Created on Wed Sep 29 12:29:25 2021
 @author: lbechberger
 """
 
-import numpy as np
+
 import ast
 from code.feature_extraction.feature_extractor import FeatureExtractor
+from code.util import HASHTAG_COUNT
+import numpy as np
 
 # class for extracting the character-based length as a feature
 class NumberOfHashtags(FeatureExtractor):
-    
-    c=0
-    
+
     def __init__(self, input_column: str):
         """
         constructor
@@ -33,7 +33,7 @@ class NumberOfHashtags(FeatureExtractor):
         """
 
 
-        super().__init__([input_column], "{0}_#hashtags".format(input_column))
+        super().__init__([input_column], HASHTAG_COUNT)
     
     # don't need to fit, so don't overwrite _set_variables()
     

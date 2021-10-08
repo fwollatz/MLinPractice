@@ -10,7 +10,7 @@ Created on Friday Oct 8 2021
 
 
 from code.feature_extraction.feature_extractor import FeatureExtractor
-from code.util import COLUMN_MONTH
+from code.util import COLUMN_HOUR
 import numpy as np
 
 
@@ -37,7 +37,7 @@ class Hour(FeatureExtractor):
         """
 
 
-        super().__init__([input_column], COLUMN_MONTH)
+        super().__init__([input_column], COLUMN_HOUR)
     
     # don't need to fit, so don't overwrite _set_variables()
     

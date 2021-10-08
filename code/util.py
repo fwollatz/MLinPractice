@@ -27,6 +27,7 @@ COLUMN_PHOTOS = "photos"
 COLUMN_VIDEOS = "video"
 COLUMN_LANGUAGE = "language"
 
+
 # column names of novel columns for preprocessing
 COLUMN_LABEL = "label"
 # current order of general preprocessing: lower casing > punctuation > tokenization > stemming > stop word removal
@@ -37,6 +38,14 @@ COLUMN_STEMMED = COLUMN_TOKENIZED + SUFFIX_STEMMED
 COLUMN_STOP_WORD_REMOVED = COLUMN_STEMMED + SUFFIX_STOP_WORD_REMOVED
 
 ENGLISCH_TAG = "en"
+
+#Column names of Features
+COLUMN_URL_COUNT="URL_Count"
+HASHTAG_COUNT="Hashtag_Count"
+COLUMN_DATETIME_UNIX="datetime_unix"
+COLUMN_HOUR="HOUR OF DAY"
+COLUMN_WEEKDAY="WEEKDAY"
+COLUMN_MONTH="MONTH"
 
 #common methods
 def string_to_words_list(string_list : str) -> list:
