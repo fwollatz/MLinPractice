@@ -39,4 +39,5 @@ class PunctuationRemover(Preprocessor):
         """
         # replace punctuation with empty string
         column = inputs[0].str.replace(self._punctuation, "")
+        print("Removed punctuation from {0} tweets!".format(len(column)))
         return column

@@ -33,5 +33,5 @@ class Tokenizer(Preprocessor):
                 tokenized_tweet += words
             
             tokenized.append(str(tokenized_tweet))
-        
+        print("{0} tweets were tokenized!".format(len(tokenized)))
         return tokenized
