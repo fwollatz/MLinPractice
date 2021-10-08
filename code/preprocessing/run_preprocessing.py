@@ -14,9 +14,10 @@ from code.preprocessing.punctuation_remover import PunctuationRemover
 from code.preprocessing.stemmer import Stemmer
 from code.preprocessing.tokenizer import Tokenizer
 from code.preprocessing.stop_word_remover import StopWordRemover
+from code.preprocessing.emoji_url_remover import EmojiAndUrlRemover
 from code.util import COLUMN_TWEET, COLUMN_LANGUAGE
-from code.util import COLUMN_LOWERED, COLUMN_STEMMED, COLUMN_TOKENIZED, COLUMN_PUNCTUATION, COLUMN_STOP_WORD_REMOVED
-from code.util import ENGLISCH_TAG
+from code.util import COLUMN_LOWERED, COLUMN_STEMMED, COLUMN_TOKENIZED, COLUMN_PUNCTUATION
+from code.util import ENGLISCH_TAG, COLUMN_EMOJI_URL, COLUMN_STOP_WORD_REMOVED
 import pandas as pd
 from sklearn.pipeline import make_pipeline
 
@@ -32,6 +33,7 @@ parser.add_argument("-l", "--filter_englisch", action = "store_false", help = "u
 parser.add_argument("-s","--stem", action="store_false", help= "stem the tweets using englisch stemmer")
 parser.add_argument("-lc", "--lower_case", action = "store_false", help = "lower cases all tweets")
 parser.add_argument("-swr", "--stop_word_removal", action = "store_false", help = "removes all english stop words from the tweets")
+parser.add_argument("-feu", "--filter_emojis_urls", action = "store_false", help = "removes emojis and urls from the tweets")
 args = parser.parse_args()
 
 # load data
@@ -49,8 +51,10 @@ if args.lower_case:
     preprocessors.append(LowerCaser(COLUMN_TWEET, COLUMN_LOWERED))
 if args.punctuation:
     preprocessors.append(PunctuationRemover(COLUMN_LOWERED, COLUMN_PUNCTUATION))
+if args.filter_emojis_urls:
+    preprocessors.append(EmojiAndUrlRemover(COLUMN_PUNCTUATION, COLUMN_EMOJI_URL))
 if args.tokenize:
-    preprocessors.append(Tokenizer(COLUMN_PUNCTUATION, COLUMN_TOKENIZED))
+    preprocessors.append(Tokenizer(COLUMN_EMOJI_URL, COLUMN_TOKENIZED))
 if args.stem:
     preprocessors.append(Stemmer(COLUMN_TOKENIZED, COLUMN_STEMMED))
 if args.stop_word_removal:
