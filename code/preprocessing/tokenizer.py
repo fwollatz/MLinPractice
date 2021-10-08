@@ -20,7 +20,7 @@ class Tokenizer(Preprocessor):
     
     # don't need to implement _set_variables(), since no variables to set
     
-    def _get_values(self, inputs):
+    def _get_values(self, inputs : list) -> list:
         """Tokenize the tweet."""
         
         tokenized = []
@@ -33,5 +33,5 @@ class Tokenizer(Preprocessor):
                 tokenized_tweet += words
             
             tokenized.append(str(tokenized_tweet))
-        
+        print("{0} tweets were tokenized!".format(len(tokenized)))
         return tokenized
