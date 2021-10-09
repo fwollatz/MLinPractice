@@ -9,16 +9,20 @@ Created on Tue Sep 28 16:43:18 2021
 """
 
 import argparse, csv, pickle
+import pandas as pd
+from sklearn.pipeline import make_pipeline
+
+from code.util import COLUMN_TWEET, SUFFIX_TOKENIZED
+
 from code.preprocessing.lower_caser import LowerCaser
 from code.preprocessing.punctuation_remover import PunctuationRemover
 from code.preprocessing.stemmer import Stemmer
 from code.preprocessing.tokenizer import Tokenizer
 from code.preprocessing.stop_word_remover import StopWordRemover
+from code.preprocessing.check_photos_existence import PhotoChecker
 from code.util import COLUMN_TWEET, COLUMN_LANGUAGE
 from code.util import COLUMN_LOWERED, COLUMN_STEMMED, COLUMN_TOKENIZED, COLUMN_PUNCTUATION, COLUMN_STOP_WORD_REMOVED
 from code.util import ENGLISCH_TAG
-import pandas as pd
-from sklearn.pipeline import make_pipeline
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Various preprocessing steps")
@@ -28,10 +32,12 @@ parser.add_argument("-p", "--punctuation", action = "store_true", help = "remove
 parser.add_argument("-t", "--tokenize", action = "store_true", help = "tokenize given column into individual words")
 parser.add_argument("--tokenize_input", help = "input column to tokenize", default = COLUMN_TWEET)
 parser.add_argument("-e", "--export_file", help = "create a pipeline and export to the given location", default = None)
+parser.add_argument("-photo", action = "store_true", help = "check if a tweet contains photo(s)")
 parser.add_argument("-l", "--filter_englisch", action = "store_false", help = "use only english tagged tweets")
 parser.add_argument("-s","--stem", action="store_false", help= "stem the tweets using englisch stemmer")
 parser.add_argument("-lc", "--lower_case", action = "store_false", help = "lower cases all tweets")
 parser.add_argument("-swr", "--stop_word_removal", action = "store_false", help = "removes all english stop words from the tweets")
+
 args = parser.parse_args()
 
 # load data
@@ -50,12 +56,14 @@ if args.lower_case:
 if args.punctuation:
     preprocessors.append(PunctuationRemover(COLUMN_LOWERED, COLUMN_PUNCTUATION))
 if args.tokenize:
+    preprocessors.append(Tokenizer(args.tokenize_input, args.tokenize_input + SUFFIX_TOKENIZED))
+if args.photo:
+    preprocessors.append(PhotoChecker())
     preprocessors.append(Tokenizer(COLUMN_PUNCTUATION, COLUMN_TOKENIZED))
 if args.stem:
     preprocessors.append(Stemmer(COLUMN_TOKENIZED, COLUMN_STEMMED))
 if args.stop_word_removal:
     preprocessors.append(StopWordRemover(COLUMN_STEMMED, COLUMN_STOP_WORD_REMOVED))
-
 
 
 # call all preprocessing steps
@@ -65,7 +73,7 @@ for preprocessor in preprocessors:
 # store the results
 df.to_csv(args.output_file, index = False, quoting = csv.QUOTE_NONNUMERIC, line_terminator = "\n")
 
-# create a pipeline if necessary and store it as pickle file
+# create a pipeline if necessary and store it as pickle file (i.e. byte stream)
 if args.export_file is not None:
     pipeline = make_pipeline(*preprocessors)
     with open(args.export_file, 'wb') as f_out:
