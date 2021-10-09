@@ -40,4 +40,5 @@ class BigramFeatureTest(unittest.TestCase):
         self.assertEqual(freq_list[0][0], EXPECTED_BIGRAM)
 
 if __name__ == '__main__':
+    print("__[RUNNING: test.feature_extraction.BigramFeatureTest]__")
     unittest.main()

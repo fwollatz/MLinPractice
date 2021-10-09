@@ -17,9 +17,6 @@ class TokenizerTest(unittest.TestCase):
         self.OUTPUT_COLUMN = "output"
         self.tokenizer = Tokenizer(self.INPUT_COLUMN, self.OUTPUT_COLUMN)
     
-    def test_boolean(self):
-        self.assertEqual(True, not False)
-    
     def test_input_columns(self):
         self.assertListEqual(self.tokenizer._input_columns, [self.INPUT_COLUMN])
 
@@ -38,4 +35,5 @@ class TokenizerTest(unittest.TestCase):
     
 
 if __name__ == '__main__':
+    print("__[RUNNING: test.preprocessing.TokenizerTest]__")
     unittest.main()

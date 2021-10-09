@@ -19,15 +19,18 @@ class PhotoCheckerTest(unittest.TestCase):
         self.assertEqual(self.photo_checker._output_column, self.OUTPUT_COL)
 
     def test_photos_existence(self):
+        #arrange
         photo_col_input = list(["['https://pbs.twimg.com/media/Ey4gMWDUYAAdKdY.jpg']", "['HelloKitty.jpg']", "[]"])
         photo_col_preprocesed = [1,1,0]
 
         input_df = pd.DataFrame()
         input_df[self.INPUT_COL] = photo_col_input
 
+        #act
         photos_checked = self.photo_checker.fit_transform(input_df)
         print("photos_checked equals to ", photos_checked)
-
+        
+        #assert
         self.assertEqual(photos_checked[self.OUTPUT_COL][0], photo_col_preprocesed[0],
                          'Expected 1 when https://pbs... is present'
                          )
@@ -39,5 +42,5 @@ class PhotoCheckerTest(unittest.TestCase):
                          )
 
 if __name__ == '__main__':
-    unittest.main
-
+    print("__[RUNNING: test.preprocessing.PhotoCheckerTest]__")
+    unittest.main()
