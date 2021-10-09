@@ -32,6 +32,13 @@ COLUMN_LANGUAGE = "language"
 
 # column names of novel columns for preprocessing
 COLUMN_LABEL = "label"
+COLUMN_PUNCTUATION = "tweet_no_punctuation"
+SUFFIX_TOKENIZED = "_tokenized"
+COLUMN_PHOTO_EXISTENCE = "contain_photos"
+
+
+# column names of novel columns for preprocessing
+COLUMN_LABEL = "label"
 # current order of general preprocessing: lower casing > punctuation > tokenization > stemming > stop word removal
 COLUMN_LOWERED = COLUMN_TWEET + SUFFIX_LOWERCASED
 COLUMN_PUNCTUATION = COLUMN_LOWERED + SUFFIX_REMOVED_PUNCTUATION
@@ -45,6 +52,14 @@ COLUMN_GENERAL_PREPROCESSED = COLUMN_STOP_WORD_REMOVED
 
 
 ENGLISCH_TAG = "en"
+
+#Column names of Features
+COLUMN_URL_COUNT="URL_Count"
+HASHTAG_COUNT="Hashtag_Count"
+COLUMN_DATETIME_UNIX="datetime_unix"
+COLUMN_HOUR="HOUR OF DAY"
+COLUMN_WEEKDAY="WEEKDAY"
+COLUMN_MONTH="MONTH"
 
 #common methods
 def string_to_words_list(string_list : str) -> list:

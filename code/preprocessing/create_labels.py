@@ -16,8 +16,10 @@ import pandas as pd
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Creation of Labels")
+# mandatory arguments
 parser.add_argument("data_directory", help = "directory where the original csv files reside")
 parser.add_argument("output_file", help = "path to the output csv file")
+# optional arguemtns; default value should be given
 parser.add_argument("-l", '--likes_weight', type = int, help = "weight of likes", default = 1)
 parser.add_argument("-r", '--retweet_weight', type = int, help = "weight of retweets", default = 1)
 parser.add_argument("-t", '--threshold', type = int, help = "threshold to surpass for positive class", default = 50)
@@ -27,6 +29,7 @@ args = parser.parse_args()
 file_paths = [args.data_directory + f for f in os.listdir(args.data_directory) if f.endswith(".csv")]
 
 # load all csv files
+# pd-read_csv: easier than parsing csv files directly
 dfs = []
 for file_path in file_paths:
     dfs.append(pd.read_csv(file_path, quoting = csv.QUOTE_NONNUMERIC, lineterminator = "\n"))
@@ -35,6 +38,7 @@ for file_path in file_paths:
 df = pd.concat(dfs)
 
 # compute new column "label" based on likes and retweets
+# definition of virality
 df[COLUMN_LABEL] = (args.likes_weight * df[COLUMN_LIKES] + args.retweet_weight * df[COLUMN_RETWEETS]) > args.threshold
 
 # print statistics
