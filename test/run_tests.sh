@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-echo " executing all unit tests"
+echo "____[Executing all unit test suits!]____"
 
-#go through a dir under test
+testsuite_counter=0
+#go through all dir under test
 for dir in "test"/*; 
 do
     if [ -d "$dir" ];
@@ -20,9 +21,11 @@ do
             full_test_module="test.${sub_module}.${test##*/}"
             #execute test module
             python -m "$full_test_module"
+            let testsuite_counter++
         fi
     done
     fi
 done
 
-#for f in test; do python "$f";done
+echo ""
+echo "_____[${testsuite_counter} test suits have been run!]____"
