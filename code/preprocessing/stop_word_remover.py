@@ -13,10 +13,10 @@ from code.util import string_to_words_list
 from nltk.corpus import stopwords
 
 class StopWordRemover(Preprocessor):
-    """Tokenizes the given input column into individual words."""
+    """removes stop words of the given input column"""
     
     def __init__(self, input_column, output_column):
-        """Initialize the Tokenizer with the given input and output column."""
+        """Initialize the StopWordRemover with the given input and output column."""
         super().__init__([input_column], output_column)
     
     

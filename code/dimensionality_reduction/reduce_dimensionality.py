@@ -10,6 +10,7 @@ Created on Wed Sep 29 13:33:37 2021
 
 import argparse, pickle
 from sklearn.feature_selection import SelectKBest, mutual_info_classif
+from code.dimensionality_reduction.select_k_best_reducer import SelectKBestReducer
 
 
 # setting up CLI
@@ -19,6 +20,7 @@ parser.add_argument("output_file", help = "path to the output pickle file")
 parser.add_argument("-e", "--export_file", help = "create a pipeline and export to the given location", default = None)
 parser.add_argument("-i", "--import_file", help = "import an existing pipeline from the given location", default = None)
 parser.add_argument("-m", "--mutual_information", type = int, help = "select K best features with Mutual Information", default = None)
+parser.add_argument("-pca", "--pca", help = "perform Princinple Component Analysis with automated component selection")
 parser.add_argument("--verbose", action = "store_true", help = "print information about feature selection process")
 args = parser.parse_args()
 
@@ -39,31 +41,18 @@ else: # need to set things up manually
 
     if args.mutual_information is not None:
         # select K best based on Mutual Information
-        dim_red = SelectKBest(mutual_info_classif, k = args.mutual_information)
-        dim_red.fit(features, labels.ravel())
-        
-        # resulting feature names based on support given by SelectKBest
-        def get_feature_names(kbest : SelectKBest, names : list) -> list:
-            """
-            Select k best features and returns a list of the feature names
-
-            """
-            support = kbest.get_support()
-            result = []
-            for name, selected in zip(names, support):
-                if selected:
-                    result.append(name)
-            return result
+        dim_red = SelectKBestReducer(features, labels)
+        dim_red.fit(k = args.mutual_information)
         
         if args.verbose:
             print("    SelectKBest with Mutual Information and k = {0}".format(args.mutual_information))
             print("    {0}".format(feature_names))
-            print("    " + str(dim_red.scores_))
-            print("    " + str(get_feature_names(dim_red, feature_names)))
+            print("    " + str(dim_red.get_scores()))
+            print("    " + str(dim_red.get_feature_names(feature_names)))
     pass
 
 # apply the dimensionality reduction to the given features
-reduced_features = dim_red.transform(features)
+reduced_features = dim_red.transform()
 
 # store the results
 output_data = {"features": reduced_features, 

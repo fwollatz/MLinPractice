@@ -10,10 +10,13 @@ Created on Wed Sep 29 10:50:36 2021
 
 # suffixes for general preprocessing
 SUFFIX_REMOVED_PUNCTUATION = "_no_punctuation"
+SUFFIX_EMOJI_URL = "_no_emojis_urls"
 SUFFIX_TOKENIZED = "_tokenized"
 SUFFIX_STEMMED = "_stemmed"
 SUFFIX_LOWERCASED = "_lowercased"
 SUFFIX_STOP_WORD_REMOVED = "_no_stop_words"
+
+
 
 # column names for the original data frame
 COLUMN_TWEET = "tweet"
@@ -27,15 +30,26 @@ COLUMN_PHOTOS = "photos"
 COLUMN_VIDEOS = "video"
 COLUMN_LANGUAGE = "language"
 
+# column names of novel columns for preprocessing
+COLUMN_LABEL = "label"
+COLUMN_PUNCTUATION = "tweet_no_punctuation"
+SUFFIX_TOKENIZED = "_tokenized"
+COLUMN_PHOTO_EXISTENCE = "contain_photos"
+
 
 # column names of novel columns for preprocessing
 COLUMN_LABEL = "label"
 # current order of general preprocessing: lower casing > punctuation > tokenization > stemming > stop word removal
 COLUMN_LOWERED = COLUMN_TWEET + SUFFIX_LOWERCASED
-COLUMN_PUNCTUATION = COLUMN_LOWERED + SUFFIX_LOWERCASED
-COLUMN_TOKENIZED = COLUMN_PUNCTUATION + SUFFIX_TOKENIZED
+COLUMN_PUNCTUATION = COLUMN_LOWERED + SUFFIX_REMOVED_PUNCTUATION
+COLUMN_EMOJI_URL = COLUMN_PUNCTUATION + SUFFIX_EMOJI_URL
+COLUMN_TOKENIZED = COLUMN_EMOJI_URL + SUFFIX_TOKENIZED
 COLUMN_STEMMED = COLUMN_TOKENIZED + SUFFIX_STEMMED
 COLUMN_STOP_WORD_REMOVED = COLUMN_STEMMED + SUFFIX_STOP_WORD_REMOVED
+# column with all general preprocessing done
+COLUMN_GENERAL_PREPROCESSED = COLUMN_STOP_WORD_REMOVED
+
+
 
 ENGLISCH_TAG = "en"
 
