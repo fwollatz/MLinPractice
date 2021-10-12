@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Simple feature that counts the number of characters in the given column.
+Created on Tue Oct 12 11:57:29 2021
 
-Created on Wed Sep 29 12:29:25 2021
-
-@author: lbechberger
+@author: ml
 """
 
 
 import ast
 from code.feature_extraction.feature_extractor import FeatureExtractor
-from code.util import HASHTAG_COUNT
+from code.util import COLUMN_HASHTAG_COUNT
 import numpy as np
 
 # class for extracting the character-based length as a feature
@@ -33,7 +31,7 @@ class NumberOfHashtags(FeatureExtractor):
         """
 
 
-        super().__init__([input_column], HASHTAG_COUNT)
+        super().__init__([input_column], COLUMN_HASHTAG_COUNT)
     
     # don't need to fit, so don't overwrite _set_variables()
     
