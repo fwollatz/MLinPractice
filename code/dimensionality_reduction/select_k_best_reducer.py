@@ -26,7 +26,6 @@ class SelectKBestReducer():
     def transform(self) -> list:
         reduced_features = []
         reduced_features = self._select_k_best.transform(self._features)
-        print(type(reduced_features))
         return reduced_features
         
         
