@@ -55,7 +55,7 @@ ENGLISCH_TAG = "en"
 
 #Column names of Features
 COLUMN_URL_COUNT="URL_Count"
-HASHTAG_COUNT="Hashtag_Count"
+COLUMN_HASHTAG_COUNT="Hashtag_Count"
 COLUMN_DATETIME_UNIX="datetime_unix"
 COLUMN_HOUR="HOUR OF DAY"
 COLUMN_WEEKDAY="WEEKDAY"

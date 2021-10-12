@@ -81,10 +81,10 @@ class DateTime(FeatureExtractor):
             splittime=times[i].split(":")
             hour=int(splittime[0])
             minute=int(splittime[1])
-            second=int(splittime[1])
+            second=int(splittime[2])
             
             date_time = datetime.datetime(year, month, day, hour, minute, second)
-            
+            print(date_time)
             #transform datetime to unix-time            
             unix_date_time=time.mktime(date_time.timetuple())
             
