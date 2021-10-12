@@ -11,6 +11,7 @@ Created on Wed Sep 29 13:33:37 2021
 import argparse, pickle
 from sklearn.feature_selection import SelectKBest, mutual_info_classif
 from code.dimensionality_reduction.select_k_best_reducer import SelectKBestReducer
+from code.dimensionality_reduction.pca_reducer import PCAReducer
 
 
 # setting up CLI
@@ -20,7 +21,7 @@ parser.add_argument("output_file", help = "path to the output pickle file")
 parser.add_argument("-e", "--export_file", help = "create a pipeline and export to the given location", default = None)
 parser.add_argument("-i", "--import_file", help = "import an existing pipeline from the given location", default = None)
 parser.add_argument("-m", "--mutual_information", type = int, help = "select K best features with Mutual Information", default = None)
-parser.add_argument("-pca", "--pca", help = "perform Princinple Component Analysis with automated component selection")
+parser.add_argument("--pca", action = "store_true", help = "perform Princinple Component Analysis with automated component selection (95% explained variance)", default = None)
 parser.add_argument("--verbose", action = "store_true", help = "print information about feature selection process")
 args = parser.parse_args()
 
@@ -49,6 +50,11 @@ else: # need to set things up manually
             print("    {0}".format(feature_names))
             print("    " + str(dim_red.get_scores()))
             print("    " + str(dim_red.get_feature_names(feature_names)))
+    elif args.pca is not None:
+        #use pca for dim reduction
+        dim_red = PCAReducer(features, labels, feature_names)
+        dim_red.fit()
+        
     pass
 
 # apply the dimensionality reduction to the given features
