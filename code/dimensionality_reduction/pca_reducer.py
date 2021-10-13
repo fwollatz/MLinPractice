@@ -39,7 +39,7 @@ class PCAReducer():
         self._pipeline.fit(self._features)
         
         
-    def transform(self) -> list:
+    def transform(self, features : list) -> list:
         reduced_features = []
         
         pc_counter = 0
@@ -52,10 +52,10 @@ class PCAReducer():
             if(cumulative_explained_variance > PCA_EXPLAINED_VARIANCE_THRESHOLD):
                 break
         
-        transformed_all = self._pipeline.transform(self._features)
-        print("Before PCA:",self._features.shape)
+        transformed_all = self._pipeline.transform(features)
+        print("Before PCA:",features.shape)
         #take only the top principle components
         reduced_features = transformed_all[:,0:pc_counter]
-        print("After PCA: ",reduced_features.shape)
+        print("After PCA: ", reduced_features.shape)
         print(type(reduced_features.shape))
         return reduced_features

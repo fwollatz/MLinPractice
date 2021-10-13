@@ -58,7 +58,7 @@ else: # need to set things up manually
     pass
 
 # apply the dimensionality reduction to the given features
-reduced_features = dim_red.transform()
+reduced_features = dim_red.transform(features)
 
 # store the results
 output_data = {"features": reduced_features, 

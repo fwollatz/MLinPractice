@@ -23,9 +23,9 @@ class SelectKBestReducer():
         self._select_k_best = SelectKBest(mutual_info_classif, k = k)
         self._select_k_best.fit(self._features, self._labels.ravel())
        
-    def transform(self) -> list:
+    def transform(self, features : list) -> list:
         reduced_features = []
-        reduced_features = self._select_k_best.transform(self._features)
+        reduced_features = self._select_k_best.transform(features)
         return reduced_features
         
         
