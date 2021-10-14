@@ -15,17 +15,15 @@ from code.feature_extraction.character_length import CharacterLength
 from code.feature_extraction.number_of_hashtags import NumberOfHashtags
 from code.feature_extraction.number_of_urls import NumberOfURLs
 from code.feature_extraction.datetime import DateTime
-from code.feature_extraction.hour import Hour  
-from code.feature_extraction.month import Month 
+from code.feature_extraction.hour import Hour
+from code.feature_extraction.month import Month
 from code.feature_extraction.weekday import Weekday
-
-
-
+from code.feature_extraction.check_photos_existence import PhotoChecker
 
 from code.feature_extraction.feature_collector import FeatureCollector
 
 
-from code.util import COLUMN_LABEL, COLUMN_TWEET ,COLUMN_LIKES ,COLUMN_RETWEETS ,COLUMN_TIME,COLUMN_DATE ,COLUMN_HASHTAG ,COLUMN_URLS,COLUMN_PHOTOS ,COLUMN_VIDEOS ,COLUMN_LANGUAGE 
+from code.util import COLUMN_LABEL, COLUMN_TWEET, COLUMN_LIKES, COLUMN_RETWEETS, COLUMN_TIME, COLUMN_DATE, COLUMN_HASHTAG, COLUMN_URLS, COLUMN_PHOTOS, COLUMN_VIDEOS ,COLUMN_LANGUAGE
 
 
 # setting up CLI
@@ -41,13 +39,14 @@ parser.add_argument("-dt", "--datetime", action = "store_true", help = "compute 
 parser.add_argument("-hr", "--hour", action = "store_true", help = "compute the hour of the day")
 parser.add_argument("-mo", "--month", action = "store_true", help = "compute the month of the year")
 parser.add_argument("-wd", "--weekday", action = "store_true", help = "compute the day of the week")
+parser.add_argument("--photo", action = "store_true", help = "check if a tweet contains photo(s)")
 args = parser.parse_args()
 
 # load data
 df = pd.read_csv(args.input_file, quoting = csv.QUOTE_NONNUMERIC, lineterminator = "\n")
 
 if args.import_file is not None:
-    # simply import an exisiting FeatureCollector
+    # simply import an existing FeatureCollector
     with open(args.import_file, "rb") as f_in:
         feature_collector = pickle.load(f_in)
 
@@ -76,7 +75,10 @@ else:    # need to create FeatureCollector manually
     if args.hour:
         # amount of hashtags found in the tweet
         features.append(Hour(COLUMN_TIME))
-        
+    if args.photo:
+        # whether a tweet contains photo(s)
+        features.append(PhotoChecker(COLUMN_PHOTOS))
+
     # create overall FeatureCollector
     feature_collector = FeatureCollector(features)
     

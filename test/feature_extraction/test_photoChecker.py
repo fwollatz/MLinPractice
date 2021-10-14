@@ -5,7 +5,7 @@
 
 import unittest
 import pandas as pd
-from code.preprocessing.check_photos_existence import PhotoChecker
+from feature_extraction.check_photos_existence import PhotoChecker
 
 
 class PhotoCheckerTest(unittest.TestCase):
