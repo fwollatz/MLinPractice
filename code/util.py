@@ -34,7 +34,6 @@ COLUMN_LANGUAGE = "language"
 COLUMN_LABEL = "label"
 COLUMN_PUNCTUATION = "tweet_no_punctuation"
 SUFFIX_TOKENIZED = "_tokenized"
-COLUMN_PHOTO_EXISTENCE = "contain_photos"
 
 
 # column names of novel columns for preprocessing
@@ -60,6 +59,7 @@ COLUMN_DATETIME_UNIX="datetime_unix"
 COLUMN_HOUR="HOUR OF DAY"
 COLUMN_WEEKDAY="WEEKDAY"
 COLUMN_MONTH="MONTH"
+COLUMN_PHOTO_EXISTENCE = "contain_photos"
 
 #common methods
 def string_to_words_list(string_list : str) -> list:
