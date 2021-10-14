@@ -10,7 +10,7 @@ Created on Friday Oct 8 2021
 
 
 from code.feature_extraction.feature_extractor import FeatureExtractor
-from code.util import COLUMN_HOUR
+from code.util import COLUMN_HOUR, SUFFIX_HOURS
 import numpy as np
 
 
@@ -41,7 +41,13 @@ class Hour(FeatureExtractor):
     
     # don't need to fit, so don't overwrite _set_variables()
     
-
+    def get_feature_name(self):
+        suffixes=SUFFIX_HOURS
+        names=[]
+        for i in range(0,8):
+            names+=[COLUMN_HOUR+"_"+suffixes[i]]
+        return names
+    
     def _get_values(self, inputs: list) -> np.ndarray :
         """
         compute the unixtime based on the inputs

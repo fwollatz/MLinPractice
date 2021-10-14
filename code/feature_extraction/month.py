@@ -10,7 +10,7 @@ Created on Friday Oct 8 2021
 
 
 from code.feature_extraction.feature_extractor import FeatureExtractor
-from code.util import COLUMN_MONTH
+from code.util import COLUMN_MONTH, SUFFIX_MONTHS
 import numpy as np
 
 
@@ -41,7 +41,13 @@ class Month(FeatureExtractor):
     
     # don't need to fit, so don't overwrite _set_variables()
     
-
+    def get_feature_name(self):
+        suffixes=SUFFIX_MONTHS
+        names=[]
+        for i in range(0,12):
+            names+=[COLUMN_MONTH+"_"+suffixes[i]]
+        return names
+    
     def _get_values(self, inputs: list) -> np.ndarray :
         """
         compute the unixtime based on the inputs

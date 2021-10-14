@@ -10,7 +10,7 @@ Created on Friday Oct 8 2021
 
 
 from code.feature_extraction.feature_extractor import FeatureExtractor
-from code.util import COLUMN_WEEKDAY
+from code.util import COLUMN_WEEKDAY, SUFFIX_WEEKDAY
 import datetime
 import numpy as np
 
@@ -41,7 +41,13 @@ class Weekday(FeatureExtractor):
     
     # don't need to fit, so don't overwrite _set_variables()
     
-
+    def get_feature_name(self):
+        suffixes=SUFFIX_WEEKDAY
+        names=[]
+        for i in range(0,7):
+            names+=[COLUMN_WEEKDAY+"_"+suffixes[i]]
+        return names
+    
     def _get_values(self, inputs: list) -> np.ndarray :
         """
         compute the day of the week on the inputs

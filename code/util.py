@@ -15,8 +15,9 @@ SUFFIX_TOKENIZED = "_tokenized"
 SUFFIX_STEMMED = "_stemmed"
 SUFFIX_LOWERCASED = "_lowercased"
 SUFFIX_STOP_WORD_REMOVED = "_no_stop_words"
-
-
+SUFFIX_HOURS=["0-2","3-5","6-8","9-11","12-14","15-17","18-20","21-23"]
+SUFFIX_WEEKDAY=["MO","DI","MI","DO","FR","SA","SO"]
+SUFFIX_MONTHS=["JA","FEB","MA","APR","MAI","JUN","JUL","AUG","SEP","OKT","NOV","DEZ"]
 
 # column names for the original data frame
 COLUMN_TWEET = "tweet"
@@ -29,6 +30,7 @@ COLUMN_URLS = "urls"
 COLUMN_PHOTOS = "photos"
 COLUMN_VIDEOS = "video"
 COLUMN_LANGUAGE = "language"
+COLUMN_USERNAME = "username"
 
 # column names of novel columns for preprocessing
 COLUMN_LABEL = "label"
@@ -48,7 +50,7 @@ COLUMN_STEMMED = COLUMN_TOKENIZED + SUFFIX_STEMMED
 COLUMN_STOP_WORD_REMOVED = COLUMN_STEMMED + SUFFIX_STOP_WORD_REMOVED
 # column with all general preprocessing done
 COLUMN_GENERAL_PREPROCESSED = COLUMN_STOP_WORD_REMOVED
-
+COLUMN_EMOJIS="Emojis_in_tweet"
 
 
 ENGLISCH_TAG = "en"
@@ -60,6 +62,9 @@ COLUMN_DATETIME_UNIX="datetime_unix"
 COLUMN_HOUR="HOUR OF DAY"
 COLUMN_WEEKDAY="WEEKDAY"
 COLUMN_MONTH="MONTH"
+COLUMN_FOLLOWER_COUNT="follower_count"
+COLUMN_CONTAINED_HASHTAG="contains_#{0}"
+COLUMN_CONTAINED_EMOJI="contains_emoji_{0}"
 
 #common methods
 def string_to_words_list(string_list : str) -> list:
