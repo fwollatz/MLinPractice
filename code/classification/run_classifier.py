@@ -19,6 +19,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.tree import DecisionTreeClassifier
 from mlflow import log_metric, log_param, set_tracking_uri
+from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV # to find proper C and gamma of SVM
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Classifier")
@@ -26,9 +28,12 @@ parser.add_argument("input_file", help = "path to the input pickle file")
 parser.add_argument("-s", '--seed', type = int, help = "seed for the random number generator", default = None)
 parser.add_argument("-e", "--export_file", help = "export the trained classifier to the given location", default = None)
 parser.add_argument("-i", "--import_file", help = "import a trained classifier from the given location", default = None)
+"""-------------- Classifier Choices -------------"""
 parser.add_argument("-m", "--majority", action = "store_true", help = "majority class classifier")
 parser.add_argument("-f", "--frequency", action = "store_true", help = "label frequency classifier")
 parser.add_argument("--knn", type = int, help = "k nearest neighbor classifier with the specified value of k", default = None)
+parser.add_argument("--svc", type = int, help="Support vector classifier")
+"""-------------- Evaluation Matrix Choices -------------"""
 parser.add_argument("-a", "--accuracy", action = "store_true", help = "evaluate using accuracy")
 parser.add_argument("-tka", "--topkaccuracy", action = "store_true", help = "evaluate using top k accuracy")
 parser.add_argument("-c", "--confusionmatrix", action = "store_true", help = "print the confusion-matrix")
@@ -40,6 +45,7 @@ parser.add_argument("--dtc", action = "store_true", help = "use the decision tre
 parser.add_argument("--dtc_max_depth", type = int, help="decicion tree classifier with the specfied value for the max_deoth", default = None)
 parser.add_argument("--dtc_criterion_entropy", action = "store_true", help = "use the entropy crition parameter for the decision tree classifier. Default criterion is 'gini'")
 parser.add_argument("--dtc_splitter_random", action = "store_true", help = "use the random splitter parameter for the decision tree classifier. Default splitter is 'best'")
+
 args = parser.parse_args()
 
 # load data
@@ -84,7 +90,13 @@ else:   # manually set up a classifier
         standardizer = StandardScaler()
         knn_classifier = KNeighborsClassifier(args.knn, n_jobs = -1)
         classifier = make_pipeline(standardizer, knn_classifier)
-        
+
+    elif args.svc is not None:
+        print("    Support vector classifier")
+        # TODO
+        # https://scikit-learn.org/stable/auto_examples/svm/plot_rbf_parameters.html#sphx-glr-auto-examples-svm-plot-rbf-parameters-py
+        classifier = SVC(kernel='rbf')
+
     elif args.dtc:
         # set default configuration
         criterion_param = "gini"
