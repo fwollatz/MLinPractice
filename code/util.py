@@ -18,7 +18,6 @@ SUFFIX_STOP_WORD_REMOVED = "_no_stop_words"
 
 
 
-
 # column names for the original data frame
 COLUMN_TWEET = "tweet"
 COLUMN_LIKES = "likes_count"
@@ -34,7 +33,7 @@ COLUMN_LANGUAGE = "language"
 # column names of novel columns for preprocessing
 COLUMN_LABEL = "label"
 COLUMN_PUNCTUATION = "tweet_no_punctuation"
-COLUMN_PHOTO_EXISTENCE = "contain_photos"
+
 
 
 # column names of novel columns for preprocessing
@@ -60,6 +59,7 @@ COLUMN_DATETIME_UNIX="datetime_unix"
 COLUMN_HOUR="HOUR OF DAY"
 COLUMN_WEEKDAY="WEEKDAY"
 COLUMN_MONTH="MONTH"
+COLUMN_PHOTO_EXISTENCE = "contain_photos"
 
 #common methods
 def string_to_words_list(string_list : str) -> list:

@@ -16,7 +16,7 @@ from code.preprocessing.punctuation_remover import PunctuationRemover
 from code.preprocessing.stemmer import Stemmer
 from code.preprocessing.tokenizer import Tokenizer
 from code.preprocessing.stop_word_remover import StopWordRemover
-from code.preprocessing.check_photos_existence import PhotoChecker
+
 from code.preprocessing.emoji_url_remover import EmojiAndUrlRemover
 from code.util import COLUMN_TWEET, COLUMN_LANGUAGE
 from code.util import COLUMN_LOWERED, COLUMN_STEMMED, COLUMN_TOKENIZED, COLUMN_PUNCTUATION
@@ -32,7 +32,7 @@ parser.add_argument("-p", "--punctuation", action = "store_false", help = "remov
 parser.add_argument("-t", "--tokenize", action = "store_false", help = "tokenize given column into individual words")
 parser.add_argument("--tokenize_input", help = "input column to tokenize", default = COLUMN_TWEET)
 parser.add_argument("-e", "--export_file", help = "create a pipeline and export to the given location", default = None)
-parser.add_argument("-photo", action = "store_true", help = "check if a tweet contains photo(s)")
+
 parser.add_argument("-l", "--filter_english", action = "store_false", help = "use only english tagged tweets")
 parser.add_argument("-s","--stem", action="store_false", help= "stem the tweets using englisch stemmer")
 parser.add_argument("-lc", "--lower_case", action = "store_false", help = "lower cases all tweets")
@@ -63,8 +63,6 @@ if args.stem:
     preprocessors.append(Stemmer(COLUMN_TOKENIZED, COLUMN_STEMMED))
 if args.stop_word_removal:
     preprocessors.append(StopWordRemover(COLUMN_STEMMED, COLUMN_STOP_WORD_REMOVED))
-if args.photo:
-    preprocessors.append(PhotoChecker())
 
 
 
