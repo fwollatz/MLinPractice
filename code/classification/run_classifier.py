@@ -17,6 +17,7 @@ from sklearn.metrics import accuracy_score, top_k_accuracy_score, confusion_matr
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
+from sklearn.tree import DecisionTreeClassifier
 from mlflow import log_metric, log_param, set_tracking_uri
 
 # setting up CLI
@@ -35,6 +36,10 @@ parser.add_argument("-k", "--kappa", action = "store_true", help = "evaluate usi
 parser.add_argument("-auc","--auc",action = "store_true",help = "evaluate using Area Under ROC curve")
 parser.add_argument("-roc","--roc",action = "store_true",help = "show the corresponding ROC curve")
 parser.add_argument("--log_folder", help = "where to log the mlflow results", default = "data/classification/mlflow")
+parser.add_argument("--dtc", action = "store_true", help = "use the decision tree classifier")
+parser.add_argument("--dtc_max_depth", type = int, help="decicion tree classifier with the specfied value for the max_deoth", default = None)
+parser.add_argument("--dtc_criterion_entropy", action = "store_true", help = "use the entropy crition parameter for the decision tree classifier. Default criterion is 'gini'")
+parser.add_argument("--dtc_splitter_random", action = "store_true", help = "use the random splitter parameter for the decision tree classifier. Default splitter is 'best'")
 args = parser.parse_args()
 
 # load data
@@ -79,6 +84,31 @@ else:   # manually set up a classifier
         standardizer = StandardScaler()
         knn_classifier = KNeighborsClassifier(args.knn, n_jobs = -1)
         classifier = make_pipeline(standardizer, knn_classifier)
+        
+    elif args.dtc:
+        # set default configuration
+        criterion_param = "gini"
+        splitter_param = "best"
+        max_depth_param = None
+        # determine console args
+        if args.dtc_criterion_entropy:
+            criterion_param = "entropy"
+        if args.dtc_splitter_random:
+            splitter_param = "random"
+        if args.dtc_max_depth is not None:
+            max_depth_param = args.dtc_max_depth
+        print("   Decision Tree Classifier, criterion = {0}, splitter = {1}, max_depth = {2}".format(criterion_param, splitter_param, max_depth_param))
+        log_param("classifier", "decision_tree")
+        log_param("dt_criterion", criterion_param)
+        log_param("dt_spliiter", splitter_param)
+        log_param("dt_max_depth", max_depth_param)
+        params = {"classifier" : "decision_tree", "dt_criterion" : criterion_param, 
+                  "dt_spliiter" : splitter_param, "dt_max_depth" : max_depth_param}
+        classifier = DecisionTreeClassifier(criterion = criterion_param,
+                                            splitter = splitter_param,
+                                            max_depth = max_depth_param)
+        
+        
     
     classifier.fit(data["features"], data["labels"].ravel())
     log_param("dataset", "training")
