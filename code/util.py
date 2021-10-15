@@ -18,6 +18,7 @@ SUFFIX_STOP_WORD_REMOVED = "_no_stop_words"
 
 
 
+
 # column names for the original data frame
 COLUMN_TWEET = "tweet"
 COLUMN_LIKES = "likes_count"
@@ -33,7 +34,6 @@ COLUMN_LANGUAGE = "language"
 # column names of novel columns for preprocessing
 COLUMN_LABEL = "label"
 COLUMN_PUNCTUATION = "tweet_no_punctuation"
-SUFFIX_TOKENIZED = "_tokenized"
 COLUMN_PHOTO_EXISTENCE = "contain_photos"
 
 

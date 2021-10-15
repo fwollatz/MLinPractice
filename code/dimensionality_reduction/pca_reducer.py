@@ -24,7 +24,7 @@ class PCAReducer():
         self._use_normalizer = use_normalizer
         
     def fit(self):
-        #init PCA Object 
+        #init PCA Object with and without seed
         if self._seed != 0:
             self.pca_reducer = PCA(random_state=self._seed)
         else:
@@ -45,6 +45,7 @@ class PCAReducer():
         pc_counter = 0
         cumulative_explained_variance = 0
         
+        #sort components and count how many components are needed to surpass the threshold
         sorted_explained_variance_ratio = np.sort(self._pca_reducer.explained_variance_ratio_)[::-1]
         for ratio in sorted_explained_variance_ratio:
             pc_counter += 1
@@ -57,5 +58,4 @@ class PCAReducer():
         #take only the top principle components
         reduced_features = transformed_all[:,0:pc_counter]
         print("After PCA: ", reduced_features.shape)
-        print(type(reduced_features.shape))
         return reduced_features

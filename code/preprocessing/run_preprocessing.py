@@ -28,12 +28,12 @@ from sklearn.pipeline import make_pipeline
 parser = argparse.ArgumentParser(description = "Various preprocessing steps")
 parser.add_argument("input_file", help = "path to the input csv file")
 parser.add_argument("output_file", help = "path to the output csv file")
-parser.add_argument("-p", "--punctuation", action = "store_true", help = "remove punctuation")
-parser.add_argument("-t", "--tokenize", action = "store_true", help = "tokenize given column into individual words")
+parser.add_argument("-p", "--punctuation", action = "store_false", help = "remove punctuation")
+parser.add_argument("-t", "--tokenize", action = "store_false", help = "tokenize given column into individual words")
 parser.add_argument("--tokenize_input", help = "input column to tokenize", default = COLUMN_TWEET)
 parser.add_argument("-e", "--export_file", help = "create a pipeline and export to the given location", default = None)
 parser.add_argument("-photo", action = "store_true", help = "check if a tweet contains photo(s)")
-parser.add_argument("-l", "--filter_englisch", action = "store_false", help = "use only english tagged tweets")
+parser.add_argument("-l", "--filter_english", action = "store_false", help = "use only english tagged tweets")
 parser.add_argument("-s","--stem", action="store_false", help= "stem the tweets using englisch stemmer")
 parser.add_argument("-lc", "--lower_case", action = "store_false", help = "lower cases all tweets")
 parser.add_argument("-swr", "--stop_word_removal", action = "store_false", help = "removes all english stop words from the tweets")
@@ -44,7 +44,7 @@ args = parser.parse_args()
 df = pd.read_csv(args.input_file, quoting = csv.QUOTE_NONNUMERIC, lineterminator = "\n")
 
 # filter out non-englisch tagged tweets
-if args.filter_englisch:
+if args.filter_english:
     count_before_filtering = len(df.index)
     df = df.loc[df[COLUMN_LANGUAGE] == ENGLISCH_TAG]
     print("{0} tweets were removed when filtering out not-englisch tweets".format((count_before_filtering - len(df.index))))
