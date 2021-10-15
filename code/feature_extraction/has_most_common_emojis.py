@@ -7,23 +7,25 @@ Created on Thu Oct  7 14:53:52 2021
 """
 
 import ast
-import nltk
-import numpy as np
+
 from code.feature_extraction.feature_extractor import FeatureExtractor
 from code.util import COLUMN_CONTAINED_EMOJI
+import nltk
+import numpy as np
+import re
 
 class HasMostCommonEmojis(FeatureExtractor):
 
     _n=5
     _n_most_common_emojis=None
-    _suffix_emojis=[]
-    
+    _emojis=[]
+    emoji_re_masks=[]
     def __init__(self, input_column,n:int=20):
         super().__init__([input_column], "#{0}_occurs".format(input_column))
         self._n=n
     
     def get_feature_name(self):
-        suffixes=self._suffix_emojis
+        suffixes=self._emojis
         names=[]
         for i in range(0,self._n):
             names+=[COLUMN_CONTAINED_EMOJI.format(suffixes[i])]
@@ -53,8 +55,16 @@ class HasMostCommonEmojis(FeatureExtractor):
         all_emojis_freqdist = nltk.FreqDist(all_emojis)
         self._n_most_common_emojis=all_emojis_freqdist.most_common(self._n)
         
-        self._suffix_emojis=[emoji for (emoji,count) in self._n_most_common_emojis]
-        print(self._suffix_emojis)
+        self._emojis=[emoji for (emoji,count) in self._n_most_common_emojis]
+        
+        #generate mask for each emoji
+        for i in self._emojis:
+            print(i)
+            mask=re.compile(i)
+            self.emoji_re_masks+=[mask]
+        
+        
+        print("the most common n emojis are: "+str(self._emojis))
 
     def _get_values(self, inputs: list) -> np.ndarray :
         
@@ -66,18 +76,20 @@ class HasMostCommonEmojis(FeatureExtractor):
 
         
         for tweet in tweets:
-            ohe_emojis_used=self._n*[False]
+            ohe_emojis_used=self._n*[0]
             for i in range(self._n):
-                current_emojis=self._n_most_common_emojis[i][0]
+                current_emojis=self._emojis[i][0]
                 emojis_in_tweet=ast.literal_eval(tweet)
                 if current_emojis in emojis_in_tweet:
-                    ohe_emojis_used[i]=True
+                    findings=re.findall(self.emoji_re_masks[0],tweet)
+                    ohe_emojis_used[i]=len(findings)
             
             #add to list
             list_of_most_common_emojis+=[ohe_emojis_used]
         
         #saving it in an array
         result = np.array(list_of_most_common_emojis)
+        print("Emojis are done")
         return result
 
     

@@ -31,6 +31,7 @@ COLUMN_PHOTOS = "photos"
 COLUMN_VIDEOS = "video"
 COLUMN_LANGUAGE = "language"
 COLUMN_USERNAME = "username"
+COLUMN_USER_ID = "user_id"
 
 # column names of novel columns for preprocessing
 COLUMN_LABEL = "label"

@@ -18,7 +18,7 @@ class BigramFeatureTest(unittest.TestCase):
         self.INPUT_COLUMN = "input"
         self.follower_count_feature = FollowerCount(self.INPUT_COLUMN)
         self.df = pd.DataFrame()
-        self.df[self.INPUT_COLUMN] = ['LucasBechberger']
+        self.df[self.INPUT_COLUMN] = [817369124519153664]
     
     def test_input_columns(self):
         self.assertEqual(self.follower_count_feature._input_columns, [self.INPUT_COLUMN])
@@ -30,8 +30,9 @@ class BigramFeatureTest(unittest.TestCase):
     def test_ohe_follower_count_correct(self):
         output=self.follower_count_feature.fit_transform(self.df)
 
-        #The Twitter Useraccout @LucasBechberger had 194 followers at 12.10.2021;15:42 
-        self.assertEqual(output[0][1], 194)
+        print("INFORMATION: If this test fails, that may be because the twitteraccount @LucasBechberger got more followers!")
+        #The Twitter Useraccout @LucasBechberger, id= 817369124519153664 had 195 followers at 15.10.2021;15:42 
+        self.assertEqual(output[0][1], 195)
 
 if __name__ == '__main__':
     print("__[RUNNING: test.feature_extraction.test_follower_count]__")
