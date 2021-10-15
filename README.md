@@ -154,7 +154,7 @@ By default, this data is used to train a classifier, which is specified by one o
 - `--dtc`: Decision Tree Classifier with default configuration criterion = "gini", splitter = "best", max_depth = None
 - `--dtc_max_depth`: Optional DTC parameter option for configuring the max depth (e.g. `--dtc --dtc_max_depth 10)` (default is None). Requires `--dtc` option to be active.
 - `--dtc_criterion_entropy`: Optional DTC parameter option for using the entropy criterion instead of the default "gini". Requires `--dtc` option to be active.
-- `--dtc_splitter_random: Optional DTC parameter option for using the random splitter instead of the default "best". Requires `--dtc` option to be active.
+- `--dtc_splitter_random:` Optional DTC parameter option for using the random splitter instead of the default "best". Requires `--dtc` option to be active.
 
 The classifier is then evaluated, using the evaluation metrics as specified through the following optional arguments:
 - `-a`or `--accuracy`: Classification accurracy (i.e., percentage of correctly classified examples).
