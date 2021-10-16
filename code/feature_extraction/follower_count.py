@@ -23,10 +23,10 @@ class FollowerCount(FeatureExtractor):
     
     
     # assign the access-codes for the twitter api accordingly
-    consumer_key = "VeoDsQOrGzPmTE1p6dLRklt5L"
-    consumer_secret = "TRvLoRp7sK9aVVxQKvGhgY2zb282jBQhP7CFxICPlacbOVB9vI"
-    access_token = "2800148739-vPpKSDACS4fJHnuOnkFjBo7CUDaehSBS3DzaFf9"
-    access_token_secret="PJ3zVkeHxZz8AyiQweQ7u5AD3X5oVituu9Cpt1s8gLdR6"
+    consumer_key = "_"
+    consumer_secret = "_"
+    access_token = "_"
+    access_token_secret="_"
     
     try:
         # authorization of consumer key and consumer secret
