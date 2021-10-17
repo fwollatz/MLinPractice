@@ -151,14 +151,24 @@ By default, this data is used to train a classifier, which is specified by one o
 - `-m` or `--majority`: Majority vote classifier that always predicts the majority class.
 - `-f` or `--frequency`: Dummy classifier that makes predictions based on the label frequency in the training data.
 - `--knn`: KNN classifier with a specificied k (e.g. `--knn 1` for k = 1)
-- `--dtc`: Decision Tree Classifier with default configuration criterion = "gini", splitter = "best", max_depth = None
+- `--dtc`: Decision Tree Classifier with default configuration `criterion = "gini", splitter = "best", max_depth = None`.
 - `--dtc_max_depth`: Optional DTC parameter option for configuring the max depth (e.g. `--dtc --dtc_max_depth 10)` (default is None). Requires `--dtc` option to be active.
 - `--dtc_criterion_entropy`: Optional DTC parameter option for using the entropy criterion instead of the default "gini". Requires `--dtc` option to be active.
 - `--dtc_splitter_random:` Optional DTC parameter option for using the random splitter instead of the default "best". Requires `--dtc` option to be active.
+- `--rfc`: Random Forest Classifier with deault configuration criterion = "gini", max_depth = None, bootstrap = True, n_estimators = 100`.
+- `--rfc_criterion_entropy`: Optional RFC parameter option for using the entropy criterion instead of the default "gini". Requires `--rfc` option to be active.
+- `--rfc_max_depth`: Optional RFC parameter option for configuring the max depth (e.g. `--rfc --rfc_max_depth 10)` (default is None). Requires `--rfc` option to be active.
+- `--rfc_no_bootstrap`: Optional RFC parameter option for configuring the bootstrapping option (default is using bootstrapping). Requires `--rfc` option to be active.
+- `--rfc_n_estimators`: Optional RFC parameter option for configuring the number of estimators (trees) in the forest (e.g. `--rfc --rfc_n_estimators 10)` (default is 100). Requires `--rfc` option to be active.
+- `--class_weight_balanced`: Optional RFC parameter option for using the class_weight = 'balanced' option of a classifier, if available. 
 
 The classifier is then evaluated, using the evaluation metrics as specified through the following optional arguments:
 - `-a`or `--accuracy`: Classification accurracy (i.e., percentage of correctly classified examples).
 - `-k`or `--kappa`: Cohen's kappa (i.e., adjusting accuracy for probability of random agreement).
+- `-c` or `--confusionmatrix`: prints the confusion matrix
+- `-tka` or `--topkaccuracy`: Top-k accuracy score (i.e. number of times the correct label is among the top k labels predicted)
+- `-auc` or `--auc`: Area Under the ROC Curve score (i.e the ability of the model to discriminate between positive and negative examples. A score close to 1 is considered a good classifier)
+- `-roc` or `--roc`: Plots the Receiver Operating Charactistic Curve 
 
 
 Moreover, the script support importing and exporting trained classifiers with the following optional arguments:

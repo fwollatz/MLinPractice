@@ -64,6 +64,11 @@ def test_tokenization_single_sentence_is_working(self):
 Which evaluation metrics did you use and why? 
 Which baselines did you use and why?
 
+- Top K Accuracy score: originally implement for performing multiclass prediction. But now since do bi-class prediction, this metric is not useful anymore.
+- Confusion matrix: not a concrete score, but the possibility to get the confusion matrix which some the metrics are based on
+- 
+
+
 ### Results
 
 How do the baselines perform with respect to the evaluation metrics?
