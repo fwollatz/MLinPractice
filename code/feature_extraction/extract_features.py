@@ -44,7 +44,7 @@ parser.add_argument("-wd", "--weekday", action = "store_true", help = "compute t
 parser.add_argument("--photo", action = "store_true", help = "check if a tweet contains photo(s)")
 parser.add_argument("-f", "--follower", action = "store_true", help = "compute the amount of followers")
 parser.add_argument("-ch", "--has_most_common_hashtags", action = "store_true", help = "check wether the tweet has the top n hashtags")
-parser.add_argument("-ce", "--has_most_common_emojis", action = "store_true", help = "check wether the tweet
+parser.add_argument("-ce", "--has_most_common_emojis", action = "store_true", help = "check wether the tweet has the top n emojis")
 args = parser.parse_args()
 
 # load data
