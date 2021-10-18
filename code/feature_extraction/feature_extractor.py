@@ -39,7 +39,7 @@ class FeatureExtractor(BaseEstimator,TransformerMixin):
         self._feature_name = feature_name
         
     
-    def get_feature_name(self)->str:
+    def get_feature_name(self):
         """
         access to feature name
 
