@@ -41,19 +41,17 @@ class RFEReducer():
                 model = DecisionTreeClassifier()
             elif self._model_flag == "rfc":
                 model = RandomForestClassifier()     
-        self._rfe_reducer = RFE(model, self._n_features_to_select)
+        self._rfe_reducer = RFE(estimator = model, n_features_to_select = self._n_features_to_select)
         self._rfe_reducer.fit(self._features, self._labels.ravel())
         
         
     def transform(self, features : list) -> list:
         #print the names of the n best features
         output_str = "{0} best features: ".format(self._n_features_to_select)
-        print(len(self._feature_names))
         for i in range(0, self._n_features_to_select):
             indice  = np.where(self._rfe_reducer.ranking_ == i + 1)[0][0]
-            print(indice)
             feature_name = self._feature_names[indice]
-            output_str += "{0}: {1} ,".format(i+1, feature_name)
+            output_str += "\n {0}: {1} ".format(i+1, feature_name)
         print(output_str)
         reduced_features = []
         print("Before RFE:", features.shape)

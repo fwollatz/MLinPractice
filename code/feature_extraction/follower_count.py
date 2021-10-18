@@ -75,7 +75,7 @@ class FollowerCount(FeatureExtractor):
         a_file = open("id_to_follower.pkl", "wb")
         pickle.dump(self.id_to_follower, a_file)
         a_file.close()
-        print("Saved the followercounts.")
+        #print("Saved the followercounts.")
         
     def _get_values(self, inputs: list) -> np.ndarray :
         """
@@ -141,7 +141,7 @@ class FollowerCount(FeatureExtractor):
                         print("there has been an error with this user (id={0}). His value is set to 0 followers.".format(user_id))
             #save the followercounts in external file
             if i%100==0:
-                print(i, end="")
+                #print(i, end="")
                 self.safe_id_to_follower_to_pickle()
 
                 

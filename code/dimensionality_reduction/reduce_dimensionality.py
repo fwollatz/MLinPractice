@@ -62,6 +62,7 @@ else: # need to set things up manually
         if args.rfe_random_forest_classifier:
             model = "rfc"
         n_best_features = args.rfe
+        print("    RFE with model = {0} and n_best_features = {1}".format(model, n_best_features))
         dim_red = RFEReducer(features, labels, feature_names, model, n_best_features)
         dim_red.fit()
     pass
