@@ -16,17 +16,17 @@ Created on Fri Oct  8 12:08:34 2021
 from code.preprocessing.preprocessor import Preprocessor
 import re
 
-class EmojiAndUrlRemover(Preprocessor):
-    """removes emojis and urls of the given input column"""
+class EmojiExtractor(Preprocessor):
+    """collects emojis that have been used in a tweet in a seperate column"""
     
     def __init__(self, input_column, output_column):
-        """Initialize the EMOJI/URL Remover with the given input and output column."""
+        """Initialize the EXTRACTOR with the given input and output column."""
         super().__init__([input_column], output_column)
     
     
     def _set_variables(self, inputs : list):
         """
-        setting filtering regex mask for emojis and urls
+        setting filtering regex mask for emojis 
         """
         #store emoji regex mask
         self.emoji_re_mask = re.compile("["
@@ -49,18 +49,15 @@ class EmojiAndUrlRemover(Preprocessor):
                                 u"\ufe0f"  # dingbats
                                 u"\u3030"
                                 "]+", flags=re.UNICODE)
-        #store url regex mask
-        self.url_re_mask = re.compile("http\S+",flags=re.UNICODE)
+
     
     def _get_values(self, inputs : list) -> list:
-        """Removing emojis from tweets"""
-        tweets_filtered = []
+        """extracting emojis from tweets"""
+        emojis_filtered = []
 
         for tweet in inputs[0]:
-            #remove emojis
-            help_str = self.emoji_re_mask.sub(r'', tweet)
-            #remove urls
-            tweet_filtered = self.url_re_mask.sub(r'', help_str)
-            tweets_filtered.append(str(tweet_filtered))    
-        print("Filtered emojis and urls from {0} tweets".format(len(tweets_filtered)))
-        return tweets_filtered
+            #find all emojis
+            findings=re.findall(self.emoji_re_mask,tweet)
+            
+            emojis_filtered.append(str(findings))
+        return emojis_filtered

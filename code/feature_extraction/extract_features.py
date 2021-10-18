@@ -15,15 +15,17 @@ from code.feature_extraction.character_length import CharacterLength
 from code.feature_extraction.number_of_hashtags import NumberOfHashtags
 from code.feature_extraction.number_of_urls import NumberOfURLs
 from code.feature_extraction.datetime import DateTime
-from code.feature_extraction.hour import Hour
-from code.feature_extraction.month import Month
+from code.feature_extraction.hour import Hour  
+from code.feature_extraction.month import Month 
 from code.feature_extraction.weekday import Weekday
 from code.feature_extraction.check_photos_existence import PhotoChecker
-
+from code.feature_extraction.has_most_common_hashtags import HasMostCommonHashtags
+from code.feature_extraction.has_most_common_emojis import HasMostCommonEmojis
+from code.feature_extraction.follower_count import FollowerCount
 from code.feature_extraction.feature_collector import FeatureCollector
 
 
-from code.util import COLUMN_LABEL, COLUMN_TWEET, COLUMN_LIKES, COLUMN_RETWEETS, COLUMN_TIME, COLUMN_DATE, COLUMN_HASHTAG, COLUMN_URLS, COLUMN_PHOTOS, COLUMN_VIDEOS ,COLUMN_LANGUAGE
+from code.util import COLUMN_LABEL, COLUMN_TWEET, COLUMN_LIKES, COLUMN_RETWEETS, COLUMN_TIME, COLUMN_DATE, COLUMN_HASHTAG, COLUMN_URLS, COLUMN_PHOTOS, COLUMN_VIDEOS ,COLUMN_LANGUAGE, COLUMN_USERNAME,COLUMN_EMOJIS,COLUMN_USER_ID
 
 
 # setting up CLI
@@ -40,6 +42,9 @@ parser.add_argument("-hr", "--hour", action = "store_true", help = "compute the 
 parser.add_argument("-mo", "--month", action = "store_true", help = "compute the month of the year")
 parser.add_argument("-wd", "--weekday", action = "store_true", help = "compute the day of the week")
 parser.add_argument("--photo", action = "store_true", help = "check if a tweet contains photo(s)")
+parser.add_argument("-f", "--follower", action = "store_true", help = "compute the amount of followers")
+parser.add_argument("-ch", "--has_most_common_hashtags", action = "store_true", help = "check wether the tweet has the top n hashtags")
+parser.add_argument("-ce", "--has_most_common_emojis", action = "store_true", help = "check wether the tweet
 args = parser.parse_args()
 
 # load data
@@ -54,9 +59,18 @@ else:    # need to create FeatureCollector manually
 
     # collect all feature extractors
     features = []
+    if args.has_most_common_hashtags :
+        #create ohe feature, if the top n most commonly used hashtags are existent
+        features.append(HasMostCommonHashtags(COLUMN_HASHTAG,2))
+    if args.has_most_common_emojis :
+        #create ohe feature, if the top n most commonly used Emojis are existent
+        features.append(HasMostCommonEmojis(COLUMN_EMOJIS,2))
     if args.char_length:
         # character length of original tweet (without any changes)
         features.append(CharacterLength(COLUMN_TWEET))
+    if args.follower:
+        # ask the tweepy api how many followers the user that tweetet has
+        features.append(FollowerCount(COLUMN_USER_ID))
     if args.number_of_urls:
         # amount of urls found in the tweet
         features.append(NumberOfURLs(COLUMN_URLS))
@@ -100,6 +114,8 @@ results = {"features": feature_array, "labels": label_array,
            "feature_names": feature_collector.get_feature_names()}
 
 #print(feature_array)
+print("we now have "+str(len(results["feature_names"]))+" features!")
+print(results["feature_names"])
 
 with open(args.output_file, 'wb') as f_out:
     pickle.dump(results, f_out)
