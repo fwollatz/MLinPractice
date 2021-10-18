@@ -130,6 +130,8 @@ The file `output.pickle` will be used to store the results of the dimensionality
 The dimensionality reduction method to be applied can be configured with the following optional parameters:
 - `-m` or `--mutual_information`: Select the `k` best features (where `k` is given as argument) with the Mutual Information criterion (see `code/dimensionality_reduction/select_k_best_reducer.py`)
 - `--pca`: Performs Principle Component Analysis in an automated way by reducing the dimensionality to n components, where n is calculated based on the cumulative explained variance ratio. The `PCA_EXPLAINED_VARIANCE_THRESHOLD` (see `code/util.py`) is currently at 95% of explained variance. (see `code/dimensionality_reduction/pca_reducer.py`)
+- `--rfe`: Performs Recursive Feature Elimnation (RFE) selecting the `n` best features (where `n` is given as argument). The default option uses the Decision Tree Classifier.
+- `-rfe_rfc` or `--rfe_random_forest_classifier`: Optional RFE parameter to perform RFE with the random forest classifier. This option requires the `--rfe` option to be active.
 
 Moreover, the script support importing and exporting fitted dimensionality reduction techniques with the following optional arguments:
 - `-i` or `--import_file`: Load a configured and fitted dimensionality reduction technique from the given pickle file. Ignore all parameters that configure the dimensionality reduction technique.
