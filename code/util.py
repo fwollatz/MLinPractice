@@ -67,6 +67,8 @@ COLUMN_FOLLOWER_COUNT="follower_count"
 COLUMN_CONTAINED_HASHTAG="contains_#{0}"
 COLUMN_CONTAINED_EMOJI="contains_emoji_{0}"
 COLUMN_PHOTO_EXISTENCE = "contain_photos"
+COLUMN_WORD_COUNT = "word_count"
+
 
 #common methods
 def string_to_words_list(string_list : str) -> list:

@@ -22,11 +22,12 @@ from code.feature_extraction.check_photos_existence import PhotoChecker
 from code.feature_extraction.has_most_common_hashtags import HasMostCommonHashtags
 from code.feature_extraction.has_most_common_emojis import HasMostCommonEmojis
 from code.feature_extraction.follower_count import FollowerCount
+from code.feature_extraction.number_of_words import NumberOfWords
 from code.feature_extraction.feature_collector import FeatureCollector
 
 
-from code.util import COLUMN_LABEL, COLUMN_TWEET, COLUMN_LIKES, COLUMN_RETWEETS, COLUMN_TIME, COLUMN_DATE, COLUMN_HASHTAG, COLUMN_URLS, COLUMN_PHOTOS, COLUMN_VIDEOS ,COLUMN_LANGUAGE, COLUMN_USERNAME,COLUMN_EMOJIS,COLUMN_USER_ID
-
+from code.util import COLUMN_LABEL, COLUMN_TWEET, COLUMN_LIKES, COLUMN_RETWEETS, COLUMN_TIME, COLUMN_DATE, COLUMN_HASHTAG, COLUMN_URLS, COLUMN_PHOTOS, COLUMN_VIDEOS ,COLUMN_LANGUAGE, COLUMN_USERNAME, COLUMN_EMOJIS, COLUMN_USER_ID
+from code.util import COLUMN_GENERAL_PREPROCESSED
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Feature Extraction")
@@ -45,6 +46,7 @@ parser.add_argument("--photo", action = "store_true", help = "check if a tweet c
 parser.add_argument("-f", "--follower", action = "store_true", help = "compute the amount of followers")
 parser.add_argument("-ch", "--has_most_common_hashtags", action = "store_true", help = "check wether the tweet has the top n hashtags")
 parser.add_argument("-ce", "--has_most_common_emojis", action = "store_true", help = "check wether the tweet has the top n emojis")
+parser.add_argument("-w", "--number_of_words", action = "store_true", help = "compute the number of words in the preprocessed tweet")
 args = parser.parse_args()
 
 # load data
@@ -92,6 +94,8 @@ else:    # need to create FeatureCollector manually
     if args.photo:
         # whether a tweet contains photo(s)
         features.append(PhotoChecker(COLUMN_PHOTOS))
+    if args.number_of_words:
+        features.append(NumberOfWords(COLUMN_GENERAL_PREPROCESSED))
 
     # create overall FeatureCollector
     feature_collector = FeatureCollector(features)

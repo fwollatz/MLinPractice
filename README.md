@@ -111,6 +111,7 @@ For the name constants of the original data please refer to the `code/util.py`.
 - `-hr` or `--hour`: Computes the one-hot-encoded 3-hour intervals based on the `COLUMN_TIME`. This option creates one column for each one-hot-encoded 3-h interval (in total: 8 columns). (see `code/feature_extraction/hour.py`)
 - `-mo` or `--month`: Computes the one-hot-encoded 12-month categories based on the `COLUMN_DATE`. This option creates one column for each month (in total: 12) (see `code/feature_extraction/month.py`)
 - `-wd` or `--weekday`: Computes the one-hot-encoded 7-weekday categories based on the `COLUMN_DATE`. This option creates one column per weekday (in total: 7) (see `code/feature_extraction/weekday.py`)
+- `-w` or `--number_of_words`: Computes the number of (content) words from the preprocessed tweet.
 
 Moreover, the script support importing and exporting fitted feature extractors with the following optional arguments:
 - `-i` or `--import_file`: Load a configured and fitted feature extraction from the given pickle file. Ignore all parameters that configure the features to extract.
