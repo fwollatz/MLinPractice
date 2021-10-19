@@ -12,7 +12,7 @@ from code.feature_extraction.weekday import Weekday
 from code.util import COLUMN_WEEKDAY
 import numpy as np
 
-class BigramFeatureTest(unittest.TestCase):
+class WeekdayTest(unittest.TestCase):
 
     def setUp(self):
         self.INPUT_COLUMN = "input"

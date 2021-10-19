@@ -12,7 +12,7 @@ import pandas as pd
 from code.feature_extraction.follower_count import FollowerCount
 from code.util import COLUMN_FOLLOWER_COUNT
 
-class BigramFeatureTest(unittest.TestCase):
+class FollowerCountTest(unittest.TestCase):
 
     def setUp(self):
         self.INPUT_COLUMN = "input"

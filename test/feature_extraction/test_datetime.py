@@ -11,7 +11,7 @@ import pandas as pd
 from code.feature_extraction.datetime import DateTime
 from code.util import COLUMN_DATETIME_UNIX
 
-class BigramFeatureTest(unittest.TestCase):
+class DatetimeTest(unittest.TestCase):
 
     def setUp(self):
         self.INPUT_COLUMN_DATE = "date"

@@ -11,7 +11,7 @@ import pandas as pd
 from code.feature_extraction.number_of_urls import NumberOfURLs
 from code.util import COLUMN_URL_COUNT
 
-class BigramFeatureTest(unittest.TestCase):
+class NumberOfUrlsTest(unittest.TestCase):
 
     def setUp(self):
         self.INPUT_COLUMN = "input"

@@ -11,7 +11,7 @@ import pandas as pd
 from code.feature_extraction.number_of_hashtags import NumberOfHashtags
 from code.util import COLUMN_HASHTAG_COUNT
 
-class BigramFeatureTest(unittest.TestCase):
+class NumberOfHastagsTest(unittest.TestCase):
 
     def setUp(self):
         self.INPUT_COLUMN = "input"
