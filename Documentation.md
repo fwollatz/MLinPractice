@@ -7,6 +7,13 @@ Machine Learning in Practice (Group HumbleBees 777, Qirui Zhu, Frederik Wollatz,
 4. created 'Documentation.md' (211005)
 5. clean code: defined naming conventions that shall be used consistently throughout the project (incl. variable names and function names)
 
+**Implementation Checklist Preprocessing & Feature Extraction**
+1. Update corresponding shell script
+2. Write new unit test
+3. Update ReadMe.md and maybe Documentation.md
+4. Execute corresponding shell script
+5. Run `test/run_tests.sh`
+
 ##Test Strategy
 
 **Test Agreements**
