@@ -16,15 +16,14 @@ import numpy as np
 class PCAReducer():
     _pca_reducer = None
     
-    def __init__(self, features : list, labels : list, feature_names : list, seed: int = 0, use_normalizer : bool = False):
+    def __init__(self, features : list, labels : list, seed: int = 0, use_normalizer : bool = False):
         self._features = features
         self._labels = labels
-        self._feature_names = feature_names
         self._seed = seed
         self._use_normalizer = use_normalizer
         
     def fit(self):
-        #init PCA Object 
+        #init PCA Object with and without seed
         if self._seed != 0:
             self.pca_reducer = PCA(random_state=self._seed)
         else:
@@ -45,6 +44,7 @@ class PCAReducer():
         pc_counter = 0
         cumulative_explained_variance = 0
         
+        #sort components and count how many components are needed to surpass the threshold
         sorted_explained_variance_ratio = np.sort(self._pca_reducer.explained_variance_ratio_)[::-1]
         for ratio in sorted_explained_variance_ratio:
             pc_counter += 1
@@ -57,5 +57,4 @@ class PCAReducer():
         #take only the top principle components
         reduced_features = transformed_all[:,0:pc_counter]
         print("After PCA: ", reduced_features.shape)
-        print(type(reduced_features.shape))
         return reduced_features

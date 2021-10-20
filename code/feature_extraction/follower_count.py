@@ -23,10 +23,10 @@ class FollowerCount(FeatureExtractor):
     
     
     # assign the access-codes for the twitter api accordingly
-    consumer_key = "VeoDsQOrGzPmTE1p6dLRklt5L"
-    consumer_secret = "TRvLoRp7sK9aVVxQKvGhgY2zb282jBQhP7CFxICPlacbOVB9vI"
-    access_token = "2800148739-vPpKSDACS4fJHnuOnkFjBo7CUDaehSBS3DzaFf9"
-    access_token_secret="PJ3zVkeHxZz8AyiQweQ7u5AD3X5oVituu9Cpt1s8gLdR6"
+    consumer_key = "_"
+    consumer_secret = "_"
+    access_token = "_"
+    access_token_secret="_"
     
     try:
         # authorization of consumer key and consumer secret
@@ -75,7 +75,7 @@ class FollowerCount(FeatureExtractor):
         a_file = open("id_to_follower.pkl", "wb")
         pickle.dump(self.id_to_follower, a_file)
         a_file.close()
-        print("Saved the followercounts.")
+        #print("Saved the followercounts.")
         
     def _get_values(self, inputs: list) -> np.ndarray :
         """
@@ -141,7 +141,7 @@ class FollowerCount(FeatureExtractor):
                         print("there has been an error with this user (id={0}). His value is set to 0 followers.".format(user_id))
             #save the followercounts in external file
             if i%100==0:
-                print(i, end="")
+                #print(i, end="")
                 self.safe_id_to_follower_to_pickle()
 
                 

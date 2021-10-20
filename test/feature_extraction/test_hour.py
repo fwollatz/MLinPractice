@@ -12,7 +12,7 @@ from code.feature_extraction.hour import Hour
 from code.util import COLUMN_HOUR
 import numpy as np
 
-class BigramFeatureTest(unittest.TestCase):
+class HourTest(unittest.TestCase):
 
     def setUp(self):
         self.INPUT_COLUMN = "input"

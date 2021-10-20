@@ -7,42 +7,49 @@ Machine Learning in Practice (Group HumbleBees 777, Qirui Zhu, Frederik Wollatz,
 4. created 'Documentation.md' (211005)
 5. clean code: defined naming conventions that shall be used consistently throughout the project (incl. variable names and function names)
 
+**Implementation Checklist Preprocessing & Feature Extraction**
+1. Update corresponding shell script
+2. Write new unit test
+3. Update ReadMe.md and maybe Documentation.md
+4. Execute corresponding shell script
+5. Run `test/run_tests.sh`
+
 ##Test Strategy
 
 **Test Agreements**
 
 1. TestCases should named as boolean outcomes (e.g. def this_class_works: => y/n)
 
-2. TestCases should start with "test"
+2. TestCases should start with "test_" (in order to work with the `run_test.sh`
 
 3. Having a seperate test python file per class/components
 
 4. Tests are grouped in a seperate "test" folder
 
 5. Group Tests in 3 steps:
-  - I) Arrange: set up of the test => variables, environment (excluding imports)
-  - II) Act: perform the task => e.g. testing tokenizer put all tokenizing code in here
-  - III) Assert: assertion code in here
+  - (I) Arrange: set up of the test => variables, environment (excluding imports)
+  - (II) Act: perform the task => e.g. testing tokenizer put all tokenizing code in here
+  - (III) Assert: assertion code in here
 	
     
 Example:
 
-	```python
-    def test_tokenization_single_sentence(self):
-        #arrange
-        input_text = "This is an example sentence"
-        output_text = "['This', 'is', 'an', 'example', 'sentence']"
-        input_df = pd.DataFrame()
-        input_df[self.INPUT_COLUMN] = [input_text]
+```
+def test_tokenization_single_sentence_is_working(self):
+    #arrange
+    input_text = "This is an example sentence"
+    output_text = "['This', 'is', 'an', 'example', 'sentence']"
+    input_df = pd.DataFrame()
+    input_df[self.INPUT_COLUMN] = [input_text]
+
+    #act
+    tokenized = self.tokenizer.fit_transform(input_df)
+
+    #assert
+    self.assertEqual(tokenized[self.OUTPUT_COLUMN][0], output_text)
+```
     
-        #act
-        tokenized = self.tokenizer.fit_transform(input_df)
-    
-        #assert
-        self.assertEqual(tokenized[self.OUTPUT_COLUMN][0], output_text)
-    ```
-    
-6.) Run related tests before pushing (=> maybe create a shell script)
+6.) Run `test/run_tests.sh`
 
 **Data Loading**
 
@@ -55,16 +62,7 @@ Example:
 
 **Classification**
 1. added 'topkaccuracy', 'ROC curve'', 'auc' to evaluation metrics in run_*classifer.py* (211005)
-2. 
-
-# Documentation Example
-
-Some introductory sentence(s). Data set and task are relatively fixed, so 
-probably you don't have much to say about them (unless you modifed them).
-If you haven't changed the application much, there's also not much to say about
-that.
-The following structure thus only covers preprocessing, feature extraction,
-dimensionality reduction, classification, and evaluation.
+2.
 
 ## Evaluation
 
@@ -72,6 +70,11 @@ dimensionality reduction, classification, and evaluation.
 
 Which evaluation metrics did you use and why? 
 Which baselines did you use and why?
+
+- Top K Accuracy score: originally implement for performing multiclass prediction. But now since do bi-class prediction, this metric is not useful anymore.
+- Confusion matrix: not a concrete score, but the possibility to get the confusion matrix which some the metrics are based on
+- 
+
 
 ### Results
 
@@ -83,22 +86,29 @@ Is there anything we can learn from these results?
 
 ## Preprocessing
 
-I'm following the "Design Decisions - Results - Interpretation" structure here,
-but you can also just use one subheading per preprocessing step to organize
-things (depending on what you do, that may be better structured).
-
 ### Design Decisions
 
-Which kind of preprocessing steps did you implement? Why are they necessary
-and/or useful down the road?
+As for the general/classic preprocessing, we decided on well-known NLP preprocessing steps to remove redundancy, 
+data that does not convey useful information (e.g. stop words), and tweet specific contents (like urls and emoji) to
+preprocess the tweet text itself into plain textualized information. The general preprocessing includes lower casing, 
+language filtering, stop word removal, punctuation removal (already given), emoji and url filtering and tokenization.
+All intermediate results are stored in separate columns and are thus a accessible for the feature extraction. 
+
+In addition to preprocessing the tweet text itself, for each tweets the emojis were extracted for further
+feature extraction.
 
 ### Results
 
-Maybe show a short example what your preprocessing does.
+Example Preprocessing of one tweet:
 
-### Interpretation
+Before Preprocessing:
 
-Probably, no real interpretation possible, so feel free to leave this section out.
+`"Courses@CRG: Containers &amp; #Nextflow  Slow-paced hands-on course designed for absolute beginners who want to start using #containers and @nextflowio pipelines to achieve #reproducibility of data analysis #VEISris3cat #FEDERrecerca #Docker #CloudComputing  ➡️ https://t.co/HxbfIdZVyl  https://t.co/1kGRujM5vB""Courses@CRG: Containers &amp; #Nextflow  Slow-paced hands-on course designed for absolute beginners who want to start using #containers and @nextflowio pipelines to achieve #reproducibility of data analysis #VEISris3cat #FEDERrecerca #Docker #CloudComputing  ➡️ https://t.co/HxbfIdZVyl  https://t.co/1kGRujM5vB"`
+
+After Preprocessing:
+
+`"['coursescrg', 'contain', 'amp', 'nextflow', 'slowpac', 'handson', 'cours', 'design', 'absolut', 'beginn', 'want', 'start', 'use', 'contain', 'nextflowio', 'pipelin', 'achiev', 'reproduc', 'data', 'analysi', 'veisris3cat', 'federrecerca', 'docker', 'cloudcomput']"`
+
 
 ## Feature Extraction
 
