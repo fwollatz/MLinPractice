@@ -24,7 +24,7 @@ from code.feature_extraction.has_most_common_emojis import HasMostCommonEmojis
 from code.feature_extraction.follower_count import FollowerCount
 from code.feature_extraction.number_of_words import NumberOfWords
 from code.feature_extraction.feature_collector import FeatureCollector
-
+from code.feature_extraction.has_most_common_words import HasMostCommonWords
 
 from code.util import COLUMN_LABEL, COLUMN_TWEET, COLUMN_LIKES, COLUMN_RETWEETS, COLUMN_TIME, COLUMN_DATE, COLUMN_HASHTAG, COLUMN_URLS, COLUMN_PHOTOS, COLUMN_VIDEOS ,COLUMN_LANGUAGE, COLUMN_USERNAME, COLUMN_EMOJIS, COLUMN_USER_ID
 from code.util import COLUMN_GENERAL_PREPROCESSED
@@ -44,9 +44,10 @@ parser.add_argument("-mo", "--month", action = "store_true", help = "compute the
 parser.add_argument("-wd", "--weekday", action = "store_true", help = "compute the day of the week")
 parser.add_argument("--photo", action = "store_true", help = "check if a tweet contains photo(s)")
 parser.add_argument("-f", "--follower", action = "store_true", help = "compute the amount of followers")
-parser.add_argument("-ch", "--has_most_common_hashtags", type = int, help = "check wether the tweet has the top n hashtags", default= None)
-parser.add_argument("-ce", "--has_most_common_emojis", type = int, help = "check wether the tweet has the top n emojis", default= None)
+parser.add_argument("-ch", "--has_most_common_hashtags", type = int, help = "check whether the tweet has the top n hashtags", default= None)
+parser.add_argument("-ce", "--has_most_common_emojis", type = int, help = "check whether the tweet has the top n emojis", default= None)
 parser.add_argument("-w", "--number_of_words", action = "store_true", help = "compute the number of words in the preprocessed tweet")
+parser.add_argument("-cw", "--has_most_common_words", type = int, help = "check whether the tweet has the top n words", default = 10)
 args = parser.parse_args()
 
 # load data
@@ -96,6 +97,9 @@ else:    # need to create FeatureCollector manually
         features.append(PhotoChecker(COLUMN_PHOTOS))
     if args.number_of_words:
         features.append(NumberOfWords(COLUMN_GENERAL_PREPROCESSED))
+    if args.has_most_common_words is not None:
+        #create ohe feature, if the top n most common words are existent
+        features.append(HasMostCommonWords(COLUMN_GENERAL_PREPROCESSED, args.has_most_common_words))
 
     # create overall FeatureCollector
     feature_collector = FeatureCollector(features)

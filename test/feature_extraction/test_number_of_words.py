@@ -9,7 +9,6 @@ Created on Tue Oct 19 18:35:42 2021
 import unittest
 import pandas as pd
 from code.feature_extraction.number_of_words import NumberOfWords
-from code.util import COLUMN_WORD_COUNT
 
 class NumberOfWordsTest(unittest.TestCase):
 
