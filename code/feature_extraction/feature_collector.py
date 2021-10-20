@@ -99,5 +99,11 @@ class FeatureCollector(FeatureExtractor):
         """
         feature_names = []
         for feature in self._features:
-            feature_names.append(feature.get_feature_name())
+            feature_name=feature.get_feature_name()
+            
+            #because sometimes an extractor creates more than one column, we have to check wether it is a list or a string
+            if type(feature_name) == str:
+                feature_names.append(feature_name)
+            else:
+                feature_names+=feature_name
         return feature_names

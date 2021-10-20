@@ -17,6 +17,8 @@ from sklearn.metrics import accuracy_score, top_k_accuracy_score, confusion_matr
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 from mlflow import log_metric, log_param, set_tracking_uri
 
 # setting up CLI
@@ -35,6 +37,16 @@ parser.add_argument("-k", "--kappa", action = "store_true", help = "evaluate usi
 parser.add_argument("-auc","--auc",action = "store_true",help = "evaluate using Area Under ROC curve")
 parser.add_argument("-roc","--roc",action = "store_true",help = "show the corresponding ROC curve")
 parser.add_argument("--log_folder", help = "where to log the mlflow results", default = "data/classification/mlflow")
+parser.add_argument("--dtc", action = "store_true", help = "use the decision tree classifier")
+parser.add_argument("--dtc_max_depth", type = int, help="decicion tree classifier with the specified value for the max_depth", default = None)
+parser.add_argument("--dtc_criterion_entropy", action = "store_true", help = "use the entropy crition parameter for the decision tree classifier. Default criterion is 'gini'")
+parser.add_argument("--dtc_splitter_random", action = "store_true", help = "use the random splitter parameter for the decision tree classifier. Default splitter is 'best'")
+parser.add_argument("--rfc", action = "store_true", help = "use the random forest classifier")
+parser.add_argument("--rfc_no_bootstrap", action = "store_true", help = "disable bootstrapping, use the whole dataset for each tree")
+parser.add_argument("--rfc_criterion_entropy", action = "store_true", help = "use the entropy crition parameter for the random forest classifier. Default criterion is 'gini'" )
+parser.add_argument("--rfc_max_depth", type = int, help = "random forest classifier with the specified value for the max_depth", default = None)
+parser.add_argument("--rfc_n_estimators", type = int, help = "random forest classifier with the specified value for the number of trees in the forest. Default is 100", default = 100)
+parser.add_argument("--class_weight_balanced", action = "store_true", help = "use the class weight = 'balanced' option if available to even out inequal label distributions")
 args = parser.parse_args()
 
 # load data
@@ -56,21 +68,21 @@ if args.import_file is not None:
 
 else:   # manually set up a classifier
     
+    # majority vote classifier
     if args.majority:
-        # majority vote classifier
         print("    majority vote classifier")
         log_param("classifier", "majority")
         params = {"classifier": "majority"}
         classifier = DummyClassifier(strategy = "most_frequent", random_state = args.seed)
         
+    # label frequency classifier
     elif args.frequency:
-        # label frequency classifier
         print("    label frequency classifier")
         log_param("classifier", "frequency")
         params = {"classifier": "frequency"}
         classifier = DummyClassifier(strategy = "stratified", random_state = args.seed)
         
-    
+    # KNN classifier
     elif args.knn is not None:
         print("    {0} nearest neighbor classifier".format(args.knn))
         log_param("classifier", "knn")
@@ -79,6 +91,76 @@ else:   # manually set up a classifier
         standardizer = StandardScaler()
         knn_classifier = KNeighborsClassifier(args.knn, n_jobs = -1)
         classifier = make_pipeline(standardizer, knn_classifier)
+    
+    # Decision Tree classifier
+    elif args.dtc:
+        # set default configuration
+        criterion_param = "gini"
+        splitter_param = "best"
+        max_depth_param = None
+        class_weight_param = None
+        # determine console args
+        if args.dtc_criterion_entropy:
+            criterion_param = "entropy"
+        if args.dtc_splitter_random:
+            splitter_param = "random"
+        if args.dtc_max_depth is not None:
+            max_depth_param = args.dtc_max_depth
+        if args.class_weight_balanced:
+            class_weight_param = "balanced"
+        print("   Decision Tree Classifier, criterion = {0}, splitter = {1}, max_depth = {2}, class_weight = {3}".format(criterion_param, splitter_param, max_depth_param, class_weight_param))
+        #mlflow logging
+        log_param("classifier", "decision_tree")
+        log_param("dt_criterion", criterion_param)
+        log_param("dt_spliiter", splitter_param)
+        log_param("dt_max_depth", max_depth_param)
+        log_param("dt_class_weight", class_weight_param)
+        params = {"classifier" : "decision_tree", "dt_criterion" : criterion_param, 
+                  "dt_spliiter" : splitter_param, "dt_max_depth" : max_depth_param,
+                  "dt_class_weight" : class_weight_param}
+        #classifier 
+        classifier = DecisionTreeClassifier(criterion = criterion_param,
+                                            splitter = splitter_param,
+                                            max_depth = max_depth_param,
+                                            class_weight = class_weight_param)
+    
+    # Random Forest classifier
+    elif args.rfc:
+        #set default configuration
+        criterion_param = "gini"
+        bootstrap_param = True
+        max_depth_param = None
+        n_estimators_param = 100
+        class_weight_param = None
+        #determine console args
+        if args.rfc_criterion_entropy:
+            criterion_param = "entropy"
+        if args.rfc_no_bootstrap:
+            bootstrap_param = False
+        if args.rfc_max_depth is not None:
+            max_depth_param = args.rfc_max_depth
+        if args.rfc_n_estimators is not 100:
+            n_estimators_param = args.rfc_n_estimators
+        if args.class_weight_balanced:
+            class_weight_param = "balanced"
+        print("   Random Forest Classifier, criterion = {0}, bootstrap = {1}, max_depth = {2}, n_estimator = {3}, class_weight = {4}".format(criterion_param, bootstrap_param, max_depth_param, n_estimators_param, class_weight_param))
+        #mlflow logging
+        log_param("classifier", "random_forest")
+        log_param("rf_criterion", criterion_param)
+        log_param("rf_bootstrap", bootstrap_param)
+        log_param("rf_max_depth", max_depth_param)
+        log_param("rf_n_estimator", n_estimators_param)
+        log_param("rf_class_weight", class_weight_param)
+        params = {"classifier" : "random_forest", "rf_criterion" : criterion_param, "rf_bootstrap" : bootstrap_param,
+                  "rf_max_depth" : max_depth_param, "rf_n_estimator" : n_estimators_param, "rf_class_weight" : class_weight_param}
+        #classifier
+        classifier = RandomForestClassifier(criterion = criterion_param,
+                                            bootstrap = bootstrap_param,
+                                            max_depth = max_depth_param,
+                                            n_estimators = n_estimators_param,
+                                            class_weight = class_weight_param,
+                                            #use all processors
+                                            n_jobs = -1)
     
     classifier.fit(data["features"], data["labels"].ravel())
     log_param("dataset", "training")
@@ -110,8 +192,8 @@ for metric_name, metric in evaluation_metrics:
         fpr,tpr,threshold = metric(data["labels"],prediction)
         plt.title('Receiver Operating Characterics Curve')
         plt.plot(fpr, tpr)
-        plt.xlabel('True Positive Rate')
-        plt.ylabel('False Positive Rate')
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
         plt.show()
     else:
     	metric_value = metric(data["labels"], prediction)

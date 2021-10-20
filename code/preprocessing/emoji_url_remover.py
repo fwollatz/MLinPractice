@@ -20,7 +20,7 @@ class EmojiAndUrlRemover(Preprocessor):
     """removes emojis and urls of the given input column"""
     
     def __init__(self, input_column, output_column):
-        """Initialize the StopWordRemover with the given input and output column."""
+        """Initialize the EMOJI/URL Remover with the given input and output column."""
         super().__init__([input_column], output_column)
     
     
@@ -53,7 +53,7 @@ class EmojiAndUrlRemover(Preprocessor):
         self.url_re_mask = re.compile("http\S+",flags=re.UNICODE)
     
     def _get_values(self, inputs : list) -> list:
-        """Removing stop words from tweets"""
+        """Removing emojis from tweets"""
         tweets_filtered = []
 
         for tweet in inputs[0]:

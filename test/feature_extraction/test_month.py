@@ -12,7 +12,7 @@ from code.feature_extraction.month import Month
 from code.util import COLUMN_MONTH
 import numpy as np
 
-class BigramFeatureTest(unittest.TestCase):
+class MonthTest(unittest.TestCase):
 
     def setUp(self):
         self.INPUT_COLUMN = "input"

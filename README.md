@@ -1,5 +1,3 @@
-Qirui Test
-
 # Machine Learning in Practice
 Source code for the practical Seminar "Machine Learning in Practice", taught at Osnabrück University in the winter term 2021/2022 at the Insitute of Cognitive Science.
 
@@ -21,6 +19,7 @@ conda install -y -q -c conda-forge gensim=4.1.2
 conda install -y -q -c conda-forge spyder=5.1.5
 conda install -y -q -c conda-forge pandas=1.1.5
 conda install -y -q -c conda-forge mlflow=1.20.2
+conda install -c conda-forge tweepy
 ```
 
 You can double-check that all of these packages have been installed by running `conda list` inside of your virtual environment. The Spyder IDE can be started by typing `~/miniconda/envs/MLinPractice/bin/spyder` in your terminal window (assuming you use miniconda, which is installed right in your home directory).
@@ -38,6 +37,9 @@ The overall pipeline can be executed with the script `code/pipeline.sh`, which e
 - The script `code/dimensionality_reduction.sh` takes care of dimensionality reduction.
 - The script `code/classification.sh` takes care of training and evaluating a classifier.
 - The script `code/application.sh` launches the application example.
+
+In addition an test script was introduced, for automating test execution:
+- The script `test/run_tests.sh` collects and run all unit tests under the `/test` folder
 
 ## Preprocessing
 
@@ -59,11 +61,24 @@ The script `run_preprocessing.py` is used to run various preprocessing steps on 
 ```python -m code.preprocessing.run_preprocessing path/to/input.csv path/to/output.csv```
 Here, `input.csv` is a csv file (ideally the output of `create_labels.py`), while `output.csv` is the csv file where the output will be written.
 The preprocessing steps to take can be configured with the following flags:
-- `-p` or `--punctuation`: A new column "tweet_no_punctuation" is created, where all punctuation is removed from the original tweet. (See `code/preprocessing/punctuation_remover.py` for more details)
-- `-t`or `--tokenize`: Tokenize the given column (can be specified by `--tokenize_input`, default = "tweet"), and create new column with suffix "_tokenized" containing tokenized tweet.
+- `-p` or `--punctuation`: A new column with suffix "_tokenized" is created, where all punctuation is removed from the original tweet. (See `code/preprocessing/punctuation_remover.py` for more details)
+- `-t` or `--tokenize`: Tokenize the given column (can be specified by `--tokenize_input`, default = "tweet"), and create new column with suffix "_tokenized" containing tokenized tweet.
+- `-l` or `--filter_english`: Filters out tweets marked as english 'en' before applying general preprocessing steps. This is option is by default activated.
+- `-s` or `--stem`: Applies stemming on the tweets. Requires the tweet to be tokenized. This option is by default active.  (See `code/preprocessing/stemmer.py` for more details)
+- `-lc`or `--lower_case`: Lower cases all words within a tweet. This option is by default active. (See `code/preprocessing/lower_caser.py` for more details)
+- `-swr` or `--stop_word_removal`: Removes stop words from all tweets. Requires the tweet to be stemmed. This option by default activated. (See `code/preprocessing/stop_word_remover.py` for more details)
+- `-feu` or `--filter_emojis_urls`: Removes all emojis and urls from the tweets. Requires the tweet be punctuation freed. This option by default activated. (See `code/preprocessing/emoji_url_remover.py` for more details)
+For the column names produced during the different steps, please refer to the `code.util.py` where all names are stored.
+
+
+The overall default order of preprocessing the tweets is: 
+
+`--filter_english` > `--lower_case` > `--punctuation` > `--filter_emojis_urls` > `--tokenize` > `--stem` > `--stop_word_removal`
 
 Moreover, the script accepts the following optional parameters:
 - `-e` or `--export` gives the path to a pickle file where an sklearn pipeline of the different preprocessing steps will be stored for later usage.
+
+Further, in under `test/preprocessing/` all unit tests for the preprocessor can be found. 
 
 ### Splitting the Data Set
 
@@ -73,7 +88,7 @@ Here, `input.csv` is the input csv file to split (containing a column "label" wi
 The script takes the following optional parameters:
 - `-t` or `--test_size` determines the relative size of the test set and defaults to 0.2 (i.e., 20 % of the data).
 - `-v` or `--validation_size` determines the relative size of the validation set and defaults to 0.2 (i.e., 20 % of the data).
-- `-s` or `--seed` determines the seed for intializing the random number generator used for creating the randomized split. Using the same seed across multiple runs ensures that the same split is generated. If no seed is set, the current system time will be used.
+- `-s` or `--seed` determines the seed for initializing the random number generator used for creating the randomized split. Using the same seed across multiple runs ensures that the same split is generated. If no seed is set, the current system time will be used.
 
 
 ## Feature Extraction
@@ -83,16 +98,26 @@ All python scripts and classes for feature extraction can be found in `code/feat
 The script `extract_features.py` takes care of the overall feature extraction process and can be invoked as follows:
 ```python -m code.feature_extraction.extract_features path/to/input.csv path/to/output.pickle```
 Here, `input.csv` is the respective training, validation, or test set file created by `split_data.py`. The file `output.pickle` will be used to store the results of the feature extraction process, namely a dictionary with the following entries:
-- `"features"`: a numpy array with the raw feature values (rows are training examples, colums are features)
+- `"features"`: a numpy array with the raw feature values (rows are training examples, columns are features)
 - `"feature_names"`: a list of feature names for the columns of the numpy array
 - `"labels"`: a numpy array containing the target labels for the feature vectors (rows are training examples, only column is the label)
 
 The features to be extracted can be configured with the following optional parameters:
-- `-c` or `--char_length`: Count the number of characters in the "tweet" column of the data frame. (see code/feature_extraction/character_length.py)
+For the name constants of the original data please refer to the `code/util.py`.
+- `-c` or `--char_length`: Count the number of characters in the "tweet" column of the data frame. (see `code/feature_extraction/character_length.py`)
+- `-ht` or `--number_of_hastags`: Computes the number of hashtags based on the based on the original `COLUMN_HASHTAG`.  (see `code/feature_extraction/number_of_hashtags.py`)
+- `url` or `--number_of_urls`: Computes the number of urls based on the original `COLUMN_URLS`. (see `code/feature_extraction/number_of_urls.py`)
+- `-dt` or `--datetime`: Computes the unix-datetime of the post based on the `COLUMN_DATE` and `COLUMN_TIME`. (see `code/feature_extraction/datetime.py`)
+- `-hr` or `--hour`: Computes the one-hot-encoded 3-hour intervals based on the `COLUMN_TIME`. This option creates one column for each one-hot-encoded 3-h interval (in total: 8 columns). (see `code/feature_extraction/hour.py`)
+- `-mo` or `--month`: Computes the one-hot-encoded 12-month categories based on the `COLUMN_DATE`. This option creates one column for each month (in total: 12) (see `code/feature_extraction/month.py`)
+- `-wd` or `--weekday`: Computes the one-hot-encoded 7-weekday categories based on the `COLUMN_DATE`. This option creates one column per weekday (in total: 7) (see `code/feature_extraction/weekday.py`)
+- `-w` or `--number_of_words`: Computes the number of (content) words from the preprocessed tweet.
 
 Moreover, the script support importing and exporting fitted feature extractors with the following optional arguments:
 - `-i` or `--import_file`: Load a configured and fitted feature extraction from the given pickle file. Ignore all parameters that configure the features to extract.
 - `-e` or `--export_file`: Export the configured and fitted feature extraction into the given pickle file.
+
+Further, all feature extraction unit tests are located under `test/feature_extraction/`.
 
 ## Dimensionality Reduction
 
@@ -105,7 +130,10 @@ Here, `input.pickle` is the respective training, validation, or test set file cr
 The file `output.pickle` will be used to store the results of the dimensionality reduction process, containing `"features"` (which are the selected/projected ones) and `"labels"` (same as in the input file).
 
 The dimensionality reduction method to be applied can be configured with the following optional parameters:
-- `-m` or `--mutual_information`: Select the `k` best features (where `k` is given as argument) with the Mutual Information criterion
+- `-m` or `--mutual_information`: Select the `k` best features (where `k` is given as argument) with the Mutual Information criterion (see `code/dimensionality_reduction/select_k_best_reducer.py`)
+- `--pca`: Performs Principle Component Analysis in an automated way by reducing the dimensionality to n components, where n is calculated based on the cumulative explained variance ratio. The `PCA_EXPLAINED_VARIANCE_THRESHOLD` (see `code/util.py`) is currently at 95% of explained variance. (see `code/dimensionality_reduction/pca_reducer.py`)
+- `--rfe`: Performs Recursive Feature Elimnation (RFE) selecting the `n` best features (where `n` is given as argument). The default option uses the Decision Tree Classifier.
+- `-rfe_rfc` or `--rfe_random_forest_classifier`: Optional RFE parameter to perform RFE with the random forest classifier. This option requires the `--rfe` option to be active.
 
 Moreover, the script support importing and exporting fitted dimensionality reduction techniques with the following optional arguments:
 - `-i` or `--import_file`: Load a configured and fitted dimensionality reduction technique from the given pickle file. Ignore all parameters that configure the dimensionality reduction technique.
@@ -126,10 +154,25 @@ Here, `input.pickle` is a pickle file of the respective data subset, produced by
 By default, this data is used to train a classifier, which is specified by one of the following optional arguments:
 - `-m` or `--majority`: Majority vote classifier that always predicts the majority class.
 - `-f` or `--frequency`: Dummy classifier that makes predictions based on the label frequency in the training data.
+- `--knn`: KNN classifier with a specificied k (e.g. `--knn 1` for k = 1)
+- `--dtc`: Decision Tree Classifier with default configuration `criterion = "gini", splitter = "best", max_depth = None`.
+- `--dtc_max_depth`: Optional DTC parameter option for configuring the max depth (e.g. `--dtc --dtc_max_depth 10)` (default is None). Requires `--dtc` option to be active.
+- `--dtc_criterion_entropy`: Optional DTC parameter option for using the entropy criterion instead of the default "gini". Requires `--dtc` option to be active.
+- `--dtc_splitter_random:` Optional DTC parameter option for using the random splitter instead of the default "best". Requires `--dtc` option to be active.
+- `--rfc`: Random Forest Classifier with deault configuration criterion = "gini", max_depth = None, bootstrap = True, n_estimators = 100`.
+- `--rfc_criterion_entropy`: Optional RFC parameter option for using the entropy criterion instead of the default "gini". Requires `--rfc` option to be active.
+- `--rfc_max_depth`: Optional RFC parameter option for configuring the max depth (e.g. `--rfc --rfc_max_depth 10)` (default is None). Requires `--rfc` option to be active.
+- `--rfc_no_bootstrap`: Optional RFC parameter option for configuring the bootstrapping option (default is using bootstrapping). Requires `--rfc` option to be active.
+- `--rfc_n_estimators`: Optional RFC parameter option for configuring the number of estimators (trees) in the forest (e.g. `--rfc --rfc_n_estimators 10)` (default is 100). Requires `--rfc` option to be active.
+- `--class_weight_balanced`: Optional RFC parameter option for using the class_weight = 'balanced' option of a classifier, if available. 
 
 The classifier is then evaluated, using the evaluation metrics as specified through the following optional arguments:
 - `-a`or `--accuracy`: Classification accurracy (i.e., percentage of correctly classified examples).
 - `-k`or `--kappa`: Cohen's kappa (i.e., adjusting accuracy for probability of random agreement).
+- `-c` or `--confusionmatrix`: prints the confusion matrix
+- `-tka` or `--topkaccuracy`: Top-k accuracy score (i.e. number of times the correct label is among the top k labels predicted)
+- `-auc` or `--auc`: Area Under the ROC Curve score (i.e the ability of the model to discriminate between positive and negative examples. A score close to 1 is considered a good classifier)
+- `-roc` or `--roc`: Plots the Receiver Operating Charactistic Curve 
 
 
 Moreover, the script support importing and exporting trained classifiers with the following optional arguments:
