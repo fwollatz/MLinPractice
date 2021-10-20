@@ -169,6 +169,13 @@ By default, this data is used to train a classifier, which is specified by one o
 - `--rfc_no_bootstrap`: Optional RFC parameter option for configuring the bootstrapping option (default is using bootstrapping). Requires `--rfc` option to be active.
 - `--rfc_n_estimators`: Optional RFC parameter option for configuring the number of estimators (trees) in the forest (e.g. `--rfc --rfc_n_estimators 10)` (default is 100). Requires `--rfc` option to be active.
 - `--class_weight_balanced`: Optional RFC parameter option for using the class_weight = 'balanced' option of a classifier, if available. 
+- `-cnb` or `--complement_naive_bayes`,:  A naive bayes classifier, especially good with imbalanced data. Described in Rennie et al. (2003).
+- `-cnb_a` or `--complement_naive_bayes_alpha`: Optional CNB parameter. Additive (Laplace/Lidstone) smoothing parameter (0 for no smoothing)
+- `-cnb_fp` or `--complement_naive_bayes_fit_prior`: Optional CNB parameter. Only used in edge case with a single class in the training set.
+- `-cnb_bn` or `--complement_naive_bayes_norm`: Optional CNB parameter. Whether or not a second normalization of the weights is performed. The default behavior mirrors the implementations found in Mahout and Weka, which do not follow the full algorithm described in Table 9 of the paper.
+
+
+
 
 The classifier is then evaluated, using the evaluation metrics as specified through the following optional arguments:
 - `-a`or `--accuracy`: Classification accurracy (i.e., percentage of correctly classified examples).
