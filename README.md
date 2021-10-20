@@ -115,7 +115,7 @@ For the name constants of the original data please refer to the `code/util.py`.
 - `-f` or `--follower`: compute the amount of followers for each user. To reduce stress on the twitter API the followercounts are collected in the file "id_to_follower". To identify other Users than the ones used in the trainig data you need the access-data for using twitters api. (see `code/feature_extraction/follower_count.py`)
 - `-ch` or `--has_most_common_hashtags`: check wether the tweet has the top n most used hashtags. Default n=20. To define n, use this `--has_most_common_hashtags 1` for n = 1). This creates n columns, one for each of the n most commonly used hashtag (see `code/feature_extraction/has_most_common_hashtags.py`)
 - `-ce` or `--has_most_common_emojis`: check wether the tweet has the top n most used emojis. Default n=20. To define n, use this `--has_most_common_emojis 1` for n = 1). This creates n columns, one for each of the n most commonly used emoji (see `code/feature_extraction/has_most_common_emojis.py`)
-
+- `-cw` or `--has_most_common_words`: check wether the tweet has the top n most used words. Default n=10. To define n, use this `--has_most_common_words 1` or `-cw 1` for n = 1). This creates n columns, one for each of the n most commonly used words (see `code/feature_extraction/has_most_common_words.py`)
 
 Moreover, the script support importing and exporting fitted feature extractors with the following optional arguments:
 - `-i` or `--import_file`: Load a configured and fitted feature extraction from the given pickle file. Ignore all parameters that configure the features to extract.

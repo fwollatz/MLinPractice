@@ -6,7 +6,7 @@
 import unittest
 import pandas as pd
 import numpy as np
-from feature_extraction.check_photos_existence import PhotoChecker
+from code.feature_extraction.check_photos_existence import PhotoChecker
 
 from code.util import COLUMN_PHOTO_EXISTENCE
 
