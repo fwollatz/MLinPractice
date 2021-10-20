@@ -44,8 +44,8 @@ parser.add_argument("-mo", "--month", action = "store_true", help = "compute the
 parser.add_argument("-wd", "--weekday", action = "store_true", help = "compute the day of the week")
 parser.add_argument("--photo", action = "store_true", help = "check if a tweet contains photo(s)")
 parser.add_argument("-f", "--follower", action = "store_true", help = "compute the amount of followers")
-parser.add_argument("-ch", "--has_most_common_hashtags", action = "store_true", help = "check wether the tweet has the top n hashtags")
-parser.add_argument("-ce", "--has_most_common_emojis", action = "store_true", help = "check wether the tweet has the top n emojis")
+parser.add_argument("-ch", "--has_most_common_hashtags", type = int, help = "check wether the tweet has the top n hashtags", default= None)
+parser.add_argument("-ce", "--has_most_common_emojis", type = int, help = "check wether the tweet has the top n emojis", default= None)
 parser.add_argument("-w", "--number_of_words", action = "store_true", help = "compute the number of words in the preprocessed tweet")
 args = parser.parse_args()
 
@@ -61,12 +61,12 @@ else:    # need to create FeatureCollector manually
 
     # collect all feature extractors
     features = []
-    if args.has_most_common_hashtags :
+    if args.has_most_common_hashtags is not None:
         #create ohe feature, if the top n most commonly used hashtags are existent
-        features.append(HasMostCommonHashtags(COLUMN_HASHTAG,2))
-    if args.has_most_common_emojis :
+        features.append(HasMostCommonHashtags(COLUMN_HASHTAG,args.has_most_common_hashtags))
+    if args.has_most_common_emojis is not None:
         #create ohe feature, if the top n most commonly used Emojis are existent
-        features.append(HasMostCommonEmojis(COLUMN_EMOJIS,2))
+        features.append(HasMostCommonEmojis(COLUMN_EMOJIS,args.has_most_common_emojis))
     if args.char_length:
         # character length of original tweet (without any changes)
         features.append(CharacterLength(COLUMN_TWEET))
