@@ -10,15 +10,16 @@ Created on Wed Sep 29 14:23:48 2021
 
 import argparse, pickle
 import matplotlib.pyplot as plt
+
 from sklearn.dummy import DummyClassifier
-
-from sklearn.metrics import accuracy_score, top_k_accuracy_score, confusion_matrix, cohen_kappa_score, roc_auc_score, roc_curve
-
-from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import ComplementNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
+
+from sklearn.metrics import accuracy_score, top_k_accuracy_score, confusion_matrix, cohen_kappa_score, roc_auc_score, roc_curve
 from mlflow import log_metric, log_param, set_tracking_uri
 
 # setting up CLI
@@ -30,6 +31,10 @@ parser.add_argument("-i", "--import_file", help = "import a trained classifier f
 parser.add_argument("-m", "--majority", action = "store_true", help = "majority class classifier")
 parser.add_argument("-f", "--frequency", action = "store_true", help = "label frequency classifier")
 parser.add_argument("--knn", type = int, help = "k nearest neighbor classifier with the specified value of k", default = None)
+parser.add_argument("-cnb", "--complement_naive_bayes", action = "store_true", help = "a naive bayes classifier, especially good with imbalanced data. Described in Rennie et al. (2003).")
+parser.add_argument("-cnb_a", "--complement_naive_bayes_alpha", type = float , help = "Additive (Laplace/Lidstone) smoothing parameter (0 for no smoothing).", default=1.0)
+parser.add_argument("-cnb_fp", "--complement_naive_bayes_fit_prior", action = "store_false", help = "Only used in edge case with a single class in the training set.")
+parser.add_argument("-cnb_n", "--complement_naive_bayes_norm", action = "store_true", help = "Whether or not a second normalization of the weights is performed. The default behavior mirrors the implementations found in Mahout and Weka, which do not follow the full algorithm described in Table 9 of the paper.")
 parser.add_argument("-a", "--accuracy", action = "store_true", help = "evaluate using accuracy")
 parser.add_argument("-tka", "--topkaccuracy", action = "store_true", help = "evaluate using top k accuracy")
 parser.add_argument("-c", "--confusionmatrix", action = "store_true", help = "print the confusion-matrix")
@@ -92,6 +97,16 @@ else:   # manually set up a classifier
         knn_classifier = KNeighborsClassifier(args.knn, n_jobs = -1)
         classifier = make_pipeline(standardizer, knn_classifier)
     
+    # complement naive bayes classifier
+    if args.complement_naive_bayes:
+        print("    complement naive bayes classifier")
+        log_param("classifier", "cnb")
+        params = {"classifier": "cnb"}
+        alpha=args.complement_naive_bayes_alpha
+        fit_prior=args.complement_naive_bayes_fit_prior
+        norm=args.complement_naive_bayes_norm
+        classifier = ComplementNB(alpha=alpha, fit_prior=fit_prior, norm=norm)
+        
     # Decision Tree classifier
     elif args.dtc:
         # set default configuration

@@ -62,7 +62,7 @@ def test_tokenization_single_sentence_is_working(self):
 
 **Classification**
 1. added 'topkaccuracy', 'ROC curve'', 'auc' to evaluation metrics in run_*classifer.py* (211005)
-2.
+2. 
 
 ## Evaluation
 
@@ -152,6 +152,8 @@ Which features are the most important ones and why may that be the case?
 
 Which classifier(s) did you use? Which hyperparameter(s) (with their respective
 candidate values) did you look at? What were your reasons for this?
+
+We used the complement naive bayes, because it is known to work with an imbalanced dataset like ours.
 
 ### Results
 
