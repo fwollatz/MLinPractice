@@ -10,12 +10,13 @@ from code.feature_extraction.feature_extractor import FeatureExtractor
 from code.util import COLUMN_SENTIMENT, string_to_words_list
 import numpy as np
 import nltk
-nltk.download('vader_lexicon')
+
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 #class for extracting the amount of words after general preprocessing
 class SentimentFeature(FeatureExtractor):
     sentiment_analyzer=SentimentIntensityAnalyzer()
+    
     
     def __init__(self, input_column: str):
         """
@@ -32,7 +33,7 @@ class SentimentFeature(FeatureExtractor):
 
         """
 
-
+        nltk.download('vader_lexicon')
         super().__init__([input_column], COLUMN_SENTIMENT)
         
     def _get_values(self, inputs: list) -> np.ndarray :
@@ -57,11 +58,12 @@ class SentimentFeature(FeatureExtractor):
         list_of_sentiments=[]
         
         for tweet in inputs[0]:
-            sentiment=self.sentiment_analyzer.polarity_scores()["compound"]
+            sentiment=self.sentiment_analyzer.polarity_scores(tweet)["compound"]+1 #the +1 is to avoid that classifiers have a problem with negative numbers
             list_of_sentiments+=[sentiment]
         #saving it in an array
         result = np.array(list_of_sentiments)
         #expand dim to (tweets, 1)
         result = result.reshape(-1,1)
+        print(result)
         return result
     
