@@ -25,7 +25,7 @@ from code.feature_extraction.follower_count import FollowerCount
 from code.feature_extraction.number_of_words import NumberOfWords
 from code.feature_extraction.feature_collector import FeatureCollector
 from code.feature_extraction.has_most_common_words import HasMostCommonWords
-
+from code.feature_extraction.sentiment_feature import SentimentFeature
 from code.util import COLUMN_LABEL, COLUMN_TWEET, COLUMN_LIKES, COLUMN_RETWEETS, COLUMN_TIME, COLUMN_DATE, COLUMN_HASHTAG, COLUMN_URLS, COLUMN_PHOTOS, COLUMN_VIDEOS ,COLUMN_LANGUAGE, COLUMN_USERNAME, COLUMN_EMOJIS, COLUMN_USER_ID
 from code.util import COLUMN_GENERAL_PREPROCESSED
 
@@ -48,6 +48,8 @@ parser.add_argument("-ch", "--has_most_common_hashtags", type = int, help = "che
 parser.add_argument("-ce", "--has_most_common_emojis", type = int, help = "check whether the tweet has the top n emojis", default= None)
 parser.add_argument("-w", "--number_of_words", action = "store_true", help = "compute the number of words in the preprocessed tweet")
 parser.add_argument("-cw", "--has_most_common_words", type = int, help = "check whether the tweet has the top n words", default = 10)
+parser.add_argument("-s", "--sentiment", action = "store_true", help = "compute the sentiment of the tweet using nltk.vader")
+
 args = parser.parse_args()
 
 # load data
@@ -100,7 +102,8 @@ else:    # need to create FeatureCollector manually
     if args.has_most_common_words is not None:
         #create ohe feature, if the top n most common words are existent
         features.append(HasMostCommonWords(COLUMN_GENERAL_PREPROCESSED, args.has_most_common_words))
-
+    if args.sentiment:
+        features.append(SentimentFeature(COLUMN_TWEET))
     # create overall FeatureCollector
     feature_collector = FeatureCollector(features)
     
