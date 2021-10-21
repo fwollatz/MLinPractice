@@ -17,7 +17,7 @@ class StopWordRemoverTest(unittest.TestCase):
         self.OUTPUT_COLUMN = "output"
         self.STOP_WORD_REMOVER = StopWordRemover(self.INPUT_COLUMN, self.OUTPUT_COLUMN)
         
-    def test_stemming_works(self):
+    def test_removing_stop_words_works(self):
         #arrange
         input_texts = ["['this','has','some','stop','words']",
                        "['zero','stop','words','removed']"
