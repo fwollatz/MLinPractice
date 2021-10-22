@@ -23,10 +23,10 @@ class FollowerCount(FeatureExtractor):
     
     
     # assign the access-codes for the twitter api accordingly
-    consumer_key = "_"
-    consumer_secret = "_"
-    access_token = "_"
-    access_token_secret="_"
+    consumer_key = "VeoDsQOrGzPmTE1p6dLRklt5L" #input("please write your consumer key for the twitter api here:")
+    consumer_secret = "TRvLoRp7sK9aVVxQKvGhgY2zb282jBQhP7CFxICPlacbOVB9vI"#input("please write your consumer_secret for the twitter api here:")
+    access_token = "2800148739-vPpKSDACS4fJHnuOnkFjBo7CUDaehSBS3DzaFf9"#input("please write your access_token for the twitter api here:")
+    access_token_secret="PJ3zVkeHxZz8AyiQweQ7u5AD3X5oVituu9Cpt1s8gLdR6"#input("please write your access_token_secret for the twitter api here:")
     
     try:
         # authorization of consumer key and consumer secret
@@ -110,6 +110,7 @@ class FollowerCount(FeatureExtractor):
             #check if user is allready in dict, otherwise ask api
             if user_id in self.id_to_follower.keys():                  
                 list_of_follower_counts+=[self.id_to_follower[user_id]]
+                print(user_id, "hat", self.id_to_follower[user_id])
             else:
                 too_many_requests=True
                 while too_many_requests:
