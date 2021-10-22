@@ -21,6 +21,8 @@ from sklearn.tree import DecisionTreeClassifier
 
 from sklearn.metrics import accuracy_score, top_k_accuracy_score, confusion_matrix, cohen_kappa_score, roc_auc_score, roc_curve
 from mlflow import log_metric, log_param, set_tracking_uri
+from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV # to find proper C and gamma of SVM
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Classifier")
@@ -28,6 +30,7 @@ parser.add_argument("input_file", help = "path to the input pickle file")
 parser.add_argument("-s", '--seed', type = int, help = "seed for the random number generator", default = None)
 parser.add_argument("-e", "--export_file", help = "export the trained classifier to the given location", default = None)
 parser.add_argument("-i", "--import_file", help = "import a trained classifier from the given location", default = None)
+"""-------------- Classifier Choices -------------"""
 parser.add_argument("-m", "--majority", action = "store_true", help = "majority class classifier")
 parser.add_argument("-f", "--frequency", action = "store_true", help = "label frequency classifier")
 parser.add_argument("--knn", type = int, help = "k nearest neighbor classifier with the specified value of k", default = None)
@@ -35,13 +38,7 @@ parser.add_argument("-cnb", "--complement_naive_bayes", action = "store_true", h
 parser.add_argument("-cnb_a", "--complement_naive_bayes_alpha", type = float , help = "Additive (Laplace/Lidstone) smoothing parameter (0 for no smoothing).", default=1.0)
 parser.add_argument("-cnb_fp", "--complement_naive_bayes_fit_prior", action = "store_false", help = "Only used in edge case with a single class in the training set.")
 parser.add_argument("-cnb_n", "--complement_naive_bayes_norm", action = "store_true", help = "Whether or not a second normalization of the weights is performed. The default behavior mirrors the implementations found in Mahout and Weka, which do not follow the full algorithm described in Table 9 of the paper.")
-parser.add_argument("-a", "--accuracy", action = "store_true", help = "evaluate using accuracy")
-parser.add_argument("-tka", "--topkaccuracy", action = "store_true", help = "evaluate using top k accuracy")
-parser.add_argument("-c", "--confusionmatrix", action = "store_true", help = "print the confusion-matrix")
-parser.add_argument("-k", "--kappa", action = "store_true", help = "evaluate using Cohen's kappa")
-parser.add_argument("-auc","--auc",action = "store_true",help = "evaluate using Area Under ROC curve")
-parser.add_argument("-roc","--roc",action = "store_true",help = "show the corresponding ROC curve")
-parser.add_argument("--log_folder", help = "where to log the mlflow results", default = "data/classification/mlflow")
+parser.add_argument("--svc", action = "store_true", help="Support vector classifier")
 parser.add_argument("--dtc", action = "store_true", help = "use the decision tree classifier")
 parser.add_argument("--dtc_max_depth", type = int, help="decicion tree classifier with the specified value for the max_depth", default = None)
 parser.add_argument("--dtc_criterion_entropy", action = "store_true", help = "use the entropy crition parameter for the decision tree classifier. Default criterion is 'gini'")
@@ -52,6 +49,14 @@ parser.add_argument("--rfc_criterion_entropy", action = "store_true", help = "us
 parser.add_argument("--rfc_max_depth", type = int, help = "random forest classifier with the specified value for the max_depth", default = None)
 parser.add_argument("--rfc_n_estimators", type = int, help = "random forest classifier with the specified value for the number of trees in the forest. Default is 100", default = 100)
 parser.add_argument("--class_weight_balanced", action = "store_true", help = "use the class weight = 'balanced' option if available to even out inequal label distributions")
+"""-------------- Evaluation Matrix Choices -------------"""
+parser.add_argument("-a", "--accuracy", action = "store_true", help = "evaluate using accuracy")
+parser.add_argument("-tka", "--topkaccuracy", action = "store_true", help = "evaluate using top k accuracy")
+parser.add_argument("-c", "--confusionmatrix", action = "store_true", help = "print the confusion-matrix")
+parser.add_argument("-k", "--kappa", action = "store_true", help = "evaluate using Cohen's kappa")
+parser.add_argument("-auc","--auc",action = "store_true",help = "evaluate using Area Under ROC curve")
+parser.add_argument("-roc","--roc",action = "store_true",help = "show the corresponding ROC curve")
+parser.add_argument("--log_folder", help = "where to log the mlflow results", default = "data/classification/mlflow")
 args = parser.parse_args()
 
 # load data
@@ -98,7 +103,7 @@ else:   # manually set up a classifier
         classifier = make_pipeline(standardizer, knn_classifier)
     
     # complement naive bayes classifier
-    if args.complement_naive_bayes:
+    elif args.complement_naive_bayes:
         print("    complement naive bayes classifier")
         log_param("classifier", "cnb")
         params = {"classifier": "cnb"}
@@ -176,7 +181,24 @@ else:   # manually set up a classifier
                                             class_weight = class_weight_param,
                                             #use all processors
                                             n_jobs = -1)
-    
+
+    # Support Vector Classifier
+    elif args.svc:
+        print("   Support vector classifier")
+        log_param("classifier", "svc")
+        param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [1, 0.1, 0.01, 0.001], 'kernel': ['rbf', 'poly', 'sigmoid']}
+        grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=2)
+        grid.fit(data["features"], data["labels"].ravel())
+        best_params = grid.best_params_
+        kernel = best_params["kernel"]
+        C = best_params["C"]
+        gamma = best_params["gamma"]
+        log_param("kernel", kernel)
+        log_param("C", C)
+        log_param("gamma", gamma)
+        params = {"classifier": "svc", "kernel": kernel, "C": C, "gamma": gamma}
+        classifier = SVC(kernel=kernel, C=C, gamma=gamma)
+
     classifier.fit(data["features"], data["labels"].ravel())
     log_param("dataset", "training")
 
@@ -211,9 +233,9 @@ for metric_name, metric in evaluation_metrics:
         plt.ylabel('True Positive Rate')
         plt.show()
     else:
-    	metric_value = metric(data["labels"], prediction)
-    	print("    {0}: {1}".format(metric_name, metric(data["labels"], prediction)))
-    	log_metric(metric_name, metric_value)
+        metric_value = metric(data["labels"], prediction)
+        print("    {0}: {1}".format(metric_name, metric(data["labels"], prediction)))
+        log_metric(metric_name, metric_value)
     
 # export the trained classifier if the user wants us to do so
 if args.export_file is not None:
