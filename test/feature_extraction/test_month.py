@@ -24,7 +24,7 @@ class MonthTest(unittest.TestCase):
         self.assertEqual(self.Month_feature._input_columns, [self.INPUT_COLUMN])
 
     def test_feature_name(self):
-        self.assertEqual(self.Month_feature.get_feature_name(), COLUMN_MONTH)
+        self.assertEqual(self.Month_feature.get_feature_name(), ['MONTH_JA', 'MONTH_FEB', 'MONTH_MA', 'MONTH_APR', 'MONTH_MAI', 'MONTH_JUN', 'MONTH_JUL', 'MONTH_AUG', 'MONTH_SEP', 'MONTH_OKT', 'MONTH_NOV', 'MONTH_DEZ'])
 
 
     def test_ohe_month_correct(self):
