@@ -32,7 +32,11 @@ parser.add_argument("-i", "--import_file", help = "import a trained classifier f
 parser.add_argument("-m", "--majority", action = "store_true", help = "majority class classifier")
 parser.add_argument("-f", "--frequency", action = "store_true", help = "label frequency classifier")
 parser.add_argument("--knn", type = int, help = "k nearest neighbor classifier with the specified value of k", default = None)
-parser.add_argument("--svc", type = int, help="Support vector classifier")
+parser.add_argument("--svc", action = "store_true", help="Support vector classifier")
+parser.add_argument("--dtc", action = "store_true", help = "use the decision tree classifier")
+parser.add_argument("--dtc_max_depth", type = int, help="decicion tree classifier with the specfied value for the max_deoth", default = None)
+parser.add_argument("--dtc_criterion_entropy", action = "store_true", help = "use the entropy crition parameter for the decision tree classifier. Default criterion is 'gini'")
+parser.add_argument("--dtc_splitter_random", action = "store_true", help = "use the random splitter parameter for the decision tree classifier. Default splitter is 'best'")
 """-------------- Evaluation Matrix Choices -------------"""
 parser.add_argument("-a", "--accuracy", action = "store_true", help = "evaluate using accuracy")
 parser.add_argument("-tka", "--topkaccuracy", action = "store_true", help = "evaluate using top k accuracy")
@@ -41,11 +45,6 @@ parser.add_argument("-k", "--kappa", action = "store_true", help = "evaluate usi
 parser.add_argument("-auc","--auc",action = "store_true",help = "evaluate using Area Under ROC curve")
 parser.add_argument("-roc","--roc",action = "store_true",help = "show the corresponding ROC curve")
 parser.add_argument("--log_folder", help = "where to log the mlflow results", default = "data/classification/mlflow")
-parser.add_argument("--dtc", action = "store_true", help = "use the decision tree classifier")
-parser.add_argument("--dtc_max_depth", type = int, help="decicion tree classifier with the specfied value for the max_deoth", default = None)
-parser.add_argument("--dtc_criterion_entropy", action = "store_true", help = "use the entropy crition parameter for the decision tree classifier. Default criterion is 'gini'")
-parser.add_argument("--dtc_splitter_random", action = "store_true", help = "use the random splitter parameter for the decision tree classifier. Default splitter is 'best'")
-
 args = parser.parse_args()
 
 # load data
@@ -91,11 +90,23 @@ else:   # manually set up a classifier
         knn_classifier = KNeighborsClassifier(args.knn, n_jobs = -1)
         classifier = make_pipeline(standardizer, knn_classifier)
 
-    elif args.svc is not None:
-        print("    Support vector classifier")
-        # TODO
+    elif args.svc:
+        print("   Support vector classifier")
+        log_param("classifier", "svc")
         # https://scikit-learn.org/stable/auto_examples/svm/plot_rbf_parameters.html#sphx-glr-auto-examples-svm-plot-rbf-parameters-py
-        classifier = SVC(kernel='rbf')
+        # https://www.vebuso.com/2020/03/svm-hyperparameter-tuning-using-gridsearchcv/
+        param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [1, 0.1, 0.01, 0.001], 'kernel': ['rbf', 'poly', 'sigmoid']}
+        grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=2)
+        grid.fit(data["features"], data["labels"].ravel())
+        best_params = grid.best_params_
+        kernel = best_params["kernel"]
+        C = best_params["C"]
+        gamma = best_params["gamma"]
+        log_param("kernel", kernel)
+        log_param("C", C)
+        log_param("gamma", gamma)
+        params = {"classifier" : "svc", "kernel": kernel, "C": C, "gamma": gamma}
+        classifier = SVC(kernel=kernel, C=C, gamma=gamma)
 
     elif args.dtc:
         # set default configuration
@@ -119,9 +130,7 @@ else:   # manually set up a classifier
         classifier = DecisionTreeClassifier(criterion = criterion_param,
                                             splitter = splitter_param,
                                             max_depth = max_depth_param)
-        
-        
-    
+
     classifier.fit(data["features"], data["labels"].ravel())
     log_param("dataset", "training")
 

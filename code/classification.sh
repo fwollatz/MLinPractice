@@ -5,10 +5,10 @@ mkdir -p data/classification/
 
 # run feature extraction on training set (may need to fit extractors)
 echo "  training set"
-python -m code.classification.run_classifier data/dimensionality_reduction/training.pickle -e data/classification/classifier.pickle --dtc --dtc_splitter_random -s 42 --accuracy --kappa
+python -m code.classification.run_classifier data/dimensionality_reduction/training.pickle -e data/classification/classifier.pickle --svc -s 42 --accuracy --kappa # --dtc --dtc_splitter_random
 
 # run feature extraction on validation set (with pre-fit extractors)
 echo "  validation set"
-python -m code.classification.run_classifier data/dimensionality_reduction/validation.pickle -i data/classification/classifier.pickle --accuracy --kappa
+python -m code.classification.run_classifier data/dimensionality_reduction/validation.pickle -i data/classification/classifier.pickle --svc --accuracy --kappa
 
 # don't touch the test set, yet, because that would ruin the final generalization experiment!
