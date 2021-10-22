@@ -5,7 +5,7 @@ mkdir -p data/classification/
 
 # run feature extraction on training set (may need to fit extractors)
 echo "  training set"
-python -m code.classification.run_classifier data/dimensionality_reduction/training.pickle -e data/classification/classifier.pickle -cnb -s 42 --accuracy --kappa --auc
+python -m code.classification.run_classifier data/dimensionality_reduction/training.pickle -e data/classification/classifier.pickle -cnb -s 42 --accuracy --kappa --auc #--svc
 
 # run feature extraction on validation set (with pre-fit extractors)
 echo "  validation set"
