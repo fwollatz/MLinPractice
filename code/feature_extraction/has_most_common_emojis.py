@@ -59,7 +59,6 @@ class HasMostCommonEmojis(FeatureExtractor):
         
         #generate mask for each emoji
         for i in self._emojis:
-            print(i)
             mask=re.compile(i)
             self.emoji_re_masks+=[mask]
         

@@ -24,7 +24,7 @@ class WeekdayTest(unittest.TestCase):
         self.assertEqual(self.Weekday_feature._input_columns, [self.INPUT_COLUMN])
 
     def test_feature_name(self):
-        self.assertEqual(self.Weekday_feature.get_feature_name(), COLUMN_WEEKDAY)
+        self.assertEqual(self.Weekday_feature.get_feature_name(), ['WEEKDAY_MO', 'WEEKDAY_DI', 'WEEKDAY_MI', 'WEEKDAY_DO', 'WEEKDAY_FR', 'WEEKDAY_SA', 'WEEKDAY_SO'])
 
 
     def test_ohe_weekday_correct(self):
