@@ -42,6 +42,9 @@ parser.add_argument("-cnb_fp", "--complement_naive_bayes_fit_prior", action = "s
 parser.add_argument("-cnb_n", "--complement_naive_bayes_norm", action = "store_true", help = "Whether or not a second normalization of the weights is performed. The default behavior mirrors the implementations found in Mahout and Weka, which do not follow the full algorithm described in Table 9 of the paper.")
 #Support Vector Classifier
 parser.add_argument("--svc", action = "store_true", help="Support vector classifier")
+parser.add_argument("--svc_c", type = float, help="Specify Regularization parameter C of SVC", default = 1.0)
+parser.add_argument("--svc_gamma", type = float, help="Specify Gamma parameter of SVC", default = 1.0)
+parser.add_argument("--svc_kernel", help = "Specify the kernel mode of SVC", default = 'rbf')
 #Decision Tree Classifier
 parser.add_argument("--dtc", action = "store_true", help = "use the decision tree classifier")
 parser.add_argument("--dtc_max_depth", type = int, help="decicion tree classifier with the specified value for the max_depth", default = None)
@@ -198,18 +201,20 @@ else:   # manually set up a classifier
     # Support Vector Classifier
     elif args.svc:
         print("   Support vector classifier")
+       
+        #param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [1, 0.1, 0.01, 0.001], 'kernel': ['rbf', 'poly', 'sigmoid']}
+        #grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=2)
+        #grid.fit(data["features"], data["labels"].ravel())
+        #best_params = grid.best_params_
+        kernel = args.svc_kernel
+        C = args.svc_c
+        gamma = args.svc_gamma
+        print("   Support Vector Classifier, c = {0}, gamma = {1}, kernel = {2}".format(C, gamma, kernel))
         log_param("classifier", "svc")
-        param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [1, 0.1, 0.01, 0.001], 'kernel': ['rbf', 'poly', 'sigmoid']}
-        grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=2)
-        grid.fit(data["features"], data["labels"].ravel())
-        best_params = grid.best_params_
-        kernel = best_params["kernel"]
-        C = best_params["C"]
-        gamma = best_params["gamma"]
         log_param("kernel", kernel)
         log_param("C", C)
         log_param("gamma", gamma)
-        params = {"classifier": "svc", "kernel": kernel, "C": C, "gamma": gamma}
+        params = {"classifier": "svc", "svc_kernel": kernel, "svc_C": C, "svc_gamma": gamma}
         classifier = SVC(kernel=kernel, C=C, gamma=gamma)
 
     classifier.fit(data["features"], data["labels"].ravel())

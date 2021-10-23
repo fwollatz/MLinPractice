@@ -6,6 +6,9 @@ mkdir -p data/classification
 values_of_k=("1 2 3 4 5 6 7 8 9 10")
 values_of_dtc_maxdepth=("None 5 10 15 20")
 values_of_cnb_alpha=("0.05 0.15 0.30 0.50 0.70 0.85 0.95 1.0")
+values_of_svc_C=("0.1 1 10 100")
+values_of_svc_Gamma=("1 0.1 0.01 0.001")
+values_of_svc_kernel=("'rbf' 'poly' 'sigmoid'")
 
 # different execution modes
 if [ $1 = local ]
@@ -58,7 +61,18 @@ do
     $cmd 'data/classification/clf_CNB_'"$alpha"'_without_norm.pickle' --cnb --complement_naive_bayes_alpha $alpha --complement_naive_bayes_norm -s 42 --accuracy --kappa --auc
 done
 
-#Support Vector Classifier: Hyperparameter Optimizing happening internally
+#Support Vector Classifier
 echo "Optimizing Support Vector Classifier"
 
-$cmd 'data/classification/clf_SVC.pickle' --svc -s 42 --accuracy --kappa --auc
+for kernel in $values_of_svc_kernel
+do
+    for c_value in $values_of_svc_C
+    do
+        for gamma_value in $values_of_svc_Gamma
+        do
+            echo "SVC kernel={$kernel}, c={$c_value}, gamma={$gamma_value}"
+            $cmd 'data/classification/clf_SVC.pickle' --svc --svc_c $c_value --svc_kernel $kernel --svc_gamma $gamma_value -s 42 --accuracy --kappa --auc
+        done
+    done
+done
+
