@@ -33,21 +33,27 @@ parser.add_argument("-i", "--import_file", help = "import a trained classifier f
 """-------------- Classifier Choices -------------"""
 parser.add_argument("-m", "--majority", action = "store_true", help = "majority class classifier")
 parser.add_argument("-f", "--frequency", action = "store_true", help = "label frequency classifier")
+#KNN
 parser.add_argument("--knn", type = int, help = "k nearest neighbor classifier with the specified value of k", default = None)
+#Complement Naive Bayes
 parser.add_argument("-cnb", "--complement_naive_bayes", action = "store_true", help = "a naive bayes classifier, especially good with imbalanced data. Described in Rennie et al. (2003).")
 parser.add_argument("-cnb_a", "--complement_naive_bayes_alpha", type = float , help = "Additive (Laplace/Lidstone) smoothing parameter (0 for no smoothing).", default=1.0)
 parser.add_argument("-cnb_fp", "--complement_naive_bayes_fit_prior", action = "store_false", help = "Only used in edge case with a single class in the training set.")
 parser.add_argument("-cnb_n", "--complement_naive_bayes_norm", action = "store_true", help = "Whether or not a second normalization of the weights is performed. The default behavior mirrors the implementations found in Mahout and Weka, which do not follow the full algorithm described in Table 9 of the paper.")
+#Support Vector Classifier
 parser.add_argument("--svc", action = "store_true", help="Support vector classifier")
+#Decision Tree Classifier
 parser.add_argument("--dtc", action = "store_true", help = "use the decision tree classifier")
 parser.add_argument("--dtc_max_depth", type = int, help="decicion tree classifier with the specified value for the max_depth", default = None)
 parser.add_argument("--dtc_criterion_entropy", action = "store_true", help = "use the entropy crition parameter for the decision tree classifier. Default criterion is 'gini'")
 parser.add_argument("--dtc_splitter_random", action = "store_true", help = "use the random splitter parameter for the decision tree classifier. Default splitter is 'best'")
+#Random Forest Classifier
 parser.add_argument("--rfc", action = "store_true", help = "use the random forest classifier")
 parser.add_argument("--rfc_no_bootstrap", action = "store_true", help = "disable bootstrapping, use the whole dataset for each tree")
 parser.add_argument("--rfc_criterion_entropy", action = "store_true", help = "use the entropy crition parameter for the random forest classifier. Default criterion is 'gini'" )
 parser.add_argument("--rfc_max_depth", type = int, help = "random forest classifier with the specified value for the max_depth", default = None)
 parser.add_argument("--rfc_n_estimators", type = int, help = "random forest classifier with the specified value for the number of trees in the forest. Default is 100", default = 100)
+#Balanced Weights Options, available for DTC and RFC 
 parser.add_argument("--class_weight_balanced", action = "store_true", help = "use the class weight = 'balanced' option if available to even out inequal label distributions")
 """-------------- Evaluation Matrix Choices -------------"""
 parser.add_argument("-a", "--accuracy", action = "store_true", help = "evaluate using accuracy")
@@ -105,11 +111,18 @@ else:   # manually set up a classifier
     # complement naive bayes classifier
     elif args.complement_naive_bayes:
         print("    complement naive bayes classifier")
-        log_param("classifier", "cnb")
-        params = {"classifier": "cnb"}
         alpha=args.complement_naive_bayes_alpha
         fit_prior=args.complement_naive_bayes_fit_prior
         norm=args.complement_naive_bayes_norm
+        print("   Complement Naive Bayes Classifier, alpha = {0}, fit_prior = {1}, norm = {2}".format(alpha, fit_prior, norm))
+        log_param("classifier", "cnb")
+        log_param("cnb_alpha", alpha)
+        log_param("cnb_fit_prior", fit_prior)
+        log_param("cnb_norm", norm)
+        params = {"classifier": "cnb", 
+                  "cnb_alpha" : alpha,
+                  "cnb_fit_prior" : fit_prior,
+                  "cnb_norm" : norm}
         classifier = ComplementNB(alpha=alpha, fit_prior=fit_prior, norm=norm)
         
     # Decision Tree classifier
