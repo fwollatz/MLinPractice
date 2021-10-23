@@ -172,7 +172,7 @@ else:   # manually set up a classifier
             bootstrap_param = False
         if args.rfc_max_depth is not None:
             max_depth_param = args.rfc_max_depth
-        if args.rfc_n_estimators is not 100:
+        if args.rfc_n_estimators != 100:
             n_estimators_param = args.rfc_n_estimators
         if args.class_weight_balanced:
             class_weight_param = "balanced"
