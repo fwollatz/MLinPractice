@@ -8,7 +8,7 @@ values_of_dtc_maxdepth=("None 5 10 15 20")
 values_of_cnb_alpha=("0.05 0.15 0.30 0.50 0.70 0.85 0.95 1.0")
 values_of_svc_C=("0.1 1 10 100")
 values_of_svc_Gamma=("1 0.1 0.01 0.001")
-values_of_svc_kernel=("'rbf' 'poly' 'sigmoid'")
+values_of_svc_kernel=("rbf poly sigmoid")
 
 # different execution modes
 if [ $1 = local ]
@@ -54,11 +54,11 @@ echo "Optimizing Complement Naive Bayes Classifier"
 for alpha in $values_of_cnb_alpha
 do
     echo "CNB alpha={$alpha}"
-    $cmd 'data/classification/clf_CNB_'"$alpha"'.pickle' --cnb --complement_naive_bayes_alpha $alpha -s 42 --accuracy --kappa --auc
+    $cmd 'data/classification/clf_CNB_'"$alpha"'.pickle' -cnb --complement_naive_bayes_alpha $alpha -s 42 --accuracy --kappa --auc
     #running with fit prior
-    $cmd 'data/classification/clf_CNB_'"$alpha"'_fit_prior.pickle' --cnb --complement_naive_bayes_alpha $alpha --complement_naive_bayes_fit_prior -s 42 --accuracy --kappa --auc
+    $cmd 'data/classification/clf_CNB_'"$alpha"'_fit_prior.pickle' -cnb --complement_naive_bayes_alpha $alpha --complement_naive_bayes_fit_prior -s 42 --accuracy --kappa --auc
     #running without normalization
-    $cmd 'data/classification/clf_CNB_'"$alpha"'_without_norm.pickle' --cnb --complement_naive_bayes_alpha $alpha --complement_naive_bayes_norm -s 42 --accuracy --kappa --auc
+    $cmd 'data/classification/clf_CNB_'"$alpha"'_without_norm.pickle' -cnb --complement_naive_bayes_alpha $alpha --complement_naive_bayes_norm -s 42 --accuracy --kappa --auc
 done
 
 #Support Vector Classifier
