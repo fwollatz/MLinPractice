@@ -1,0 +1,15 @@
+artifact_uri: data/classification/mlflow/0/444095b4f0fc406b8e08e32e0018c4bb/artifacts
+end_time: 1635007767413
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: 444095b4f0fc406b8e08e32e0018c4bb
+run_uuid: 444095b4f0fc406b8e08e32e0018c4bb
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1635007767116
+status: 3
+tags: []
+user_id: zqirui
