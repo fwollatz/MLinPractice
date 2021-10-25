@@ -40,7 +40,7 @@ are mostly based on external 3rd party components (e.g. `sklearn`) and thus hard
     
 Example:
 
-```
+````
 def test_tokenization_single_sentence_is_working(self):
     #arrange
     input_text = "This is an example sentence"
@@ -53,7 +53,7 @@ def test_tokenization_single_sentence_is_working(self):
 
     #assert
     self.assertEqual(tokenized[self.OUTPUT_COLUMN][0], output_text)
-```
+````
     
 6.) Run `test/run_tests.sh`
 
@@ -72,7 +72,7 @@ def test_tokenization_single_sentence_is_working(self):
 
 The baseline classifier was majority vote classifier. On the training set, the accuracy achieved was 0.9058, Cohen's Kappa was 0 and AUC was 0.5. On the validation set, the accuracy achieved was 0.9058, Cohen's Kappa was 0 and AUC was 0.5. Always-true classifier was also implemented.
 
-![DTC performance on validation set](documentation\DTC_results_training_validation.png)
+![DTC performance on validation set](documentation/DTC_results_training_validation.png)
 
 More details on the classifiers will be illustrated later in the Classifier section. 
 
@@ -80,7 +80,7 @@ All results of the trained classifier could be viewed with:
 `mlflow ui --backend-store-uri data/classification/mlflow`
 
 Perform classification with the aforementioned best decision tree parameter configuration, we achieve the following results on the untouched test set.  
-![MLFlow overall results](documentation\best_classifier_test_set.png)
+![MLFlow overall results](documentation/best_classifier_test_set.png)
 
 ### Interpretation
 
@@ -88,7 +88,7 @@ Accuracy was based on the majority class, which showed the imbalance in the data
 
 The classifier that delivered the best results on the validation set was the decision tree classifier, with the balanced class weight option, gini criterion, max depth of 20 and best splitter. The results were detailed in the following table.
 
-![MLFlow DTC performance](documentation\DT_with_5_10_15_20_depth.png)
+![MLFlow DTC performance](documentation/DT_with_5_10_15_20_depth.png)
 
 As one can see Cohen's Kappa was still pretty low on the validation set while high on the training set for the best classifier. It indicates overfitting of this classifier. 
 Increasing the max depth led to stronger overfitting (the margin between the Cohen´s kappe scores increases with increasing depth). The differences in AUC score also confirmed the observation.
@@ -266,10 +266,6 @@ TODO: individual filling in
 
 ### Results
 
-The big finale begins: What are the evaluation results you obtained with your
-classifiers in the different setups? Do you overfit or underfit? For the best
-selected setup: How well does it generalize to the test set?
-
 The performance of random forest classifier and support vector classifier could not be optimized because the first one was too large to be pushed to git while the latter took too long for classification. For the remaining classifiers, the decision classifier performs the best, followed by the k-nearest neighbor classifier, complement naive bayes classifier, majority-/minority-vote and label frequency classifier in this order. The last three classifiers were of similar performance. Details were summarized in the mlflow table. 
 
 In general, nearly all the classifiers were overfitting the training set. The decision tree classifier generailzed better compared to other classifier, even though it could be optimized further. 
@@ -277,13 +273,91 @@ In general, nearly all the classifiers were overfitting the training set. The de
 Here is the configuration and the result of our best classifier again:
 ![BestClassifierConfig](documentation/best_classifier_test_set.png)
 
+For the hyper-parameter optimization the following script shows our predefined hyper-parameter value range, we explored `code/classification/grid_search.sh`:
+
+````shell
+#!/bin/bash
+
+mkdir -p data/classification
+
+# specify hyperparameter values
+values_of_k=("1 2 3 4 5 6 7 8 9 10")
+values_of_dtc_maxdepth=("None 5 10 15 20")
+values_of_cnb_alpha=("0.05 0.15 0.30 0.50 0.70 0.85 0.95 1.0")
+values_of_svc_C=("0.1 1 10 100")
+values_of_svc_Gamma=("1 0.1 0.01 0.001")
+values_of_svc_kernel=("rbf poly sigmoid")
+
+# different execution modes
+if [ $1 = local ]
+then
+    echo "[local execution]"
+    cmd="code/classification/classifier.sge"
+elif [ $1 = grid ]
+then
+    echo "[grid execution]"
+    cmd="qsub code/classification/classifier.sge"
+else
+    echo "[ERROR! Argument not supported!]"
+    exit 1
+fi
+
+# do the grid search 
+# KNN
+echo "Optimizing KNN Classifier"
+for k in $values_of_k
+do
+    echo "KNN k={$k}"
+    $cmd 'data/classification/clf_KNN_'"$k"'.pickle' --knn $k -s 42 --accuracy --kappa --auc
+done
+
+#Decision Tree Classifier
+echo "Optimizing Decision Tree Classifier"
+for depth in $values_of_dtc_maxdepth
+do
+    echo "DTC max_depth={$depth}"
+    $cmd 'data/classification/clf_DTC_'"$depth"'.pickle' --dtc --dtc_max_depth $depth -s 42 --accuracy --kappa --auc
+    #running with random splitter
+    $cmd 'data/classification/clf_DTC_'"$depth"'_random_splitter.pickle' --dtc --dtc_max_depth $depth --dtc_splitter_random -s 42 --accuracy --kappa --auc
+    #running with entropy criterion
+    $cmd 'data/classification/clf_DTC_'"$depth"'_criterion_entropy.pickle' --dtc --dtc_max_depth $depth --dtc_criterion_entropy -s 42 --accuracy --kappa --auc
+    #running with balanced weight option
+    $cmd 'data/classification/clf_DTC_'"$depth"'_class_weight_balanced.pickle' --dtc --dtc_max_depth $depth --class_weight_balanced -s 42 --accuracy --kappa --auc
+done
+
+#Random Forest Classifier: Not optimized due to git large file issues
+
+#Naive Bayes Classifier
+echo "Optimizing Complement Naive Bayes Classifier"
+for alpha in $values_of_cnb_alpha
+do
+    echo "CNB alpha={$alpha}"
+    $cmd 'data/classification/clf_CNB_'"$alpha"'.pickle' -cnb --complement_naive_bayes_alpha $alpha -s 42 --accuracy --kappa --auc
+    #running with fit prior
+    $cmd 'data/classification/clf_CNB_'"$alpha"'_fit_prior.pickle' -cnb --complement_naive_bayes_alpha $alpha --complement_naive_bayes_fit_prior -s 42 --accuracy --kappa --auc
+    #running without normalization
+    $cmd 'data/classification/clf_CNB_'"$alpha"'_without_norm.pickle' -cnb --complement_naive_bayes_alpha $alpha --complement_naive_bayes_norm -s 42 --accuracy --kappa --auc
+done
+
+#Support Vector Classifier
+echo "Optimizing Support Vector Classifier"
+
+for kernel in $values_of_svc_kernel
+do
+    for c_value in $values_of_svc_C
+    do
+        for gamma_value in $values_of_svc_Gamma
+        do
+            echo "SVC kernel={$kernel}, c={$c_value}, gamma={$gamma_value}"
+            $cmd 'data/classification/clf_SVC.pickle' --svc --svc_c $c_value --svc_kernel $kernel --svc_gamma $gamma_value -s 42 --accuracy --kappa --auc
+        done
+    done
+done
+
+
+````
+
 ### Interpretation
-
-Which hyperparameter settings are used? How important for the results?
-How good are we? Can this be used in practice or are we still too bad?
-Anything else we may have learned?
-
-TODO: qirui - add hyper-parameter values
 
 We suspected that the decision tree classifier performed the best because the dimensionality reduction was performed using a decision tree model.
 The best classifier managed to score at around 80% on the validation set but still the Cohen's Kappa score of 0.292 indicated that overfitting persisted and further optimization was needed.
