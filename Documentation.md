@@ -1,22 +1,28 @@
 Machine Learning in Practice (Group HumbleBees 777, Qirui Zhu, Frederik Wollatz, Xi Cheng)
 
-**Setup**
+## General documenation
+
+### Setup
 1. Setup environment and working tools (incl. Jamovi for dataset exploration) (211004)
 2. Defined labeling/color coding convention used on Trello (211004)
 3. Explored dataset and listed features that could be used later for model building and experiments (incl. filtering out non-english tweets) (211004)
 4. created 'Documentation.md' (211005)
 5. clean code: defined naming conventions that shall be used consistently throughout the project (incl. variable names and function names)
 
-**Implementation Checklist Preprocessing & Feature Extraction**
+### Implementation Checklist Preprocessing & Feature Extraction
 1. Update corresponding shell script
 2. Write new unit test
 3. Update ReadMe.md and maybe Documentation.md
 4. Execute corresponding shell script
 5. Run `test/run_tests.sh`
 
-##Test Strategy
+## Test Strategy
 
-**Test Agreements**
+### Test Agreements
+
+Only components from the preprocessing and feature_extraction parts will be covered by unit tests, since
+the behaviour of these parts are well specify-able and testable. The other parts (evaluation, dimensionality reduction)
+are mostly based on external 3rd party components (e.g. `sklearn`) and thus hard to test. 
 
 1. TestCases should named as boolean outcomes (e.g. def this_class_works: => y/n)
 
@@ -55,9 +61,6 @@ def test_tokenization_single_sentence_is_working(self):
 
 ### Design Decisions
 
-Which evaluation metrics did you use and why? 
-Which baselines did you use and why?
-
 - Accuracy: to easily compare scores with baseline classifier (majority vote classifier was used here).
 - Top K Accuracy score: originally implement for performing multiclass prediction. But now since do bi-class prediction, this metric is not useful anymore.
 - Confusion matrix: not a concrete score, but the possibility to get the confusion matrix which some the metrics are based on
@@ -67,27 +70,28 @@ Which baselines did you use and why?
 
 ### Results
 
-How do the baselines perform with respect to the evaluation metrics?
-
 The baseline classifier was majority vote classifier. On the training set, the accuracy achieved was 0.9058, Cohen's Kappa was 0 and AUC was 0.5. On the validation set, the accuracy achieved was 0.9058, Cohen's Kappa was 0 and AUC was 0.5. Always-true classifier was also implemented.
+
+![DTC performance on validation set](documentation\DTC_results_training_validation.png)
 
 More details on the classifiers will be illustrated later in the Classifier section. 
 
 All results of the trained classifier could be viewed with:
 `mlflow ui --backend-store-uri data/classification/mlflow`
 
-TODO: insert a pic/table of the train/test result 
+Perform classification with the aforementioned best decision tree parameter configuration, we achieve the following results on the untouched test set.  
+![MLFlow overall results](documentation\best_classifier_test_set.png)
 
 ### Interpretation
 
-Is there anything we can learn from these results?
-
 Accuracy was based on the majority class, which showed the imbalance in the dataset. It was also reflected by Cohen's Kappa. Futhermore, AUC indicated that the classifier has no discrimination capacity to distinguish between positive and negative classes.
 
-The classifier that delivered the best results was decision tree, with the balanced class weight option, gini criterion, max depth of 20 and best splitter. The results were detailed in the following table.
+The classifier that delivered the best results on the validation set was the decision tree classifier, with the balanced class weight option, gini criterion, max depth of 20 and best splitter. The results were detailed in the following table.
 
+![MLFlow DTC performance](documentation\DT_with_5_10_15_20_depth.png)
 
-Cohen's Kappa was still pretty low on the validation set while high on the training set for the best classifier. It indicates overfitting of this classifier. Increasing the max depth led to stronger overfitting. The AUC score also confirmed the observation.
+As one can see Cohen's Kappa was still pretty low on the validation set while high on the training set for the best classifier. It indicates overfitting of this classifier. 
+Increasing the max depth led to stronger overfitting (the margin between the Cohen´s kappe scores increases with increasing depth). The differences in AUC score also confirmed the observation.
 
 ## Preprocessing
 
@@ -120,8 +124,6 @@ Emojis equals `[➡]`.
 
 ### Design Decisions
 
-Which features did you implement? What's their motivation and how are they computed?
-
 The features implemented are:
 - the most common hastags (boolean): determine the n (specifyable) most common hashtags and checks for the existence of these words in the tweet. This creates n new features for each word.
 - the most common emojis (boolean): determine the n (specifyable) most common emojis and checks for the existence of these emojis in the tweet. This creates n new features for each emoji.
@@ -141,10 +143,38 @@ The *weekday*, similar to the *month*, with people having more time to read thro
 
 Can you say something about how the feature values are distributed? Maybe show some plots?
 
-TODO: 
-- pick and display numbers of the most common ones
-- export CSV file (after preprocessing)
-- add some plots of the extracted features 
+Here we present some distributional data / plots from some of the features we extracted:
+
+#### 1.) Top 10 most common emojis w.r.t. their count over all tweets
+
+![Top10Emojis](documentation/top_10_emojis.png)
+
+The top emojis were mostly used to point towards a link.
+
+#### 2.) Top 15 most common hashtags w.r.t. their count over all tweets
+
+![Top15Hashtags](documentation/top_15_hashtags.png)
+
+#### 3.) Top 10 most common words w.r.t. their counter over all preprocessed tweets
+
+![Top10Words](documentation/top_10_words.png)
+
+Both the most common hashtags and most common words indicate that especially topics like "data science" and "machine learning" were the most common.
+
+#### 4.) Amount of tweets per month
+
+![TweetsPerMonth](documentation/amount_of_user_annual.png)
+
+Overall the amount of tweets per month stays on similar levels throughout a year, with some small exceptions (March and April)
+
+#### 5.) Some more descriptive statistics of our numerical features
+
+![DescriptivesNumerical](documentation/descriptives_numerical%20features.png)
+
+The high standard deviation and Mean compared to the relatively low follower count leads to the conclusion, that we have outliers, that increase the mean significantly. The high number of the maximum indicates 130 096 880 is the maximum amount of followers, that one person has. This is a huge part of the 206 000 000 Users, 
+[that are actively using twitter](https://www.statista.com/statistics/242606/number-of-active-twitter-users-in-selected-countries/#:~:text=Global%20Twitter%20usage,former%20U.S.%20president%20Barack%20Obama.).
+The Sentiment value shows that the texts in general tend to be on the more positive site.
+Every tweet uses round about 1 URL and 3 Hashtags and consists of about 15-Words and 178 characters.
 
 ### Interpretation
 
@@ -165,7 +195,7 @@ to analyze how helpful the individual features are during classification
 Which dimensionality reduction technique(s) did you pick and why?
 
 It was originally decided to choose three dimensionality reduction methods. And the following dimensionality reduction techniques were used:
-- PCA: used to perform feature projection and to compute new features based on the original ones; this approach select a number of principle components automatically based on the accumulative explained variance ratio (currently 0.95).
+- PCA: used to perform feature projection and to compute new features based on the original ones; this approach select a number of principle components automatically based on the accumulative explained variance ratio (currently 0.95). We normalize or standardize the features before performing PCA.
 - Wrapper (RFE) method: used for feature selection based on the models that evaluated different features; the number of selectable features could be specified.
 - Filter method: instead of using models, the mutual information heuristics were used to select suitable features; the number of selectable features could be specified.
 
@@ -173,22 +203,33 @@ It was originally decided to choose three dimensionality reduction methods. And 
 
 Which features were selected / created? Do you have any scores to report?
 
-TODO: insert a pic of 'RFE reducer with n = 10, model = DTC'.
-Title of pic: example of feature selection using wrapper method with top ten features and the decision tree model.
+Perform dimensionality reduction using the RFE wrapper method with the n = 10 best features and the DTC model:
 
-RFE was used as dimensionality reduction before hyper-parameter optimization.
+![RFE_Top10](documentation/RFE_DTC_Top10.png)
 
-TODO: add PCA scores and explanation
+We choosed these RFE settings as dimensionality reduction technic before attending to the hyper-parameter optimization.
+
+Here are also some PCA scores, but due to compatibility issue between PCA and the Complement Naive Bayes Classifier (does not allow for negative feature values) we decided against the PCA usage for the hyper-parameter optimization.
+
+1.) PCA scores with Normalization
+
+![PCA_Normalized](documentation/PCA_Normalized.png)
+
+Here we can see that the first component is already enough to cover more than 95 % of the explained variance
+
+2.) PCA scores with Standardization
+
+![PCA_Standardized](documentation/PCA_Standardized.png)
+
+While using standardization instead of normalization, we need the top 50 components to reach an explained variance of above 95%,
+indicating that standardization might made the features more comparable as mere normalization.
 
 ### Interpretation
 
-Can we somehow make sense of the dimensionality reduction results?
-Which features are the most important ones and why may that be the case?
-
-Dimensionality reduction indicated that the amount of followers was not so useful as thought.
-
-TODO: provide a short explanation why the amount of followers is not important 
-TODO: qirui: PCA interpretation
+The results of the RFE feature selection indicates that especially boolean features very more important.
+This could be due to the chosen DTC model which sees boolean features more useful to form distinct target groups.
+Still the top feature was a numerical one `tweet_charlength`, so the length of the tweet was considered the most important 
+along the boolean features. Surprisingly the dimensionality reduction indicated that the amount of followers was not as useful as we thought.
 
 ## Classification
 
@@ -198,19 +239,30 @@ Which classifier(s) did you use? Which hyperparameter(s) (with their respective
 candidate values) did you look at? What were your reasons for this?
 
 The following classifiers were used:
-- majority vote classifier: parameters - seed
-- label frequency classifier: parameters - seed
-- minority vote classifier: parameters - seed
-- k-nearest neighbor classifier: parameters - *k*
-- complement naive bayes: parameters - alpha, fit_prior, norm
+- majority vote classifier: parameters - `seed`
+  - intended to be used as a baseline classifier
+- label frequency classifier: parameters - `seed`
+  - a second baseline classifier option
+- minority vote classifier: parameters - `seed`
+  - implemented out of curiosity of using a minority classifier as baseline, but dismissed due to poor performance
+- k-nearest neighbor classifier: parameters - `k`
+- complement naive bayes: parameters - `alpha`, `fit_prior`, `norm`
     - it was chosen because it is known to work with an imbalanced dataset like the current dataset
-- decision tree classifier: parameters - criterion, splitter, max_depth, class_weight
-- random forest classifier: parameters - criterion, bootstrap, max_depth, n_estimators, class_weight
-- support vector classifier: paramters - c, gamma, kernel
+- decision tree classifier: parameters - `criterion`, `splitter`, `max_depth`, `class_weight`
+  - `max_depth`: to limit the tree in depth. Used for investigating overfitting issues
+  - `criterion`: use a different quality measure for the splits. We introduced the entropy option to use the information gain instead of the gini impurity
+  - `splitter`: use a different split strategy. We introduced the random option to use instead of the best split with the hope to tackle overfitting.
+  - `class_weight`: we introduced this option to tackle the imbalance problem of the dataset.
+- random forest classifier: parameters - `criterion`, `bootstrap`, `max_depth`, `n_estimators`, `class_weight`
+  - `criterion`: same reasoning as for the decision tree classifier
+  - `max_depth`: same reasoning as for the decision tree classifier
+  - `n_estimators`: choose the number of trees/estimators in the forest. Introduced for investigating effects on overfitting and performance.
+  - `class_weight`: same reasoning as for the decision tree classifier
+  - `bootstrap`: whether to use the whole dataset to build each tree or sample a subset of it for each tree.
+  - Unfortunately due to file size restriction were not able to observe results for optimizing the parameters of this classifier
+- support vector classifier: parameters - `c`, `gamma`, `kernel`
 
 TODO: individual filling in
-
-TODO: update minority vote classifier cmd in readme
 
 ### Results
 
@@ -222,7 +274,8 @@ The performance of random forest classifier and support vector classifier could 
 
 In general, nearly all the classifiers were overfitting the training set. The decision tree classifier generailzed better compared to other classifier, even though it could be optimized further. 
 
-TODO: add config of the best model 
+Here is the configuration and the result of our best classifier again:
+![BestClassifierConfig](documentation/best_classifier_test_set.png)
 
 ### Interpretation
 
@@ -234,11 +287,102 @@ TODO: qirui - add hyper-parameter values
 
 We suspected that the decision tree classifier performed the best because the dimensionality reduction was performed using a decision tree model.
 The best classifier managed to score at around 80% on the validation set but still the Cohen's Kappa score of 0.292 indicated that overfitting persisted and further optimization was needed.
+As seen in the above run on the test set, surprisingly the classifier performs well better reaching a accuracy of 0.9063 (on par with the baseline majority vote classifier), but
+wit a much higher Cohen´s Kappa score of 0.61 (compared to 0.0 of the baseline). The AUC score of 0.9470 indicates that this classifier is indeed usable to a certain extent.
+However further research has to be done w.r.t. the influence of the dimensionality reduction on the classification results needs to be done.
+Additionally we are still unsure about why the boolean features were deemed more promising than expected compared to the
+numerical features (e.g. follower count).
 
-TODO: qirui - try hyper-parameter on the test set
-
-The following observations were made during the experiments:
+Lastly, here is a compressed list of additional observations we made during the experiments:
 - adjusting alpha value did not impact the performance of cnb classifier
 - as cnb does not take negative values, pca could not be applied beforehand for this classifier
+- svc seems to not handle the huge amount of input data well, a classification takes well over 90 minutes
 
 TODO: individuals add observations 
+
+## Appendix
+
+This section, we added after conducting the actual experiments. After looking into the RFE ranking of our feature reduction part again,
+we observed that somehow `sklearn.feature_selection.RFE` does assign multiple features to one ranking spot. For instance, the ranking for our features after performing is as follows:
+
+````
+[RFE Rankings]
+Feature: contains_#datascience, Ranking: 49
+Feature: contains_#bigdata, Ranking: 33
+Feature: contains_#machinelearning, Ranking: 48
+Feature: contains_#ai, Ranking: 37
+Feature: contains_#abdsc, Ranking: 18
+Feature: contains_#iot, Ranking: 41
+Feature: contains_#analytics, Ranking: 45
+Feature: contains_#deeplearning, Ranking: 39
+Feature: contains_#data, Ranking: 51
+Feature: contains_#datascientists, Ranking: 40
+Feature: contains_#iiot, Ranking: 50
+Feature: contains_#dataviz, Ranking: 42
+Feature: contains_#iotpl, Ranking: 52
+Feature: contains_#algorithms, Ranking: 38
+Feature: contains_#statistics, Ranking: 5
+Feature: contains_emoji_👉, Ranking: 47
+Feature: contains_emoji_➡️, Ranking: 59
+Feature: contains_emoji_➕, Ranking: 54
+Feature: contains_emoji_️, Ranking: 57
+Feature: contains_emoji_👇, Ranking: 55
+Feature: contains_emoji_📊, Ranking: 53
+Feature: contains_emoji_✅, Ranking: 56
+Feature: contains_emoji_⬇️, Ranking: 60
+Feature: contains_emoji_▸, Ranking: 58
+Feature: contains_emoji_📈, Ranking: 61
+Feature: tweet_charlength, Ranking: 1
+Feature: follower_count, Ranking: 1
+Feature: URL_Count, Ranking: 1
+Feature: Hashtag_Count, Ranking: 1
+Feature: datetime_unix, Ranking: 1
+Feature: MONTH_JA, Ranking: 25
+Feature: MONTH_FEB, Ranking: 24
+Feature: MONTH_MA, Ranking: 26
+Feature: MONTH_APR, Ranking: 30
+Feature: MONTH_MAI, Ranking: 35
+Feature: MONTH_JUN, Ranking: 28
+Feature: MONTH_JUL, Ranking: 27
+Feature: MONTH_AUG, Ranking: 23
+Feature: MONTH_SEP, Ranking: 32
+Feature: MONTH_OKT, Ranking: 22
+Feature: MONTH_NOV, Ranking: 19
+Feature: MONTH_DEZ, Ranking: 31
+Feature: WEEKDAY_MO, Ranking: 2
+Feature: WEEKDAY_DI, Ranking: 12
+Feature: WEEKDAY_MI, Ranking: 4
+Feature: WEEKDAY_DO, Ranking: 7
+Feature: WEEKDAY_FR, Ranking: 1
+Feature: WEEKDAY_SA, Ranking: 6
+Feature: WEEKDAY_SO, Ranking: 10
+Feature: HOUR OF DAY_0-2, Ranking: 3
+Feature: HOUR OF DAY_3-5, Ranking: 8
+Feature: HOUR OF DAY_6-8, Ranking: 15
+Feature: HOUR OF DAY_9-11, Ranking: 14
+Feature: HOUR OF DAY_12-14, Ranking: 43
+Feature: HOUR OF DAY_15-17, Ranking: 34
+Feature: HOUR OF DAY_18-20, Ranking: 9
+Feature: HOUR OF DAY_21-23, Ranking: 1
+Feature: contain_photos, Ranking: 1
+Feature: word_count, Ranking: 1
+Feature: contains_word_data, Ranking: 13
+Feature: contains_word_datasci, Ranking: 36
+Feature: contains_word_scienc, Ranking: 11
+Feature: contains_word_bigdata, Ranking: 46
+Feature: contains_word_machinelearn, Ranking: 21
+Feature: contains_word_ai, Ranking: 44
+Feature: contains_word_analysi, Ranking: 29
+Feature: contains_word_amp, Ranking: 16
+Feature: contains_word_visual, Ranking: 20
+Feature: contains_word_analyt, Ranking: 17
+Feature: sentiment, Ranking: 1
+````
+
+Here we can see that multiple features are ranked on place one (also the numerical values we anticipated to be important).
+This multi spot ranking changes our results fundamentally, since our RFE implementation was done under the assumption that
+there is a distinct ranking. Therefore only the first feature on the first place were selected as number one, then the first features on the second place and so on.
+Since we discovered this only after our experiments, we are lacking the time to rerun the hyper-parameter optimization and
+to rewrite our existing documentation. Thus we decided to add this note as an appendix to our existing documentation. As an outlook,
+the RFE components needs some small rework to include also the multiple ranking problem and the pipeline including the parameter optimization.
+However this explains our scepticism towards the uselessness of our numerical features.
