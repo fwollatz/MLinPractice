@@ -201,11 +201,6 @@ else:   # manually set up a classifier
     # Support Vector Classifier
     elif args.svc:
         print("   Support vector classifier")
-       
-        #param_grid = {'C': [0.1, 1, 10, 100], 'gamma': [1, 0.1, 0.01, 0.001], 'kernel': ['rbf', 'poly', 'sigmoid']}
-        #grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=2)
-        #grid.fit(data["features"], data["labels"].ravel())
-        #best_params = grid.best_params_
         kernel = args.svc_kernel
         C = args.svc_c
         gamma = args.svc_gamma
