@@ -261,8 +261,12 @@ The following classifiers were used:
   - `bootstrap`: whether to use the whole dataset to build each tree or sample a subset of it for each tree.
   - Unfortunately due to file size restriction were not able to observe results for optimizing the parameters of this classifier
 - support vector classifier: parameters - `c`, `gamma`, `kernel`
-
-TODO: individual filling in
+  - it was chosen as it is effective in high dimensional space. Yet, possibly due to the large number of data points, the required training time was significantly higher than anticipated. Eventually, due to the grid wall time, the trainings were terminated and we had to abandon svc.
+  - GridSearchCV was used for hyper-parameter tuning. For each combination of the values of *c*, *gamma*, and the choices of *kernel*, a svc model is evaluated. It took significantly more time than expected on IKW grid to evaluate even a model with one combination (roughly at least one hour). We had to abandon the grid search of svc in the end.
+  - `c`: the penalty parameter that represents misclassification or error term. For the grid search, {0.1, 1, 10, 100} was tested.
+  - `gamma`: determines how much the curvature is desired at a decision boundary. For the grid search, {1, 0.1, 0.01, 0.001} was tested.
+  - `kernel`: to takes the data points from the original lower dimensional space and returns the transformed vectors in the higher dimensional feature space. For the grid search, {'rbf', 'poly', 'sigmoid'} were tested.
+  
 
 ### Results
 
@@ -361,18 +365,16 @@ done
 
 We suspected that the decision tree classifier performed the best because the dimensionality reduction was performed using a decision tree model.
 The best classifier managed to score at around 80% on the validation set but still the Cohen's Kappa score of 0.292 indicated that overfitting persisted and further optimization was needed.
-As seen in the above run on the test set, surprisingly the classifier performs well better reaching a accuracy of 0.9063 (on par with the baseline majority vote classifier), but
-wit a much higher Cohen´s Kappa score of 0.61 (compared to 0.0 of the baseline). The AUC score of 0.9470 indicates that this classifier is indeed usable to a certain extent.
-However further research has to be done w.r.t. the influence of the dimensionality reduction on the classification results needs to be done.
+As seen in the above run on the test set, surprisingly the classifier performs well better reaching a accuracy of 0.9063 (on a par with the baseline majority vote classifier), but
+with a much higher Cohen´s Kappa score of 0.61 (compared to 0.0 of the baseline). The AUC score of 0.9470 indicates that this classifier is indeed usable to a certain extent.
+However, further research has to be done w.r.t. the influence of the dimensionality reduction on the classification results.
 Additionally we are still unsure about why the boolean features were deemed more promising than expected compared to the
 numerical features (e.g. follower count).
 
-Lastly, here is a compressed list of additional observations we made during the experiments:
-- adjusting alpha value did not impact the performance of cnb classifier
-- as cnb does not take negative values, pca could not be applied beforehand for this classifier
-- svc seems to not handle the huge amount of input data well, a classification takes well over 90 minutes
-
-TODO: individuals add observations 
+Lastly, below is a consolidated list of additional observations we made during the experiments:
+- adjusting alpha value did not impact the performance of cnb classifier;
+- as cnb does not take negative values, pca could not be applied beforehand for this classifier;
+- svc seemed to not handle the huge amount of input data well. Classification took over 90 minutes.
 
 ## Appendix
 
