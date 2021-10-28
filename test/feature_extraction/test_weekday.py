@@ -53,15 +53,17 @@ class WeekdayTest(unittest.TestCase):
         None.
 
         """
-        output=self.Weekday_feature.fit_transform(self.df)
-        
+        #arrange
         #CREATE THE ONE HOT ENCODING (OHE)
         #                       0     1     2     3     4    5     6
         #                       MO    DI    MI    DO    FR   SA    SO
         ohe_weekday=np.array([False,False,False,False,True,False,False])
-
-
+        
+        #act
+        output=self.Weekday_feature.fit_transform(self.df)
+        
         for i in range(0,len(ohe_weekday)):
+            #assert
             self.assertEqual(output[0][i], ohe_weekday[i])
 
 if __name__ == '__main__':

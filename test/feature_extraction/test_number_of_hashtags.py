@@ -52,9 +52,11 @@ class NumberOfHastagsTest(unittest.TestCase):
         None.
 
         """
+        #act
         output=self.hashtag_feature.fit_transform(self.df)
         EXPECTED_COUNT = 3
         
+        #assert
         self.assertEqual(output[0][0], EXPECTED_COUNT)
 
 if __name__ == '__main__':

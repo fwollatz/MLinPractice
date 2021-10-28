@@ -51,15 +51,17 @@ class MonthTest(unittest.TestCase):
         None.
 
         """
-        output=self.Month_feature.fit_transform(self.df)
-        
+        #arrange
         #CREATE THE ONE HOT ENCODING (OHE)
         #                     0      1     2     3    4      5     6     7     8     9     10    11
         #                     JA    FEB   MA    APR   MAI   JUN   JUL   AUG   SEP   OKT   NOV   DEZ
         ohe_august=np.array([False,False,False,False,False,False,False,True,False,False,False,False])
-
-
+        
+        #act
+        output=self.Month_feature.fit_transform(self.df)
+        
         for i in range(0,len(ohe_august)):
+            #assert
             self.assertEqual(output[0][i], ohe_august[i])
 
 if __name__ == '__main__':

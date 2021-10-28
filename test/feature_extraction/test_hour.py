@@ -51,14 +51,19 @@ class HourTest(unittest.TestCase):
         None.
 
         """
-        output=self.Hour_feature.fit_transform(self.df)
-        
+        #arrange
         #CREATE THE ONE HOT ENCODING (OHE)
         #                    0      1     2     3    4      5     6     7     
         #                   0-2    3-5  6-8  9-11 12-14 15-17 18-20 21-23
         ohe_hour=np.array([True,False,False,False,False,False,False,False])
         
+        #act
+        output=self.Hour_feature.fit_transform(self.df)
+        
+        
+        
         for i in range(0,len(ohe_hour)):
+            #assert
             self.assertEqual(output[0][i], ohe_hour[i])
 
 if __name__ == '__main__':

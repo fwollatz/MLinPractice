@@ -51,13 +51,17 @@ class TokenizerTest(unittest.TestCase):
         None.
 
         """
+        #arrange
         input_text = "This is an example sentence"
         output_text = "['This', 'is', 'an', 'example', 'sentence']"
         
         input_df = pd.DataFrame()
         input_df[self.INPUT_COLUMN] = [input_text]
         
+        #act
         tokenized = self.tokenizer.fit_transform(input_df)
+        
+        #assert
         self.assertEqual(tokenized[self.OUTPUT_COLUMN][0], output_text)
     
 

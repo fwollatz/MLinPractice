@@ -71,8 +71,10 @@ class FollowerCountTest(unittest.TestCase):
         None.
 
         """
+        #act
         output=self.follower_count_feature.fit_transform(self.df)
 
+        #assert
         print("INFORMATION: If this test fails, that may be because the twitteraccount @Qubole got more followers or because of discrepancies between servers (see this: https://twittercommunity.com/t/discrepancy-in-followers-count/80018/23)!")
         #The Twitter Useraccout @Qubole, id= 401048959 had 10192 followers at 22.10.2021;21:42 
         self.assertEqual(output[0][0], 10197)

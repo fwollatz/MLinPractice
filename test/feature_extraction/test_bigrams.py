@@ -51,7 +51,9 @@ class BigramFeatureTest(unittest.TestCase):
         None.
 
         """
+        #act
         self.bigram_feature.fit(self.df)
+        #assert
         self.assertGreaterEqual(len(list(self.bigram_feature._bigrams)), 0)
 
     def test_list_of_bigrams_most_frequent_correct(self):
@@ -63,13 +65,16 @@ class BigramFeatureTest(unittest.TestCase):
         None.
 
         """
+        #arrange
         self.bigram_feature.fit(self.df)
         EXPECTED_BIGRAM = ('This', 'is')
         
+        #act
         freq_dist = nltk.FreqDist(self.bigram_feature._bigrams)
         freq_list = list(freq_dist.items())
         freq_list.sort(key = lambda x: x[1], reverse = True)
         
+        #assert
         self.assertEqual(freq_list[0][0], EXPECTED_BIGRAM)
 
 if __name__ == '__main__':

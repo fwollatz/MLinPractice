@@ -51,9 +51,11 @@ class NumberOfUrlsTest(unittest.TestCase):
         None.
 
         """
+        #act
         output=self.URL_feature.fit_transform(self.df)
         EXPECTED_COUNT = 2
         
+        #assert
         self.assertEqual(output[0][0], EXPECTED_COUNT)
 
 if __name__ == '__main__':
