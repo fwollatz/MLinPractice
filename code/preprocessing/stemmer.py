@@ -25,7 +25,19 @@ class Stemmer(Preprocessor):
     
     def _get_values(self, inputs : list) -> list:
         """
-        Stems a tweet
+        stems the words in the tweet
+
+        Parameters
+        ----------
+        inputs : list
+            list of tokenized words per tweet.
+
+        Returns
+        -------
+        list
+            list of stemmed words per tweet.
+
+ 
         """
         stemmed = []
         

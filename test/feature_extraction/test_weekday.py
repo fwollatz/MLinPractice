@@ -6,11 +6,12 @@ Created on Tue Oct 12 11:57:29 2021
 @author: ml
 """
 
-import unittest
-import pandas as pd
+
+
 from code.feature_extraction.weekday import Weekday
-from code.util import COLUMN_WEEKDAY
 import numpy as np
+import pandas as pd
+import unittest
 
 class WeekdayTest(unittest.TestCase):
 
@@ -21,13 +22,37 @@ class WeekdayTest(unittest.TestCase):
         self.df[self.INPUT_COLUMN] = ['1998-08-21']
     
     def test_input_columns(self):
+        """
+        tests if the input column is the correct one
+
+        Returns
+        -------
+        None.
+
+        """
         self.assertEqual(self.Weekday_feature._input_columns, [self.INPUT_COLUMN])
 
     def test_feature_name(self):
+        """
+        checks if all the feature names have been generated correctly
+
+        Returns
+        -------
+        None.
+
+        """
         self.assertEqual(self.Weekday_feature.get_feature_name(), ['WEEKDAY_MO', 'WEEKDAY_DI', 'WEEKDAY_MI', 'WEEKDAY_DO', 'WEEKDAY_FR', 'WEEKDAY_SA', 'WEEKDAY_SO'])
 
 
     def test_ohe_weekday_correct(self):
+        """
+        checks if the output is correct
+
+        Returns
+        -------
+        None.
+
+        """
         output=self.Weekday_feature.fit_transform(self.df)
         
         #CREATE THE ONE HOT ENCODING (OHE)

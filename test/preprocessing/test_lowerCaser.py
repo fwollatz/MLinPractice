@@ -6,9 +6,10 @@ Created on Sat Oct  9 23:11:33 2021
 @author: ml
 """
 
-import unittest
-import pandas as pd
 from code.preprocessing.lower_caser import LowerCaser
+import pandas as pd
+import unittest
+
 
 class LowerCaserTest(unittest.TestCase):
     
@@ -18,6 +19,14 @@ class LowerCaserTest(unittest.TestCase):
         self.LOWER_CASER = LowerCaser(self.INPUT_COLUMN, self.OUTPUT_COLUMN)
         
     def test_lower_casing_works(self):
+        """
+        check if the lower casing has worked
+
+        Returns
+        -------
+        None.
+
+        """
         #arrange
         input_texts = ["A B C D", 
                        "ThIs Is A tExT wItH mIxEd UpPeR aNd LoWeR cAsE", 

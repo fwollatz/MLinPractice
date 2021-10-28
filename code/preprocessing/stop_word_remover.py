@@ -21,7 +21,20 @@ class StopWordRemover(Preprocessor):
     
     
     def _get_values(self, inputs : list) -> list:
-        """Removing stop words from tweets"""
+        """
+        remove the stopwords from tweet
+
+        Parameters
+        ----------
+        inputs : list
+            list of stemmed words per tweet.
+
+        Returns
+        -------
+        list
+            list of content words per tweet.
+
+        """
         sw_removed = []
         #get stop words
         stop_words = set(stopwords.words('english'))

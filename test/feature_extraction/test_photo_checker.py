@@ -3,12 +3,12 @@
 # @Author : RCheng
 # @Time :  08.10.21 11:02
 
-import unittest
-import pandas as pd
-import numpy as np
-from code.feature_extraction.check_photos_existence import PhotoChecker
 
+from code.feature_extraction.check_photos_existence import PhotoChecker
 from code.util import COLUMN_PHOTO_EXISTENCE
+import numpy as np
+import pandas as pd
+import unittest
 
 
 class PhotoCheckerTest(unittest.TestCase):
@@ -18,19 +18,38 @@ class PhotoCheckerTest(unittest.TestCase):
         self.OUTPUT_COL = "contain_photos"
         self.photo_checker = PhotoChecker(self.INPUT_COL)
 
-    #def test_amount_of_urls_correct(self):
-     #   output = self.URL_feature.fit_transform(self.df)
-     #   EXPECTED_COUNT = 2
-
-     #   self.assertEqual(output[0][0], EXPECTED_COUNT)
 
     def test_input_col(self):
+        """
+        tests if the input column is the correct one
+
+        Returns
+        -------
+        None.
+
+        """
         self.assertEqual(self.photo_checker._input_columns, [self.INPUT_COL])
 
     def test_feature_name(self):
+        """
+        test if feature column is correctly named
+
+        Returns
+        -------
+        None.
+
+        """
         self.assertEqual(self.photo_checker.get_feature_name(), COLUMN_PHOTO_EXISTENCE)
 
     def test_photos_existence(self):
+        """
+        test if a photo exists in a tweet.
+
+        Returns
+        -------
+        None.
+
+        """
         #arrange
         photo_col_input = list(["['https://pbs.twimg.com/media/Ey4gMWDUYAAdKdY.jpg']", "['HelloKitty.jpg']", "[]"])
         photo_col_preprocesed = np.array([1,1,0])

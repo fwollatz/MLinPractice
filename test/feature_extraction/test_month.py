@@ -6,11 +6,10 @@ Created on Tue Oct 12 11:57:29 2021
 @author: ml
 """
 
-import unittest
-import pandas as pd
 from code.feature_extraction.month import Month
-from code.util import COLUMN_MONTH
 import numpy as np
+import pandas as pd
+import unittest
 
 class MonthTest(unittest.TestCase):
 
@@ -21,13 +20,37 @@ class MonthTest(unittest.TestCase):
         self.df[self.INPUT_COLUMN] = ['1998-08-21']
     
     def test_input_columns(self):
+        """
+        tests if the input column is the correct one
+
+        Returns
+        -------
+        None.
+
+        """
         self.assertEqual(self.Month_feature._input_columns, [self.INPUT_COLUMN])
 
     def test_feature_name(self):
+        """
+        test if feature column is correctly named
+
+        Returns
+        -------
+        None.
+
+        """
         self.assertEqual(self.Month_feature.get_feature_name(), ['MONTH_JA', 'MONTH_FEB', 'MONTH_MA', 'MONTH_APR', 'MONTH_MAI', 'MONTH_JUN', 'MONTH_JUL', 'MONTH_AUG', 'MONTH_SEP', 'MONTH_OKT', 'MONTH_NOV', 'MONTH_DEZ'])
 
 
     def test_ohe_month_correct(self):
+        """
+        test if the correct month is picked
+
+        Returns
+        -------
+        None.
+
+        """
         output=self.Month_feature.fit_transform(self.df)
         
         #CREATE THE ONE HOT ENCODING (OHE)

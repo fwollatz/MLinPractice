@@ -5,11 +5,11 @@ Created on Mon Oct 18 20:34:22 2021
 
 @author: ml
 """
-
-from sklearn.tree import DecisionTreeClassifier
+import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import RFE
-import numpy as np
+from sklearn.tree import DecisionTreeClassifier
+
 
 class RFEReducer():
     _rfe_reducer = None
@@ -29,7 +29,15 @@ class RFEReducer():
         self._n_features_to_select = n_features_to_select
         
     def fit(self):
-        #init model with or without seed
+        """
+        init model with or without seed, with either dtc or rfc as estimator
+
+        Returns
+        -------
+        None.
+
+        """
+        
         model = None
         if self._seed != 0:
             if self._model_flag == "dtc":
@@ -46,6 +54,20 @@ class RFEReducer():
         
         
     def transform(self, features : list) -> list:
+        """
+        computes the n best distinct features and returns the transformed version.
+        
+        Parameters
+        ----------
+        features : list
+            list of all features
+
+        Returns
+        -------
+        list
+            list of the selected best features
+
+        """
         #print the names of the n best features
         output_str = "{0} best features: ".format(self._n_features_to_select)
         for i in range(0, self._n_features_to_select):

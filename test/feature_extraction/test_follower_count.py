@@ -40,13 +40,37 @@ class FollowerCountTest(unittest.TestCase):
         
     
     def test_input_columns(self):
+        """
+        tests if the input column is the correct one
+
+        Returns
+        -------
+        None.
+
+        """
         self.assertEqual(self.follower_count_feature._input_columns, [self.INPUT_COLUMN])
 
     def test_feature_name(self):
+        """
+        test if feature column is correctly named
+
+        Returns
+        -------
+        None.
+
+        """
         self.assertEqual(self.follower_count_feature.get_feature_name(), COLUMN_FOLLOWER_COUNT)
 
 
     def test_ohe_follower_count_correct(self):
+        """
+        test if the follower count is correct. Is error prone, since there are discrepancies between servers (see this: https://twittercommunity.com/t/discrepancy-in-followers-count/80018/23)
+
+        Returns
+        -------
+        None.
+
+        """
         output=self.follower_count_feature.fit_transform(self.df)
 
         print("INFORMATION: If this test fails, that may be because the twitteraccount @Qubole got more followers or because of discrepancies between servers (see this: https://twittercommunity.com/t/discrepancy-in-followers-count/80018/23)!")

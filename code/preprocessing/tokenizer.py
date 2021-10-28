@@ -21,7 +21,20 @@ class Tokenizer(Preprocessor):
     # don't need to implement _set_variables(), since no variables to set
     
     def _get_values(self, inputs : list) -> list:
-        """Tokenize the tweet."""
+        """
+        tokenize the tweet
+
+        Parameters
+        ----------
+        inputs : list
+            list of all tweets.
+
+        Returns
+        -------
+        list
+            list of all tokenized tweets
+
+        """
         
         tokenized = []
         

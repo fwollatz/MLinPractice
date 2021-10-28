@@ -16,6 +16,26 @@ Machine Learning in Practice (Group HumbleBees 777, Qirui Zhu, Frederik Wollatz,
 4. Executed corresponding shell script
 5. Run `test/run_tests.sh`
 
+### Coding conventions
+#### Variable names:
+1. all lower case and some "_" to seperate words. example: important_variable
+2. global constants variables are capslocked. Example: GLOBAL_VARIABLE
+3. self explicitly defined booleans variable is answerable with yes or no. (exclude for instance: argument parse booleans) Example: is_active, can_fly
+4. class variables are denoted self._variable_name. Execeptions: not done in unit tests
+#### Functions:
+1. specify what variable-type a function takes and returns. 
+
+Example: 
+````
+def function(a : int) -> Tuple[bool, str]:
+	return a>1, " "+a+" "
+````
+Exceptions: return types that are variable (e.g. inheritence)
+
+2. functions have DocStrings, that explain what they do, parameters and returns. Exceptions: class constructor 
+
+3. Sort Imports alphabetically
+
 ## Test Strategy
 
 ### Test Agreements

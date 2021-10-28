@@ -18,21 +18,7 @@ class FeatureExtractor(BaseEstimator,TransformerMixin):
     
     
     def __init__(self, input_columns: list, feature_name: str):
-        """
-        constructor
-
-        Parameters
-        ----------
-        input_columns : list
-            DESCRIPTION.
-        feature_name : str
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
-
-        """
+    
         super(BaseEstimator, self).__init__()
         super(TransformerMixin, self).__init__()
         self._input_columns = input_columns
@@ -46,7 +32,7 @@ class FeatureExtractor(BaseEstimator,TransformerMixin):
         Returns
         -------
         str
-            DESCRIPTION.
+            list of all feature names.
 
         """
         return self._feature_name
@@ -59,7 +45,7 @@ class FeatureExtractor(BaseEstimator,TransformerMixin):
         Returns
         -------
         list
-            DESCRIPTION.
+            list of all input columns
 
         """
         return self._input_columns
@@ -89,16 +75,6 @@ class FeatureExtractor(BaseEstimator,TransformerMixin):
         """
         # fit function: takes pandas DataFrame to set any internal variables
 
-        Parameters
-        ----------
-        df : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        TYPE
-            DESCRIPTION.
-
         """
         
         inputs = []
@@ -119,33 +95,12 @@ class FeatureExtractor(BaseEstimator,TransformerMixin):
         # should return a numpy array
         # to be implemented by subclass!
 
-        Parameters
-        ----------
-        inputs : ???
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
-
         """
-        print("e", type(inputs), "If you see this in your code please complete the method header of _get_values in the feature_extractor.py !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         pass
         
     def transform(self, df) -> np.ndarray:
         """
         # transform function: transforms pandas DataFrame to numpy array of feature values
-
-
-        Parameters
-        ----------
-        df : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        result : TYPE
-            DESCRIPTION.
 
         """
 

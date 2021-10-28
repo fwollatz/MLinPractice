@@ -15,19 +15,12 @@ from code.util import COLUMN_PHOTO_EXISTENCE
 class PhotoChecker(FeatureExtractor):
     # constructor
     def __init__(self, input_column: str):
-        """
-        constructor
-        :param input_column: name of the input column) - photos
 
-        """
         super().__init__([input_column], COLUMN_PHOTO_EXISTENCE)
 
-    # set internal variables based on input columns
-    def _set_variables(self, inputs):
-        pass
 
     # get preprocessed column based on data frame and internal variables
-    def _get_values(self, inputs) ->list:
+    def _get_values(self, inputs:list) ->list:
         """
         calculate if a tweet contains any photos
         :param inputs:

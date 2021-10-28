@@ -10,9 +10,10 @@ Created on Tue Oct 12 15:43:57 2021
 from code.feature_extraction.feature_extractor import FeatureExtractor
 from code.util import COLUMN_FOLLOWER_COUNT
 import numpy as np
+import pickle
 import time
 import tweepy
-import pickle
+
 
 
   
@@ -23,31 +24,31 @@ class FollowerCount(FeatureExtractor):
     
     
     # assign the access-codes for the twitter api accordingly
-    consumer_key = input("please write your consumer key for the twitter api here:")
-    consumer_secret = input("please write your consumer_secret for the twitter api here:")
-    access_token = input("please write your access_token for the twitter api here:")
-    access_token_secret=input("please write your access_token_secret for the twitter api here:")
+    _consumer_key = input("please write your consumer key for the twitter api here:")
+    _consumer_secret = input("please write your _consumer_secret for the twitter api here:")
+    _access_token = input("please write your _access_token for the twitter api here:")
+    _access_token_secret=input("please write your _access_token_secret for the twitter api here:")
     
     try:
         # authorization of consumer key and consumer secret
-        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        _auth = tweepy.OAuthHandler(_consumer_key, _consumer_secret)
           
         # set access to user's access key and access secret 
-        auth.set_access_token(access_token, access_token_secret)
+        _auth.set_access_token(_access_token, _access_token_secret)
           
         # calling the api 
-        api = tweepy.API(auth)
+        _api = tweepy.API(_auth)
     except:
         print("something went wrong with the connection to the tweepy api. Have you filled in your credentials correctly in code/feature_extraction/follower_count")
     
     #create or open a dict, to reduce stress on api and internet connection
     try:
         a_file = open("id_to_follower.pkl", "rb")
-        id_to_follower = pickle.load(a_file)
+        _id_to_follower = pickle.load(a_file)
         a_file.close()
     except:
         print("The file could not be loaded. Try to recreate the id_to_follower dict. This IS GOING TO take forever.")
-        id_to_follower={}
+        _id_to_follower={}
     
     
     def __init__(self, input_column: str):
@@ -72,10 +73,18 @@ class FollowerCount(FeatureExtractor):
     
 
     def safe_id_to_follower_to_pickle(self):
+        """
+        safes the _id_to_follower dictionary to a pickle
+
+        Returns
+        -------
+        None.
+
+        """
         a_file = open("id_to_follower.pkl", "wb")
-        pickle.dump(self.id_to_follower, a_file)
+        pickle.dump(self._id_to_follower, a_file)
         a_file.close()
-        #print("Saved the followercounts.")
+
         
     def _get_values(self, inputs: list) -> np.ndarray :
         """
@@ -89,7 +98,7 @@ class FollowerCount(FeatureExtractor):
         Returns
         -------
         result : np.ndarray
-            array with unix_times of the individual tweets
+            array with followercounts
 
         """
     
@@ -108,26 +117,25 @@ class FollowerCount(FeatureExtractor):
             user_id = int(inputs[0][i])
             
             #check if user is allready in dict, otherwise ask api
-            if user_id in self.id_to_follower.keys():                  
-                list_of_follower_counts+=[self.id_to_follower[user_id]]
-                print(user_id, "hat", self.id_to_follower[user_id])
+            if user_id in self._id_to_follower.keys():                  
+                list_of_follower_counts+=[self._id_to_follower[user_id]]
             else:
                 too_many_requests=True
                 while too_many_requests:
                     too_many_requests=False
                     try:     
                         # fetching the user
-                        user = self.api.get_user(user_id=user_id)
+                        user = self._api.get_user(user_id=user_id)
                           
                         # fetching the followers_count
                         followers_count = user.followers_count
                         list_of_follower_counts+=[followers_count]
-                        self.id_to_follower[user_id]=followers_count
+                        self._id_to_follower[user_id]=followers_count
                     #User could not be found
                     except tweepy.errors.NotFound:
                          missing_data+=1
                          list_of_follower_counts+=[0]
-                         self.id_to_follower[user_id]=0
+                         self._id_to_follower[user_id]=0
                          print("The User {0} could not be found. His value is set to 0 followers.".format(user_id))
                     #Twitter has been asked to many things at once.
                     except tweepy.errors.TooManyRequests :
@@ -138,11 +146,10 @@ class FollowerCount(FeatureExtractor):
                     except:
                         missing_data+=1
                         list_of_follower_counts+=[0]
-                        self.id_to_follower[user_id]=0
+                        self._id_to_follower[user_id]=0
                         print("there has been an error with this user (id={0}). His value is set to 0 followers.".format(user_id))
             #save the followercounts in external file
             if i%100==0:
-                #print(i, end="")
                 self.safe_id_to_follower_to_pickle()
 
                 

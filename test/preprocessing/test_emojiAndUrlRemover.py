@@ -6,9 +6,11 @@ Created on Sat Oct  9 22:36:22 2021
 @author: ml
 """
 
-import unittest
-import pandas as pd
+
 from code.preprocessing.emoji_url_remover import EmojiAndUrlRemover
+import pandas as pd
+import unittest
+
 
 class EmojiAndUrlRemoverTest(unittest.TestCase):
     
@@ -18,6 +20,14 @@ class EmojiAndUrlRemoverTest(unittest.TestCase):
         self.EMOJI_AND_URL_REMOVER = EmojiAndUrlRemover(self.INPUT_COLUMN, self.OUTPUT_COLUMN)
         
     def test_removing_emoji_works(self):
+        """
+        check if the removal of the emojis has worked
+
+        Returns
+        -------
+        None.
+
+        """
         #arrange
         input_texts = ["A grinning face \U0001f600", "Squinting face \U0001F606", "Laughing face \U0001F923","No smiley"]
         expected_output_texts = ["A grinning face ", "Squinting face ", "Laughing face ", "No smiley"]
@@ -33,6 +43,14 @@ class EmojiAndUrlRemoverTest(unittest.TestCase):
             self.assertEqual(emoji_free_text[self.OUTPUT_COLUMN][0], expected_text)
             
     def test_removing_url_works(self):
+        """
+        check if the removal of the urls has worked
+
+        Returns
+        -------
+        None.
+
+        """
         #arrange
         input_texts = ["Link 1: https://gist.github.com/slowkow/7a7f61f495e3dbb7e3d767f97bd7304b", 
                        "Link 2: https://trello.com/b/QXNueqhf/humblebees-777", 

@@ -8,11 +8,11 @@ Created on Wed Sep 29 13:33:37 2021
 @author: lbechberger
 """
 
-import argparse, pickle
-from sklearn.feature_selection import SelectKBest, mutual_info_classif
-from code.dimensionality_reduction.select_k_best_reducer import SelectKBestReducer
+import argparse
 from code.dimensionality_reduction.pca_reducer import PCAReducer
+from code.dimensionality_reduction.select_k_best_reducer import SelectKBestReducer
 from code.dimensionality_reduction.rfe_reducer import RFEReducer
+import pickle
 
 
 # setting up CLI

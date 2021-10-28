@@ -41,7 +41,16 @@ class Month(FeatureExtractor):
     
     # don't need to fit, so don't overwrite _set_variables()
     
-    def get_feature_name(self):
+    def get_feature_name(self)->list:
+        """
+        
+    
+        Returns
+        -------
+        list
+            list of all featurenames
+    
+        """
         suffixes=SUFFIX_MONTHS
         names=[]
         for i in range(0,12):
@@ -50,7 +59,7 @@ class Month(FeatureExtractor):
     
     def _get_values(self, inputs: list) -> np.ndarray :
         """
-        compute the unixtime based on the inputs
+        compute the month based on the inputs
         
         Parameters
         ----------

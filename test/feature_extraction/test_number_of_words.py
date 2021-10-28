@@ -6,9 +6,12 @@ Created on Tue Oct 19 18:35:42 2021
 @author: ml
 """
 
-import unittest
-import pandas as pd
+
+
 from code.feature_extraction.number_of_words import NumberOfWords
+import pandas as pd
+import unittest
+
 
 class NumberOfWordsTest(unittest.TestCase):
 
@@ -17,6 +20,14 @@ class NumberOfWordsTest(unittest.TestCase):
         self.number_of_words_extractor = NumberOfWords(self.INPUT_COLUMN)
         
     def test_amount_of_words_correct(self):
+        """
+        check if the amount of words is correctly counted
+
+        Returns
+        -------
+        None.
+
+        """
         #arrange
         input_texts = ["['First','Second','Third','Fourth']", 
                        "[]"]

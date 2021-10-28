@@ -5,10 +5,10 @@ Created on Sun Oct 10 17:23:36 2021
 
 @author: ml
 """
-
-import unittest
-import pandas as pd
 from code.preprocessing.stop_word_remover import StopWordRemover
+import pandas as pd
+import unittest
+
 
 class StopWordRemoverTest(unittest.TestCase):
     
@@ -18,6 +18,14 @@ class StopWordRemoverTest(unittest.TestCase):
         self.STOP_WORD_REMOVER = StopWordRemover(self.INPUT_COLUMN, self.OUTPUT_COLUMN)
         
     def test_removing_stop_words_works(self):
+        """
+        check if the removal of the stop words worked.
+
+        Returns
+        -------
+        None.
+
+        """
         #arrange
         input_texts = ["['this','has','some','stop','words']",
                        "['zero','stop','words','removed']"

@@ -6,10 +6,11 @@ Created on Wed Oct 20 20:36:30 2021
 @author: ml
 """
 
-import unittest
+
+from code.feature_extraction.has_most_common_words import HasMostCommonWords
 import pandas as pd
 import numpy as np
-from code.feature_extraction.has_most_common_words import HasMostCommonWords
+import unittest
 
 class HasMostCommonWordsTest(unittest.TestCase):
     
