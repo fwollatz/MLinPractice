@@ -24,13 +24,13 @@ Only components from the preprocessing and feature_extraction parts will be cove
 the behaviour of these parts are well specify-able and testable. The other parts (evaluation, dimensionality reduction)
 are mostly based on external 3rd party components (e.g. `sklearn`) and thus hard to test. 
 
-1. TestCases should named as boolean outcomes (e.g. def this_class_works: => y/n)
+1. TestCases should deliver boolean outcomes (e.g. def this_class_works: => y/n)
 
 2. TestCases should start with "test_" (in order to work with the `run_test.sh`
 
-3. Having a seperate test python file per class/components
+3. Having a separate test python file per class/component
 
-4. Tests are grouped in a seperate "test" folder
+4. Tests should be grouped in a separate "test" folder
 
 5. Group Tests in 3 steps:
   - (I) Arrange: set up of the test => variables, environment (excluding imports)
@@ -62,48 +62,47 @@ def test_tokenization_single_sentence_is_working(self):
 ### Design Decisions
 
 - Accuracy: to easily compare scores with baseline classifier (majority vote classifier was used here).
-- Top K Accuracy score: originally implement for performing multiclass prediction. But now since do bi-class prediction, this metric is not useful anymore.
-- Confusion matrix: not a concrete score, but the possibility to get the confusion matrix which some the metrics are based on
+- Top K Accuracy score: originally implemented for performing multiclass prediction. But since bi-class prediction was targeted in the end, this metric was not useful anymore.
+- Confusion matrix: not a concrete score; it gives an overall impression on how good the classifier handles positive and negative samples and some other evaluation matrices use the output of the confusion matrix
 - Cohen's Kappa: good performance indication for imbalanced-datasets.
 - AUC (Area under the ROC Curve): an aggregate measure of performance across all possible classification thresholds. The higher the score, the better the performance is. 0.5 shows that the classifier does not learn any discriminant features of positive and negative classes while 1 indicates an optimal performance.
 
 
 ### Results
 
-The baseline classifier was majority vote classifier. On the training set, the accuracy achieved was 0.9058, Cohen's Kappa was 0 and AUC was 0.5. On the validation set, the accuracy achieved was 0.9058, Cohen's Kappa was 0 and AUC was 0.5. Always-true classifier was also implemented.
+The baseline classifier was the majority vote classifier. On the training set, the accuracy achieved was 0.9058, Cohen's Kappa was 0 and AUC was 0.5. On the validation set, the accuracy achieved was 0.9058, Cohen's Kappa was 0 and AUC was 0.5. Always-true classifier was also implemented.
 
 ![DTC performance on validation set](documentation/DTC_results_training_validation.png)
 
-More details on the classifiers will be illustrated later in the Classifier section. 
+More details on the classifiers will be illustrated later in the *Classifier* section. 
 
 All results of the trained classifier could be viewed with:
 `mlflow ui --backend-store-uri data/classification/mlflow`
 
-Perform classification with the aforementioned best decision tree parameter configuration, we achieve the following results on the untouched test set.  
+Perform classification with the aforementioned best decision tree parameter configuration, we achieved the following results on the untouched test set.  
 ![MLFlow overall results](documentation/best_classifier_test_set.png)
 
 ### Interpretation
 
-Accuracy was based on the majority class, which showed the imbalance in the dataset. It was also reflected by Cohen's Kappa. Futhermore, AUC indicated that the classifier has no discrimination capacity to distinguish between positive and negative classes.
+Accuracy was based on the majority class, which showed the imbalance in the dataset. Such imbalance was also reflected by Cohen's Kappa. Furthermore, AUC indicated that the classifier had no discrimination capacity to distinguish between positive and negative classes.
 
 The classifier that delivered the best results on the validation set was the decision tree classifier, with the balanced class weight option, gini criterion, max depth of 20 and best splitter. The results were detailed in the following table.
 
 ![MLFlow DTC performance](documentation/DT_with_5_10_15_20_depth.png)
 
 As one can see Cohen's Kappa was still pretty low on the validation set while high on the training set for the best classifier. It indicates overfitting of this classifier. 
-Increasing the max depth led to stronger overfitting (the margin between the Cohen´s kappe scores increases with increasing depth). The differences in AUC score also confirmed the observation.
+Increasing the max depth led to stronger overfitting (the margin between the Cohen´s kappe scores increased with increasing depth). The differences in AUC score also confirmed the observation.
 
 ## Preprocessing
 
 ### Design Decisions
 
-As for the general/classic preprocessing, we decided on well-known NLP preprocessing steps to remove redundancy, 
-data that does not convey useful information (e.g. stop words), and tweet specific contents (like urls and emoji) to
-preprocess the tweet text itself into plain textualized information. The general preprocessing includes lower casing, 
+As for the preprocessing, we decided to use well-known NLP preprocessing steps to eliminate redundancy in data that did not contain useful information (e.g. stop words), and to
+preprocess the tweet text itself into plain textualized information (e.g. separating urls and emojis from the text) . The general preprocessing includes lower casing, 
 language filtering, stop word removal, punctuation removal (already given), emoji and url filtering and tokenization.
-All intermediate results are stored in separate columns and are thus a accessible for the feature extraction. 
+All intermediate results were stored in separate columns and were thus a accessible for the feature extraction. 
 
-In addition to preprocessing the tweet text itself, for each tweets the emojis were extracted for further
+In addition to preprocessing the tweet text itself, for each tweet the emojis were extracted for further
 feature extraction.
 
 ### Results
@@ -125,19 +124,19 @@ Emojis equals `[➡]`.
 ### Design Decisions
 
 The features implemented are:
-- the most common hastags (boolean): determine the n (specifyable) most common hashtags and checks for the existence of these words in the tweet. This creates n new features for each word.
-- the most common emojis (boolean): determine the n (specifyable) most common emojis and checks for the existence of these emojis in the tweet. This creates n new features for each emoji.
-- character length (implemented previously, int): the length of the unpreprocessed tweet. 
+- the most common hastags (boolean): determine the n (specifyable) most common hashtags and check the existence of these words in the tweet. This creates n new features for each word.
+- the most common emojis (boolean): determine the n (specifyable) most common emojis and check the existence of these emojis in the tweet. This creates n new features for each emoji.
+- character length (implemented previously, int): the length of the un-preprocessed tweet. 
 - the amount of followers (int): make use of the twitter API to get the follower count of the person which the tweets belongs to.
-- the number of urls (int): determines how many urls were shared in the tweet. As it brings new information to the followers, it has the potential of being retweeted in the social circle. 
-- the most common words (str): certain popular or catchy words could attract more views and therefore retweets.
+- the number of urls (int): determines how many urls were shared in the tweet. As urls likely bring new information to the followers, it increases the potential of being retweeted in the social circle. 
+- the most common words (str): certain popular or catchy words could attract more views and therefore could increase the chance of retweet.
 - the number of hashtags (int): the more hashtags, the more likely that a tweet gets identified by the search function. It therefore increases the chance of being discovered by the community and being retweeted.
-- if any photos were attached: photos as visual stimuli could play an important role in catching people's attention and in attracting others to spend more time on the tweets.
-- the number of words (int): directly influences how much content the person could send out in one tweet. A high number indicates more content, while a small number indicates little content
-- the unix time when tweets were published (int):the unix-time when the tweet was published serves as indicator when in the complete timeline of all these tweets, it was posted. Thereby it might be possible for the classifier to find trending topics/hashtags/etc.
-- the month, weekday, hour (one-hot-encoded booleans): the *month* that the post was send in, could be related to how many people see the tweet. In December or the summer months, when people usually go on vacation, might lead to more people on twitter in general, because of more spare time.
-The *weekday*, similar to the *month*, with people having more time to read through twitter on the weekend. The *hour of the day* is grouped in blocks of 3 hours. It could show tendencies of people using plattforms like twitter more commonly in the afternoon/evening, than during typical working-hours 
-- The sentiment: indicated by the vader-module by nltk, shows if the language is more positive or more negative. This could result in a more positive/negative mindset of the reader, and therefore in a higher chance of getting shared.
+- if any photos were attached: photos as visual stimuli could play an important role in catching people's attention within a short time and in attracting others to spend more time on the tweets.
+- the number of words (int): directly influences how much content the person could send out in one tweet. A high number indicates more substantial content, while a small number indicates little content
+- the unix time when tweets were published (int):the unix-time when the tweet was published serves as an indicator of when in the complete timeline of all the tweets, a tweet was posted. Thereby, it may be possible for the classifier to find trending topics/hashtags/etc that happened at a specific time.
+- the month, weekday, hour (one-hot-encoded booleans): the *month* that the tweet was posted, could be related to how many people see the tweet. In December or in the summer months, when people usually go on vacation, more people may use twitter in general, because of more spare time.
+The *weekday*, similar to the *month*, with people having more time to spend on twitter during the weekend. The *hour of the day* is grouped in blocks of 3 hours. It could show tendencies of people using plattforms like twitter more often in the afternoon/evening, than during typical working-hours (or vice versa). 
+- The sentiment: indicated by the vader-module by nltk, it shows if the language is more positive or more negative. This could result in a more positive/negative mindset of the readers, and therefore in a higher chance of getting shared.
 
 ### Results
 
