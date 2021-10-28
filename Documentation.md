@@ -243,22 +243,22 @@ The following classifiers were used:
 - label frequency classifier: parameters - `seed`
   - a second baseline classifier option
 - minority vote classifier: parameters - `seed`
-  - implemented out of curiosity of using a minority classifier as baseline, but dismissed due to poor performance
+  - implemented out of curiosity as another baseline option, but abandoned due to the poor performance
 - k-nearest neighbor classifier: parameters - `k`
 - complement naive bayes: parameters - `alpha`, `fit_prior`, `norm`
     - it was chosen because it is known to work with an imbalanced dataset like the current dataset
 - decision tree classifier: parameters - `criterion`, `splitter`, `max_depth`, `class_weight`
-  - `max_depth`: to limit the tree in depth. Used for investigating overfitting issues
-  - `criterion`: use a different quality measure for the splits. We introduced the entropy option to use the information gain instead of the gini impurity
-  - `splitter`: use a different split strategy. We introduced the random option to use instead of the best split with the hope to tackle overfitting.
-  - `class_weight`: we introduced this option to tackle the imbalance problem of the dataset.
+  - `max_depth`: to limit the tree in depth. Used for investigating the overfitting issue
+  - `criterion`: use a different quality measure for the splits. We chose the entropy option to use the information gain instead of the gini impurity
+  - `splitter`: use a different split strategy. We adopted the random option instead of the best split with the aim to tackle overfitting.
+  - `class_weight`: we added this option to tackle the imbalance problem of the dataset.
 - random forest classifier: parameters - `criterion`, `bootstrap`, `max_depth`, `n_estimators`, `class_weight`
   - `criterion`: same reasoning as for the decision tree classifier
   - `max_depth`: same reasoning as for the decision tree classifier
   - `n_estimators`: choose the number of trees/estimators in the forest. Introduced for investigating effects on overfitting and performance.
   - `class_weight`: same reasoning as for the decision tree classifier
   - `bootstrap`: whether to use the whole dataset to build each tree or sample a subset of it for each tree.
-  - Unfortunately due to file size restriction were not able to observe results for optimizing the parameters of this classifier
+  - Unfortunately due to file size restriction, we were not able to observe results for optimizing the parameters of this classifier
 - support vector classifier: parameters - `c`, `gamma`, `kernel`
   - it was chosen as it is effective in high dimensional space. Yet, possibly due to the large number of data points, the required training time was significantly higher than anticipated. Eventually, due to the grid wall time, the trainings were terminated and we had to abandon svc.
   - GridSearchCV was used for hyper-parameter tuning. For each combination of the values of *c*, *gamma*, and the choices of *kernel*, a svc model is evaluated. It took significantly more time than expected on IKW grid to evaluate even a model with one combination (roughly at least one hour). We had to abandon the grid search of svc in the end.
@@ -266,10 +266,9 @@ The following classifiers were used:
   - `gamma`: determines how much the curvature is desired at a decision boundary. For the grid search, {1, 0.1, 0.01, 0.001} was tested.
   - `kernel`: to takes the data points from the original lower dimensional space and returns the transformed vectors in the higher dimensional feature space. For the grid search, {'rbf', 'poly', 'sigmoid'} were tested.
   
-
 ### Results
 
-The performance of random forest classifier and support vector classifier could not be optimized because the first one was too large to be pushed to git while the latter took too long for classification. For the remaining classifiers, the decision classifier performs the best, followed by the k-nearest neighbor classifier, complement naive bayes classifier, majority-/minority-vote and label frequency classifier in this order. The last three classifiers were of similar performance. Details were summarized in the mlflow table. 
+The performance of random forest classifier and support vector classifier could not be optimized because the first one was too large to be pushed to git while the latter took too long for training and classification. For the remaining classifiers, the decision classifier performs the best, followed by the k-nearest neighbor classifier, complement naive bayes classifier, majority-/minority-vote and label frequency classifier in this order. The last three classifiers were of similar performance. Details were summarized in the mlflow table. 
 
 In general, nearly all the classifiers were overfitting the training set. The decision tree classifier generailzed better compared to other classifier, even though it could be optimized further. 
 
@@ -364,7 +363,7 @@ done
 
 We suspected that the decision tree classifier performed the best because the dimensionality reduction was performed using a decision tree model.
 The best classifier managed to score at around 80% on the validation set but still the Cohen's Kappa score of 0.292 indicated that overfitting persisted and further optimization was needed.
-As seen in the above run on the test set, surprisingly the classifier performs well better reaching a accuracy of 0.9063 (on a par with the baseline majority vote classifier), but
+As seen in the above run on the test set, surprisingly the classifier performs well reaching a accuracy of 0.9063 (on a par with the baseline majority vote classifier), but
 with a much higher Cohen´s Kappa score of 0.61 (compared to 0.0 of the baseline). The AUC score of 0.9470 indicates that this classifier is indeed usable to a certain extent.
 However, further research has to be done w.r.t. the influence of the dimensionality reduction on the classification results.
 Additionally we are still unsure about why the boolean features were deemed more promising than expected compared to the
@@ -377,8 +376,8 @@ Lastly, below is a consolidated list of additional observations we made during t
 
 ## Appendix
 
-This section, we added after conducting the actual experiments. After looking into the RFE ranking of our feature reduction part again,
-we observed that somehow `sklearn.feature_selection.RFE` does assign multiple features to one ranking spot. For instance, the ranking for our features after performing is as follows:
+The following observation and reflection was made after conducting the actual experiments. After looking into the RFE ranking of our feature reduction part again,
+we observed that somehow `sklearn.feature_selection.RFE` does assign multiple features to one ranking spot. For instance, the ranking for our features after performing feature reduction is as follows:
 
 ````
 [RFE Rankings]
@@ -454,10 +453,9 @@ Feature: contains_word_analyt, Ranking: 17
 Feature: sentiment, Ranking: 1
 ````
 
-Here we can see that multiple features are ranked on place one (also the numerical values we anticipated to be important).
-This multi spot ranking changes our results fundamentally, since our RFE implementation was done under the assumption that
-there is a distinct ranking. Therefore only the first feature on the first place were selected as number one, then the first features on the second place and so on.
-Since we discovered this only after our experiments, we are lacking the time to rerun the hyper-parameter optimization and
-to rewrite our existing documentation. Thus we decided to add this note as an appendix to our existing documentation. As an outlook,
-the RFE components needs some small rework to include also the multiple ranking problem and the pipeline including the parameter optimization.
+Here we could see that multiple features were ranked as '1' (including the numerical values we anticipated to be important).
+This multi spot ranking changes our results fundamentally, since our RFE implementation was made under the assumption of a distinct ranking. Therefore only the first feature of rank '1' were selected as number one, then the first feature of rank '2' and so on.
+Since we discovered this only after our experiments, we were lacking the time to rerun the hyper-parameter optimization and
+to rewrite our existing documentation. Thus we decided to add this note as an appendix to our existing documentation. For future work,
+some adaptations are needed on the RFE components to tackle the multiple ranking problem and on the pipeline including the parameter optimization.
 However this explains our scepticism towards the uselessness of our numerical features.
