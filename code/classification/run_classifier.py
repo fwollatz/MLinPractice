@@ -33,6 +33,7 @@ parser.add_argument("-i", "--import_file", help = "import a trained classifier f
 """-------------- Classifier Choices -------------"""
 parser.add_argument("-m", "--majority", action = "store_true", help = "majority class classifier")
 parser.add_argument("-f", "--frequency", action = "store_true", help = "label frequency classifier")
+parser.add_argument("-mc", "--minority", action = "store_true", help = "minority class classifier")
 #KNN
 parser.add_argument("--knn", type = int, help = "k nearest neighbor classifier with the specified value of k", default = None)
 #Complement Naive Bayes
@@ -86,7 +87,7 @@ if args.import_file is not None:
     log_param("dataset", "validation")
 
 else:   # manually set up a classifier
-    
+
     # majority vote classifier
     if args.majority:
         print("    majority vote classifier")
@@ -100,8 +101,13 @@ else:   # manually set up a classifier
         log_param("classifier", "frequency")
         params = {"classifier": "frequency"}
         classifier = DummyClassifier(strategy = "stratified", random_state = args.seed)
-        
-    # KNN classifier
+    
+    # minority constant classifier
+    if args.minority:
+        log_param("classifier" , "constant")
+        params = {"classifier" : "constant"}
+        classifier = DummyClassifier(strategy = "constant", random_state = args.seed, constant = True)
+    
     elif args.knn is not None:
         print("    {0} nearest neighbor classifier".format(args.knn))
         log_param("classifier", "knn")
