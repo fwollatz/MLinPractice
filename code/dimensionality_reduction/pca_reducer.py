@@ -16,7 +16,7 @@ import numpy as np
 class PCAReducer():
     _pca_reducer = None
     
-    def __init__(self, features : list, labels : list, seed: int = 0, use_normalizer : bool = False):
+    def __init__(self, features : list, labels : list, seed: int = 0, use_normalizer : bool = True):
         self._features = features
         self._labels = labels
         self._seed = seed
