@@ -10,7 +10,6 @@ from code.feature_extraction.feature_extractor import FeatureExtractor
 from code.util import COLUMN_SENTIMENT
 import numpy as np
 import nltk
-
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 #class for extracting the amount of words after general preprocessing
@@ -38,7 +37,9 @@ class SentimentFeature(FeatureExtractor):
         
     def _get_values(self, inputs: list) -> np.ndarray :
         """
+
         compute the sentiment based on the input
+
         
         Parameters
         ----------
@@ -52,7 +53,7 @@ class SentimentFeature(FeatureExtractor):
 
         """
 
-        #transform string to list and compute length
+
         
         
         list_of_sentiments=[]
@@ -64,6 +65,5 @@ class SentimentFeature(FeatureExtractor):
         result = np.array(list_of_sentiments)
         #expand dim to (tweets, 1)
         result = result.reshape(-1,1)
-        print(result)
         return result
     
