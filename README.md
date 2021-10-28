@@ -68,7 +68,8 @@ The preprocessing steps to take can be configured with the following flags:
 - `-lc`or `--lower_case`: Lower cases all words within a tweet. This option is by default active. (See `code/preprocessing/lower_caser.py` for more details)
 - `-swr` or `--stop_word_removal`: Removes stop words from all tweets. Requires the tweet to be stemmed. This option by default activated. (See `code/preprocessing/stop_word_remover.py` for more details)
 - `-feu` or `--filter_emojis_urls`: Removes all emojis and urls from the tweets. Requires the tweet be punctuation freed. This option by default activated. (See `code/preprocessing/emoji_url_remover.py` for more details)
-For the column names produced during the different steps, please refer to the `code.util.py` where all names are stored.
+- `-ee` or `--extract_emojis`: Extract all emojis from the tweet. 
+- For the column names produced during the different steps, please refer to the `code.util.py` where all names are stored.
 
 
 The overall default order of preprocessing the tweets is: 
@@ -106,16 +107,18 @@ The features to be extracted can be configured with the following optional param
 For the name constants of the original data please refer to the `code/util.py`.
 - `-c` or `--char_length`: Count the number of characters in the "tweet" column of the data frame. (see `code/feature_extraction/character_length.py`)
 - `-ht` or `--number_of_hastags`: Computes the number of hashtags based on the based on the original `COLUMN_HASHTAG`.  (see `code/feature_extraction/number_of_hashtags.py`)
-- `url` or `--number_of_urls`: Computes the number of urls based on the original `COLUMN_URLS`. (see `code/feature_extraction/number_of_urls.py`)
+- `-url` or `--number_of_urls`: Computes the number of urls based on the original `COLUMN_URLS`. (see `code/feature_extraction/number_of_urls.py`)
 - `-dt` or `--datetime`: Computes the unix-datetime of the post based on the `COLUMN_DATE` and `COLUMN_TIME`. (see `code/feature_extraction/datetime.py`)
 - `-hr` or `--hour`: Computes the one-hot-encoded 3-hour intervals based on the `COLUMN_TIME`. This option creates one column for each one-hot-encoded 3-h interval (in total: 8 columns). (see `code/feature_extraction/hour.py`)
 - `-mo` or `--month`: Computes the one-hot-encoded 12-month categories based on the `COLUMN_DATE`. This option creates one column for each month (in total: 12) (see `code/feature_extraction/month.py`)
 - `-wd` or `--weekday`: Computes the one-hot-encoded 7-weekday categories based on the `COLUMN_DATE`. This option creates one column per weekday (in total: 7) (see `code/feature_extraction/weekday.py`)
 - `-w` or `--number_of_words`: Computes the number of (content) words from the preprocessed tweet.
-- `-f` or `--follower`: compute the amount of followers for each user. To reduce stress on the twitter API the followercounts are collected in the file "id_to_follower". To identify other Users than the ones used in the trainig data you need the access-data for using twitters api. (see `code/feature_extraction/follower_count.py`)
-- `-ch` or `--has_most_common_hashtags`: check wether the tweet has the top n most used hashtags. Default n=20. To define n, use this `--has_most_common_hashtags 1` for n = 1). This creates n columns, one for each of the n most commonly used hashtag (see `code/feature_extraction/has_most_common_hashtags.py`)
-- `-ce` or `--has_most_common_emojis`: check wether the tweet has the top n most used emojis. Default n=20. To define n, use this `--has_most_common_emojis 1` for n = 1). This creates n columns, one for each of the n most commonly used emoji (see `code/feature_extraction/has_most_common_emojis.py`)
-- `-cw` or `--has_most_common_words`: check wether the tweet has the top n most used words. Default n=10. To define n, use this `--has_most_common_words 1` or `-cw 1` for n = 1). This creates n columns, one for each of the n most commonly used words (see `code/feature_extraction/has_most_common_words.py`)
+- `-f` or `--follower`: compute the amount of followers for each user. To reduce stress on the twitter API the follower counts are collected in the file "id_to_follower". To identify other Users than the ones used in the trainig data you need the access-data for using twitters api. (see `code/feature_extraction/follower_count.py`)
+- `-ch` or `--has_most_common_hashtags`: check whether the tweet has the top n most used hashtags. Default n=20. To define n, use this `--has_most_common_hashtags 1` for n = 1). This creates n columns, one for each of the n most commonly used hashtag (see `code/feature_extraction/has_most_common_hashtags.py`)
+- `-ce` or `--has_most_common_emojis`: check whether the tweet has the top n most used emojis. Default n=20. To define n, use this `--has_most_common_emojis 1` for n = 1). This creates n columns, one for each of the n most commonly used emoji (see `code/feature_extraction/has_most_common_emojis.py`)
+- `-cw` or `--has_most_common_words`: check whether the tweet has the top n most used words. Default n=10. To define n, use this `--has_most_common_words 1` or `-cw 1` for n = 1). This creates n columns, one for each of the n most commonly used words (see `code/feature_extraction/has_most_common_words.py`)
+- `--photo`: check whether the tweet contains photos.
+- `-s` or `--sentiment`: compute the sentiment of the tweet using nltk.vader
 
 Moreover, the script support importing and exporting fitted feature extractors with the following optional arguments:
 - `-i` or `--import_file`: Load a configured and fitted feature extraction from the given pickle file. Ignore all parameters that configure the features to extract.
@@ -136,7 +139,7 @@ The file `output.pickle` will be used to store the results of the dimensionality
 The dimensionality reduction method to be applied can be configured with the following optional parameters:
 - `-m` or `--mutual_information`: Select the `k` best features (where `k` is given as argument) with the Mutual Information criterion (see `code/dimensionality_reduction/select_k_best_reducer.py`)
 - `--pca`: Performs Principle Component Analysis in an automated way by reducing the dimensionality to n components, where n is calculated based on the cumulative explained variance ratio. The `PCA_EXPLAINED_VARIANCE_THRESHOLD` (see `code/util.py`) is currently at 95% of explained variance. (see `code/dimensionality_reduction/pca_reducer.py`)
-- `--rfe`: Performs Recursive Feature Elimnation (RFE) selecting the `n` best features (where `n` is given as argument). The default option uses the Decision Tree Classifier.
+- `--rfe`: Performs Recursive Feature Elimination (RFE) selecting the `n` best features (where `n` is given as argument). The default option uses the Decision Tree Classifier.
 - `-rfe_rfc` or `--rfe_random_forest_classifier`: Optional RFE parameter to perform RFE with the random forest classifier. This option requires the `--rfe` option to be active.
 
 Moreover, the script support importing and exporting fitted dimensionality reduction techniques with the following optional arguments:
@@ -158,6 +161,7 @@ Here, `input.pickle` is a pickle file of the respective data subset, produced by
 By default, this data is used to train a classifier, which is specified by one of the following optional arguments:
 - `-m` or `--majority`: Majority vote classifier that always predicts the majority class.
 - `-f` or `--frequency`: Dummy classifier that makes predictions based on the label frequency in the training data.
+- `-mc` or `--minority`: Minority vote classifier (implement with a constant Dummy classifier) that always predicts the minority class.
 - `--knn`: KNN classifier with a specificied k (e.g. `--knn 1` for k = 1)
 - `--dtc`: Decision Tree Classifier with default configuration `criterion = "gini", splitter = "best", max_depth = None`.
 - `--dtc_max_depth`: Optional DTC parameter option for configuring the max depth (e.g. `--dtc --dtc_max_depth 10)` (default is None). Requires `--dtc` option to be active.
@@ -168,14 +172,16 @@ By default, this data is used to train a classifier, which is specified by one o
 - `--rfc_max_depth`: Optional RFC parameter option for configuring the max depth (e.g. `--rfc --rfc_max_depth 10)` (default is None). Requires `--rfc` option to be active.
 - `--rfc_no_bootstrap`: Optional RFC parameter option for configuring the bootstrapping option (default is using bootstrapping). Requires `--rfc` option to be active.
 - `--rfc_n_estimators`: Optional RFC parameter option for configuring the number of estimators (trees) in the forest (e.g. `--rfc --rfc_n_estimators 10)` (default is 100). Requires `--rfc` option to be active.
-- `--class_weight_balanced`: Optional RFC parameter option for using the class_weight = 'balanced' option of a classifier, if available. 
+- `--class_weight_balanced`: Optional RFC and DTC parameter option for using the class_weight = 'balanced' option of a classifier, if available. 
 - `-cnb` or `--complement_naive_bayes`,:  A naive bayes classifier, especially good with imbalanced data. Described in Rennie et al. (2003).
 - `-cnb_a` or `--complement_naive_bayes_alpha`: Optional CNB parameter. Additive (Laplace/Lidstone) smoothing parameter (0 for no smoothing)
 - `-cnb_fp` or `--complement_naive_bayes_fit_prior`: Optional CNB parameter. Only used in edge case with a single class in the training set.
 - `-cnb_bn` or `--complement_naive_bayes_norm`: Optional CNB parameter. Whether or not a second normalization of the weights is performed. The default behavior mirrors the implementations found in Mahout and Weka, which do not follow the full algorithm described in Table 9 of the paper.
-
-
-
+- `--svc`: A support vector classifier with default parameter configuration `C = 1.0, Gamma = 1.0, Kernel = rbf`.
+- `--svc_c`: Optional SVC parameter. Specify the C value of SVC. Requires `--svc` option to be active.
+- `--svc_gamme`: Optional SVC parameter. Specify the gamma value of SVC. Requires `--svc` option to be active.
+- `--svc_kernel`: Optional SVC parameter. Specify the kernel type of SVC (available options are `linear`,`poly`,`rbf`,`sigmoid`,`precomputed`).
+- `--log_folder`: MLFlow parameters to specify the save location. Default is `"data/classification/mlflow"`.
 
 The classifier is then evaluated, using the evaluation metrics as specified through the following optional arguments:
 - `-a`or `--accuracy`: Classification accurracy (i.e., percentage of correctly classified examples).
