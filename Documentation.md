@@ -170,18 +170,18 @@ Overall the amount of tweets per month stays on similar levels throughout a year
 
 ![DescriptivesNumerical](documentation/descriptives_numerical%20features.png)
 
-The high standard deviation and Mean compared to the relatively low follower count leads to the conclusion, that we have outliers, that increase the mean significantly. The high number of the maximum indicates 130 096 880 is the maximum amount of followers, that one person has. This is a huge part of the 206 000 000 Users, 
-[that are actively using twitter](https://www.statista.com/statistics/242606/number-of-active-twitter-users-in-selected-countries/#:~:text=Global%20Twitter%20usage,former%20U.S.%20president%20Barack%20Obama.).
+The high standard deviation and Mean compared to the relatively low follower count indicates that there are outliers, which increase the mean significantly. The high number of the maximum suggests that 130 096 880 is the maximum amount of followers that one person has. This is a huge part of the 206 000 000 Users, 
+[who actively uses twitter](https://www.statista.com/statistics/242606/number-of-active-twitter-users-in-selected-countries/#:~:text=Global%20Twitter%20usage,former%20U.S.%20president%20Barack%20Obama.).
 The Sentiment value shows that the texts in general tend to be on the more positive site.
-Every tweet uses round about 1 URL and 3 Hashtags and consists of about 15-Words and 178 characters.
+Every tweet uses roughly 1 URL and 3 Hashtags and consists of approximately 15-Words and 178 characters.
 
 ### Interpretation
 
 Can we already guess which features may be more useful than others?
 
-The following features may be more useful: the amount of followers. 
+The amount of followers may be more useful. 
 
-The above features were chosen because we believed that they would play a role collectively in determining the virality of tweets. And we expected the amount of followers to be more important. 
+Yet, the above features were chosen because we believed that they would play a role collectively in determining the virality of tweets. And we expected the amount of followers to be more important. 
 
 ## Dimensionality Reduction
 
@@ -194,7 +194,7 @@ to analyze how helpful the individual features are during classification
 Which dimensionality reduction technique(s) did you pick and why?
 
 It was originally decided to choose three dimensionality reduction methods. And the following dimensionality reduction techniques were used:
-- PCA: used to perform feature projection and to compute new features based on the original ones; this approach select a number of principle components automatically based on the accumulative explained variance ratio (currently 0.95). We normalize or standardize the features before performing PCA.
+- PCA: used to perform feature projection and to compute new features based on the original ones; this approach selects a number of principle components automatically based on the accumulative explained variance ratio (currently 0.95). We normalized or standardized the features before performing PCA.
 - Wrapper (RFE) method: used for feature selection based on the models that evaluated different features; the number of selectable features could be specified.
 - Filter method: instead of using models, the mutual information heuristics were used to select suitable features; the number of selectable features could be specified.
 
@@ -206,9 +206,9 @@ Perform dimensionality reduction using the RFE wrapper method with the n = 10 be
 
 ![RFE_Top10](documentation/RFE_DTC_Top10.png)
 
-We choosed these RFE settings as dimensionality reduction technic before attending to the hyper-parameter optimization.
+We chose these RFE settings as the dimensionality reduction technique before performing the hyper-parameter optimization.
 
-Here are also some PCA scores, but due to compatibility issue between PCA and the Complement Naive Bayes Classifier (does not allow for negative feature values) we decided against the PCA usage for the hyper-parameter optimization.
+Below are also some PCA scores. But due to compatibility issue between PCA and the Complement Naive Bayes Classifier (not allowing negative feature values), we decided against the PCA approach for the hyper-parameter optimization.
 
 1.) PCA scores with Normalization
 
@@ -221,14 +221,14 @@ Here we can see that the first component is already enough to cover more than 95
 ![PCA_Standardized](documentation/PCA_Standardized.png)
 
 While using standardization instead of normalization, we need the top 50 components to reach an explained variance of above 95%,
-indicating that standardization might made the features more comparable as mere normalization.
+indicating that standardization might make the features more comparable than merely normalization.
 
 ### Interpretation
 
-The results of the RFE feature selection indicates that especially boolean features very more important.
-This could be due to the chosen DTC model which sees boolean features more useful to form distinct target groups.
+The results of the RFE feature selection indicated that boolean features were very more important.
+This could be due to the chosen DTC model seeing boolean features more useful to form distinct target groups.
 Still the top feature was a numerical one `tweet_charlength`, so the length of the tweet was considered the most important 
-along the boolean features. Surprisingly the dimensionality reduction indicated that the amount of followers was not as useful as we thought.
+along with the boolean features. Surprisingly the dimensionality reduction indicated that the amount of followers was not as useful as we thought.
 
 ## Classification
 
