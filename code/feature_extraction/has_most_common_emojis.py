@@ -77,11 +77,16 @@ class HasMostCommonEmojis(FeatureExtractor):
         for tweet in tweets:
             ohe_emojis_used=self._n*[0]
             for i in range(self._n):
-                current_emojis=self._emojis[i][0]
+                current_emoji=self._emojis[i][0]
                 emojis_in_tweet=ast.literal_eval(tweet)
-                if current_emojis in emojis_in_tweet:
-                    findings=re.findall(self.emoji_re_masks[0],tweet)
+                
+                ohe_emojis_used[i]=0
+                if current_emoji in emojis_in_tweet:
+                    findings=[]
+                    findings+=re.findall(self.emoji_re_masks[i],tweet)
+                    
                     ohe_emojis_used[i]=len(findings)
+
             
             #add to list
             list_of_most_common_emojis+=[ohe_emojis_used]
