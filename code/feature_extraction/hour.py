@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Simple feature that computes the month of the tweets release in the given column.
-
+Simple feature that computes the hour of the day, seperated in 8 3-hour-slots
 Created on Friday Oct 8 2021
 
 @author: fwollatz
@@ -41,7 +40,16 @@ class Hour(FeatureExtractor):
     
     # don't need to fit, so don't overwrite _set_variables()
     
-    def get_feature_name(self):
+    def get_feature_name(self)->list:
+        """
+        
+
+        Returns
+        -------
+        list
+            list of all featurenames
+
+        """
         suffixes=SUFFIX_HOURS
         names=[]
         for i in range(0,8):
@@ -50,7 +58,7 @@ class Hour(FeatureExtractor):
     
     def _get_values(self, inputs: list) -> np.ndarray :
         """
-        compute the unixtime based on the inputs
+        compute the hour of the day based on the inputs
         
         Parameters
         ----------
@@ -60,7 +68,7 @@ class Hour(FeatureExtractor):
         Returns
         -------
         result : np.ndarray
-            array with month of the individual tweets
+            array with hour of the individual tweets
 
         """
 

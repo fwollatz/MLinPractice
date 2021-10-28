@@ -7,10 +7,11 @@ Created on Thu Oct  7 14:53:52 2021
 """
 
 import ast
-import nltk
-import numpy as np
 from code.feature_extraction.feature_extractor import FeatureExtractor
 from code.util import COLUMN_CONTAINED_HASHTAG
+import nltk
+import numpy as np
+
 class HasMostCommonHashtags(FeatureExtractor):
 
     _n=5
@@ -18,11 +19,20 @@ class HasMostCommonHashtags(FeatureExtractor):
     _suffix_hashtags=[]
     
     
-    def __init__(self, input_column,n:int=20):
+    def __init__(self, input_column: str,n:int=20):
         super().__init__([input_column], "#{0}_occurs".format(input_column))
         self._n=n
         
-    def get_feature_name(self):
+    def get_feature_name(self)->list:
+        """
+        returns n feature names for the n most common hashtags
+
+        Returns
+        -------
+        names : list
+            list of all names.
+
+        """
         suffixes=self._suffix_hashtags
         names=[]
         for i in range(0,self._n):
@@ -30,6 +40,19 @@ class HasMostCommonHashtags(FeatureExtractor):
         return names
     
     def _set_variables(self, inputs: list):
+        """
+        computes the n most common hashtags
+    
+        Parameters
+        ----------
+        inputs : list
+            list of all hashtags per tweet.
+
+        Returns
+        -------
+        None.
+
+        """
         
         all_hashtags = []
         for tweet in np.array(inputs[0]):
@@ -44,8 +67,22 @@ class HasMostCommonHashtags(FeatureExtractor):
         print(self._suffix_hashtags)
         
     def _get_values(self, inputs: list) -> np.ndarray :
-        
-        
+        """
+        returns a list of booleans for each tweet, corresponding to the existance of one of the n mst commonly used hashtags
+
+
+
+        Parameters
+        ----------
+        inputs : list
+            list of all hashtags per tweet.
+
+        Returns
+        -------
+        result : np.ndarray
+            ohe-list of the existance of the n different hashtags
+
+        """
         list_of_most_common_hashtags=[]
 
         #splitting up the input

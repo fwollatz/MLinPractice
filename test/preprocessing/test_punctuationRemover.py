@@ -6,9 +6,11 @@ Created on Sun Oct 10 00:56:02 2021
 @author: ml
 """
 
-import unittest
-import pandas as pd
+
 from code.preprocessing.punctuation_remover import PunctuationRemover
+import pandas as pd
+import unittest
+
 
 class PunctuationRemoverTest(unittest.TestCase):
     
@@ -18,6 +20,14 @@ class PunctuationRemoverTest(unittest.TestCase):
         self.PUNCTUATION_REMOVER = PunctuationRemover(self.INPUT_COLUMN, self.OUTPUT_COLUMN)
         
     def test_removing_punctuation_works(self):
+        """
+        test if the removal of the puctution has worked
+
+        Returns
+        -------
+        None.
+
+        """
         #arrange
         input_texts = ["A,B,C,D", 
                        "!#$%&'()*+,-./:;<=>?@[]^_`{|}~", 

@@ -23,8 +23,20 @@ class LowerCaser(Preprocessor):
     
     def _get_values(self, inputs : list) -> list:
         """
-        lower cases a string
+        lower case all tweets
+
+        Parameters
+        ----------
+        inputs : list
+            list of all tweets
+
+        Returns
+        -------
+        list
+            list of all lowercased tweets.
+
         """
+
         column = inputs[0].str.lower()
         print("Lower cased {0} tweets!".format(len(column)))
         return column

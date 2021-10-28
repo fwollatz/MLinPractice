@@ -41,7 +41,16 @@ class Weekday(FeatureExtractor):
     
     # don't need to fit, so don't overwrite _set_variables()
     
-    def get_feature_name(self):
+    def get_feature_name(self)->list:
+        """
+        
+
+        Returns
+        -------
+        list
+            list of all featurenames
+
+        """
         suffixes=SUFFIX_WEEKDAY
         names=[]
         for i in range(0,7):

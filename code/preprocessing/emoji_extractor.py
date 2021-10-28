@@ -27,9 +27,20 @@ class EmojiExtractor(Preprocessor):
     def _set_variables(self, inputs : list):
         """
         setting filtering regex mask for emojis 
+        
+
+        Parameters
+        ----------
+        inputs : list
+            list of all tweets.
+
+        Returns
+        -------
+        None.
         """
+        
         #store emoji regex mask
-        self.emoji_re_mask = re.compile("["
+        self._emoji_re_mask = re.compile("["
                                 u"\U0001F600-\U0001F64F"  # emoticons
                                 u"\U0001F300-\U0001F5FF"  # symbols & pictographs
                                 u"\U0001F680-\U0001F6FF"  # transport & map symbols
@@ -52,12 +63,25 @@ class EmojiExtractor(Preprocessor):
 
     
     def _get_values(self, inputs : list) -> list:
-        """extracting emojis from tweets"""
+        """
+        extracting emojis from tweets
+
+        Parameters
+        ----------
+        inputs : list
+            list of all tweets.
+
+        Returns
+        -------
+        list
+            list of emojis per tweet.
+
+        """
         emojis_filtered = []
 
         for tweet in inputs[0]:
             #find all emojis
-            findings=re.findall(self.emoji_re_mask,tweet)
+            findings=re.findall(self._emoji_re_mask,tweet)
             
             emojis_filtered.append(str(findings))
         return emojis_filtered

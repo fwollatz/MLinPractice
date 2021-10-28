@@ -27,9 +27,21 @@ class EmojiAndUrlRemover(Preprocessor):
     def _set_variables(self, inputs : list):
         """
         setting filtering regex mask for emojis and urls
+        
+
+        Parameters
+        ----------
+        inputs : list
+            list of all tweets.
+
+        Returns
+        -------
+        None.
+
         """
+
         #store emoji regex mask
-        self.emoji_re_mask = re.compile("["
+        self._emoji_re_mask = re.compile("["
                                 u"\U0001F600-\U0001F64F"  # emoticons
                                 u"\U0001F300-\U0001F5FF"  # symbols & pictographs
                                 u"\U0001F680-\U0001F6FF"  # transport & map symbols
@@ -50,17 +62,31 @@ class EmojiAndUrlRemover(Preprocessor):
                                 u"\u3030"
                                 "]+", flags=re.UNICODE)
         #store url regex mask
-        self.url_re_mask = re.compile("http\S+",flags=re.UNICODE)
+        self._url_re_mask = re.compile("http\S+",flags=re.UNICODE)
     
     def _get_values(self, inputs : list) -> list:
-        """Removing emojis from tweets"""
+        """
+        
+        Removing emojis from tweets
+
+        Parameters
+        ----------
+        inputs : list
+            list of all tweets.
+
+        Returns
+        -------
+        list
+            list of all cleaned tweets.
+
+        """
         tweets_filtered = []
 
         for tweet in inputs[0]:
             #remove emojis
-            help_str = self.emoji_re_mask.sub(r'', tweet)
+            help_str = self._emoji_re_mask.sub(r'', tweet)
             #remove urls
-            tweet_filtered = self.url_re_mask.sub(r'', help_str)
+            tweet_filtered = self._url_re_mask.sub(r'', help_str)
             tweets_filtered.append(str(tweet_filtered))    
         print("Filtered emojis and urls from {0} tweets".format(len(tweets_filtered)))
         return tweets_filtered

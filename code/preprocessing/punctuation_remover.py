@@ -29,6 +29,16 @@ class PunctuationRemover(Preprocessor):
     def _set_variables(self, inputs : list):
         """
         set internal variables based on input columns
+
+        Parameters
+        ----------
+        inputs : list
+            list of all tweets.
+
+        Returns
+        -------
+        None.
+
         """
         # store punctuation for later reference
         self._punctuation = "[{}]".format(string.punctuation)
@@ -36,6 +46,18 @@ class PunctuationRemover(Preprocessor):
     def _get_values(self, inputs : list) -> Series:
         """
         get preprocessed column based on data frame and internal variables
+        
+
+        Parameters
+        ----------
+        inputs : list
+            list of all tweets.
+
+        Returns
+        -------
+        Series
+            list of all tweets without punctuation.
+
         """
         # replace punctuation with empty string
         column = inputs[0].str.replace(self._punctuation, "")

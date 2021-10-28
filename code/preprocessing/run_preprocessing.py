@@ -8,9 +8,7 @@ Created on Tue Sep 28 16:43:18 2021
 @author: lbechberger
 """
 
-import argparse, csv, pickle
-import pandas as pd
-from sklearn.pipeline import make_pipeline
+import argparse
 from code.preprocessing.lower_caser import LowerCaser
 from code.preprocessing.punctuation_remover import PunctuationRemover
 from code.preprocessing.stemmer import Stemmer
@@ -21,7 +19,9 @@ from code.preprocessing.emoji_url_remover import EmojiAndUrlRemover
 from code.util import COLUMN_TWEET, COLUMN_LANGUAGE
 from code.util import COLUMN_LOWERED, COLUMN_STEMMED, COLUMN_TOKENIZED, COLUMN_PUNCTUATION, COLUMN_EMOJIS
 from code.util import ENGLISCH_TAG, COLUMN_EMOJI_URL, COLUMN_STOP_WORD_REMOVED
+import csv
 import pandas as pd
+import pickle
 from sklearn.pipeline import make_pipeline
 
 # setting up CLI

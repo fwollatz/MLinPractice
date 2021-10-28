@@ -6,9 +6,12 @@ Created on Thu Oct  7 14:30:41 2021
 @author: ml
 """
 
-import unittest
-import pandas as pd
+
 from code.preprocessing.tokenizer import Tokenizer
+import pandas as pd
+import unittest
+
+
 
 class TokenizerTest(unittest.TestCase):
     
@@ -18,12 +21,36 @@ class TokenizerTest(unittest.TestCase):
         self.tokenizer = Tokenizer(self.INPUT_COLUMN, self.OUTPUT_COLUMN)
     
     def test_input_columns(self):
+        """
+        check if the input column is correctly set
+
+        Returns
+        -------
+        None.
+
+        """
         self.assertListEqual(self.tokenizer._input_columns, [self.INPUT_COLUMN])
 
     def test_output_column(self):
+        """
+        check if the output colum is correctly set
+
+        Returns
+        -------
+        None.
+
+        """
         self.assertEqual(self.tokenizer._output_column, self.OUTPUT_COLUMN)
 
     def test_tokenization_single_sentence(self):
+        """
+        check if the tokenization is correct
+
+        Returns
+        -------
+        None.
+
+        """
         input_text = "This is an example sentence"
         output_text = "['This', 'is', 'an', 'example', 'sentence']"
         

@@ -23,9 +23,17 @@ class PCAReducer():
         self._use_normalizer = use_normalizer
         
     def fit(self):
-        #init PCA Object with and without seed
+        """
+        init PCA Object with and without seed
+        adds normalizer/standardizer
+        Returns
+        -------
+        None.
+
+        """
+        
         if self._seed != 0:
-            self.pca_reducer = PCA(random_state=self._seed)
+            self._pca_reducer = PCA(random_state=self._seed)
         else:
             self._pca_reducer = PCA()
             
@@ -39,6 +47,20 @@ class PCAReducer():
         
         
     def transform(self, features : list) -> list:
+        """
+        Computes the cumulative explained variance ratio and returns the best features
+
+        Parameters
+        ----------
+        features : list
+            All features.
+
+        Returns
+        -------
+        list
+            the best transformed features.
+
+        """
         reduced_features = []
         
         pc_counter = 0

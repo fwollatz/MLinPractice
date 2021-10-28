@@ -94,7 +94,7 @@ class FeatureCollector(FeatureExtractor):
         Returns
         -------
         list
-            DESCRIPTION.
+            returns all feature names.
 
         """
         feature_names = []

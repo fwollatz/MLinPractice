@@ -6,9 +6,11 @@ Created on Sun Oct 10 16:59:40 2021
 @author: ml
 """
 
-import unittest
-import pandas as pd
+
 from code.preprocessing.stemmer import Stemmer
+import pandas as pd
+import unittest
+
 
 class StemmerTest(unittest.TestCase):
     
@@ -18,6 +20,14 @@ class StemmerTest(unittest.TestCase):
         self.STEMMER = Stemmer(self.INPUT_COLUMN, self.OUTPUT_COLUMN)
         
     def test_stemming_works(self):
+        """
+        check if the stemming works
+
+        Returns
+        -------
+        None.
+
+        """
         #arrange
         input_texts = ["ran",
                        "running",

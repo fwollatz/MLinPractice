@@ -7,16 +7,29 @@ Created on Thu Oct  7 14:53:52 2021
 """
 
 import ast
-import nltk
 from code.feature_extraction.feature_extractor import FeatureExtractor
+import nltk
 
 class BigramFeature(FeatureExtractor):
     
     
-    def __init__(self, input_column):
+    def __init__(self, input_column:str):
         super().__init__([input_column], "{0}_bigrams".format(input_column))
     
-    def _set_variables(self, inputs):
+    def _set_variables(self, inputs:list):
+        """
+        compute the bigrams of all tweets
+
+        Parameters
+        ----------
+        inputs : list
+            all tweets.
+
+        Returns
+        -------
+        None.
+
+        """
         
         overall_text = []
         for line in inputs:

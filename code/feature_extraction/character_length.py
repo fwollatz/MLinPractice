@@ -8,27 +8,13 @@ Created on Wed Sep 29 12:29:25 2021
 @author: lbechberger
 """
 
-import numpy as np
 from code.feature_extraction.feature_extractor import FeatureExtractor
+import numpy as np
 
 # class for extracting the character-based length as a feature
 class CharacterLength(FeatureExtractor):
     
     def __init__(self, input_column: str):
-        """
-        constructor
-
-        Parameters
-        ----------
-        input_column : str
-            name of the input column
-
-        Returns
-        -------
-        None.
-
-        """
-
         super().__init__([input_column], "{0}_charlength".format(input_column))
     
     # don't need to fit, so don't overwrite _set_variables()

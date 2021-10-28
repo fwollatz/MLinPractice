@@ -8,21 +8,21 @@ Created on Wed Sep 29 14:23:48 2021
 @author: lbechberger
 """
 
-import argparse, pickle
+import argparse
 import matplotlib.pyplot as plt
+from mlflow import log_metric, log_param, set_tracking_uri
+import pickle
 
 from sklearn.dummy import DummyClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, top_k_accuracy_score, confusion_matrix, cohen_kappa_score, roc_auc_score, roc_curve
 from sklearn.naive_bayes import ComplementNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
-from sklearn.metrics import accuracy_score, top_k_accuracy_score, confusion_matrix, cohen_kappa_score, roc_auc_score, roc_curve
-from mlflow import log_metric, log_param, set_tracking_uri
-from sklearn.svm import SVC
-from sklearn.model_selection import GridSearchCV # to find proper C and gamma of SVM
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Classifier")

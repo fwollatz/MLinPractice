@@ -6,10 +6,11 @@ Created on Wed Oct 20 20:36:30 2021
 @author: ml
 """
 
-import unittest
-import pandas as pd
-import numpy as np
+
 from code.feature_extraction.has_most_common_emojis import HasMostCommonEmojis
+import numpy as np
+import pandas as pd
+import unittest
 
 class HasMostCommonWordsEmojis(unittest.TestCase):
     
@@ -18,8 +19,16 @@ class HasMostCommonWordsEmojis(unittest.TestCase):
         self.has_most_common_emojis_extractor = HasMostCommonEmojis(self.INPUT_COLUMN, n = 2)
         
     def test_top_most_common_emojis_correct(self):
+        """
+        check if the emojis are counted correctly
+
+        Returns
+        -------
+        None.
+
+        """
         #arrange
-        input_tweets = ['["👍","👍"]',
+        input_tweets = ['["💀","💀"]',
                         '["🎃","🎃"]',
                         '["🎃"]',
                         '["👻"]']

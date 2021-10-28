@@ -7,7 +7,7 @@ Created on Tue Oct 19 18:00:36 2021
 """
 
 from code.feature_extraction.feature_extractor import FeatureExtractor
-from code.util import COLUMN_SENTIMENT, string_to_words_list
+from code.util import COLUMN_SENTIMENT
 import numpy as np
 import nltk
 
@@ -15,7 +15,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 #class for extracting the amount of words after general preprocessing
 class SentimentFeature(FeatureExtractor):
-    sentiment_analyzer=SentimentIntensityAnalyzer()
+    _sentiment_analyzer=SentimentIntensityAnalyzer()
     
     
     def __init__(self, input_column: str):
@@ -38,7 +38,7 @@ class SentimentFeature(FeatureExtractor):
         
     def _get_values(self, inputs: list) -> np.ndarray :
         """
-        compute the word length based on the inputs
+        compute the sentiment based on the input
         
         Parameters
         ----------
@@ -48,7 +48,7 @@ class SentimentFeature(FeatureExtractor):
         Returns
         -------
         result : np.ndarray
-            array with the character-length of the individual tweets
+            array with the sentiment of the individual tweets
 
         """
 
@@ -58,7 +58,7 @@ class SentimentFeature(FeatureExtractor):
         list_of_sentiments=[]
         
         for tweet in inputs[0]:
-            sentiment=self.sentiment_analyzer.polarity_scores(tweet)["compound"]+1 #the +1 is to avoid that classifiers have a problem with negative numbers
+            sentiment=self._sentiment_analyzer.polarity_scores(tweet)["compound"]+1 #the +1 is to avoid that classifiers have a problem with negative numbers
             list_of_sentiments+=[sentiment]
         #saving it in an array
         result = np.array(list_of_sentiments)

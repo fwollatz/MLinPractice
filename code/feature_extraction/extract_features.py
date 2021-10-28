@@ -8,9 +8,7 @@ Created on Wed Sep 29 11:00:24 2021
 @author: lbechberger
 """
 
-import argparse, csv, pickle
-import pandas as pd
-import numpy as np
+import argparse
 from code.feature_extraction.character_length import CharacterLength
 from code.feature_extraction.number_of_hashtags import NumberOfHashtags
 from code.feature_extraction.number_of_urls import NumberOfURLs
@@ -26,8 +24,12 @@ from code.feature_extraction.number_of_words import NumberOfWords
 from code.feature_extraction.feature_collector import FeatureCollector
 from code.feature_extraction.has_most_common_words import HasMostCommonWords
 from code.feature_extraction.sentiment_feature import SentimentFeature
-from code.util import COLUMN_LABEL, COLUMN_TWEET, COLUMN_LIKES, COLUMN_RETWEETS, COLUMN_TIME, COLUMN_DATE, COLUMN_HASHTAG, COLUMN_URLS, COLUMN_PHOTOS, COLUMN_VIDEOS ,COLUMN_LANGUAGE, COLUMN_USERNAME, COLUMN_EMOJIS, COLUMN_USER_ID
-from code.util import COLUMN_GENERAL_PREPROCESSED
+from code.util import COLUMN_LABEL, COLUMN_TWEET, COLUMN_TIME, COLUMN_DATE, COLUMN_HASHTAG, COLUMN_URLS, COLUMN_PHOTOS
+from code.util import COLUMN_EMOJIS, COLUMN_USER_ID, COLUMN_GENERAL_PREPROCESSED
+import csv
+import numpy as np
+import pandas as pd
+import pickle
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Feature Extraction")

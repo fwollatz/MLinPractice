@@ -33,7 +33,7 @@ class NumberOfWords(FeatureExtractor):
         
     def _get_values(self, inputs: list) -> np.ndarray :
         """
-        compute the word length based on the inputs
+        compute the word count based on the inputs
         
         Parameters
         ----------
@@ -43,7 +43,7 @@ class NumberOfWords(FeatureExtractor):
         Returns
         -------
         result : np.ndarray
-            array with the character-length of the individual tweets
+            array with the word-count of the individual tweets
 
         """
 
